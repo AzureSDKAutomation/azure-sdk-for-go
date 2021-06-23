@@ -678,11 +678,15 @@ const (
 	ResourceStateEnabled ResourceState = "Enabled"
 	// ResourceStateEnabling ...
 	ResourceStateEnabling ResourceState = "Enabling"
+	// ResourceStateMigrated ...
+	ResourceStateMigrated ResourceState = "Migrated"
+	// ResourceStateMigrating ...
+	ResourceStateMigrating ResourceState = "Migrating"
 )
 
 // PossibleResourceStateValues returns an array of possible values for the ResourceState const type.
 func PossibleResourceStateValues() []ResourceState {
-	return []ResourceState{ResourceStateCreating, ResourceStateDeleting, ResourceStateDisabled, ResourceStateDisabling, ResourceStateEnabled, ResourceStateEnabling}
+	return []ResourceState{ResourceStateCreating, ResourceStateDeleting, ResourceStateDisabled, ResourceStateDisabling, ResourceStateEnabled, ResourceStateEnabling, ResourceStateMigrated, ResourceStateMigrating}
 }
 
 // ResourceType enumerates the values for resource type.
