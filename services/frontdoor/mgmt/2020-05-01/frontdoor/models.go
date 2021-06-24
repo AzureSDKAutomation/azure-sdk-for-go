@@ -197,7 +197,7 @@ func (bplr BackendPoolListResult) MarshalJSON() ([]byte, error) {
 
 // BackendPoolProperties the JSON object that contains the properties required to create a Backend Pool.
 type BackendPoolProperties struct {
-	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// Backends - The set of backends for this pool
 	Backends *[]Backend `json:"backends,omitempty"`
@@ -1285,7 +1285,7 @@ type FrontendEndpointLink struct {
 // FrontendEndpointProperties the JSON object that contains the properties required to create a frontend
 // endpoint.
 type FrontendEndpointProperties struct {
-	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// CustomHTTPSProvisioningState - READ-ONLY; Provisioning status of Custom Https of the frontendEndpoint. Possible values include: 'CustomHTTPSProvisioningStateEnabling', 'CustomHTTPSProvisioningStateEnabled', 'CustomHTTPSProvisioningStateDisabling', 'CustomHTTPSProvisioningStateDisabled', 'CustomHTTPSProvisioningStateFailed'
 	CustomHTTPSProvisioningState CustomHTTPSProvisioningState `json:"customHttpsProvisioningState,omitempty"`
@@ -1695,7 +1695,7 @@ func (hpsm *HealthProbeSettingsModel) UnmarshalJSON(body []byte) error {
 // HealthProbeSettingsProperties the JSON object that contains the properties required to create a health
 // probe settings.
 type HealthProbeSettingsProperties struct {
-	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// Path - The path to use for the health probe. Default is /
 	Path *string `json:"path,omitempty"`
@@ -2169,7 +2169,7 @@ func (lbsm *LoadBalancingSettingsModel) UnmarshalJSON(body []byte) error {
 // LoadBalancingSettingsProperties the JSON object that contains the properties required to create load
 // balancing settings
 type LoadBalancingSettingsProperties struct {
-	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// SampleSize - The number of samples to consider for load balancing decisions
 	SampleSize *int32 `json:"sampleSize,omitempty"`
@@ -3428,7 +3428,7 @@ type ProfileUpdateProperties struct {
 
 // Properties the JSON object that contains the properties required to create an endpoint.
 type Properties struct {
-	// ResourceState - Resource status of the Front Door. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status of the Front Door. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// ProvisioningState - READ-ONLY; Provisioning state of the Front Door.
 	ProvisioningState *string `json:"provisioningState,omitempty"`
@@ -3438,6 +3438,8 @@ type Properties struct {
 	FrontdoorID *string `json:"frontdoorId,omitempty"`
 	// RulesEngines - READ-ONLY; Rules Engine Configurations available to routing rules.
 	RulesEngines *[]RulesEngine `json:"rulesEngines,omitempty"`
+	// ExtendedProperties - READ-ONLY; Key-Value pair representing additional properties for frontdoor.
+	ExtendedProperties map[string]*string `json:"extendedProperties"`
 	// FriendlyName - A friendly name for the frontDoor
 	FriendlyName *string `json:"friendlyName,omitempty"`
 	// RoutingRules - Routing rules associated with this Front Door.
@@ -3776,7 +3778,7 @@ func (rrlr RoutingRuleListResult) MarshalJSON() ([]byte, error) {
 
 // RoutingRuleProperties the JSON object that contains the properties required to create a routing rule.
 type RoutingRuleProperties struct {
-	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// FrontendEndpoints - Frontend endpoints associated with this rule
 	FrontendEndpoints *[]SubResource `json:"frontendEndpoints,omitempty"`
@@ -4295,7 +4297,7 @@ type RulesEngineMatchCondition struct {
 // RulesEngineProperties the JSON object that contains the properties required to create a Rules Engine
 // Configuration.
 type RulesEngineProperties struct {
-	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting'
+	// ResourceState - Resource status. Possible values include: 'ResourceStateCreating', 'ResourceStateEnabling', 'ResourceStateEnabled', 'ResourceStateDisabling', 'ResourceStateDisabled', 'ResourceStateDeleting', 'ResourceStateMigrating', 'ResourceStateMigrated'
 	ResourceState ResourceState `json:"resourceState,omitempty"`
 	// Rules - A list of rules that define a particular Rules Engine Configuration.
 	Rules *[]RulesEngineRule `json:"rules,omitempty"`
