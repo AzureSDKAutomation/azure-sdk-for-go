@@ -4289,6 +4289,49 @@ func (drp *DiskRestorePoint) UnmarshalJSON(body []byte) error {
 	return nil
 }
 
+// DiskRestorePointGrantAccessFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type DiskRestorePointGrantAccessFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(DiskRestorePointClient) (AccessURI, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *DiskRestorePointGrantAccessFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for DiskRestorePointGrantAccessFuture.Result.
+func (future *DiskRestorePointGrantAccessFuture) result(client DiskRestorePointClient) (au AccessURI, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "compute.DiskRestorePointGrantAccessFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		au.Response.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("compute.DiskRestorePointGrantAccessFuture")
+		return
+	}
+	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+	if au.Response.Response, err = future.GetResult(sender); err == nil && au.Response.Response.StatusCode != http.StatusNoContent {
+		au, err = client.GrantAccessResponder(au.Response.Response)
+		if err != nil {
+			err = autorest.NewErrorWithError(err, "compute.DiskRestorePointGrantAccessFuture", "Result", au.Response.Response, "Failure responding to request")
+		}
+	}
+	return
+}
+
 // DiskRestorePointList the List Disk Restore Points operation response.
 type DiskRestorePointList struct {
 	autorest.Response `json:"-"`
@@ -4483,6 +4526,43 @@ func (drpp DiskRestorePointProperties) MarshalJSON() ([]byte, error) {
 		objectMap["supportsHibernation"] = drpp.SupportsHibernation
 	}
 	return json.Marshal(objectMap)
+}
+
+// DiskRestorePointRevokeAccessFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type DiskRestorePointRevokeAccessFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(DiskRestorePointClient) (autorest.Response, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *DiskRestorePointRevokeAccessFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for DiskRestorePointRevokeAccessFuture.Result.
+func (future *DiskRestorePointRevokeAccessFuture) result(client DiskRestorePointClient) (ar autorest.Response, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "compute.DiskRestorePointRevokeAccessFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		ar.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("compute.DiskRestorePointRevokeAccessFuture")
+		return
+	}
+	ar.Response = future.Response()
+	return
 }
 
 // DisksCreateOrUpdateFuture an abstraction for monitoring and retrieving the results of a long-running
