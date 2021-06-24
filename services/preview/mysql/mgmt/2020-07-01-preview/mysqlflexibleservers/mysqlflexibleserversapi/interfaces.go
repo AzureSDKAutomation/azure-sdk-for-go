@@ -71,6 +71,7 @@ var _ DatabasesClientAPI = (*mysqlflexibleservers.DatabasesClient)(nil)
 
 // ConfigurationsClientAPI contains the set of methods on the ConfigurationsClient type.
 type ConfigurationsClientAPI interface {
+	BatchUpdate(ctx context.Context, resourceGroupName string, serverName string, value mysqlflexibleservers.ConfigurationListResult) (result mysqlflexibleservers.ConfigurationsBatchUpdateFuture, err error)
 	Get(ctx context.Context, resourceGroupName string, serverName string, configurationName string) (result mysqlflexibleservers.Configuration, err error)
 	ListByServer(ctx context.Context, resourceGroupName string, serverName string) (result mysqlflexibleservers.ConfigurationListResultPage, err error)
 	ListByServerComplete(ctx context.Context, resourceGroupName string, serverName string) (result mysqlflexibleservers.ConfigurationListResultIterator, err error)
@@ -107,3 +108,10 @@ type OperationsClientAPI interface {
 }
 
 var _ OperationsClientAPI = (*mysqlflexibleservers.OperationsClient)(nil)
+
+// GetPrivateDNSZoneSuffixClientAPI contains the set of methods on the GetPrivateDNSZoneSuffixClient type.
+type GetPrivateDNSZoneSuffixClientAPI interface {
+	Execute(ctx context.Context, subscriptionID string, body string) (result mysqlflexibleservers.String, err error)
+}
+
+var _ GetPrivateDNSZoneSuffixClientAPI = (*mysqlflexibleservers.GetPrivateDNSZoneSuffixClient)(nil)
