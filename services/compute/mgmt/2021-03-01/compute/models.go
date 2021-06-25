@@ -1692,7 +1692,7 @@ type CloudServiceVaultSecretGroup struct {
 
 // CreationData data used when creating a disk.
 type CreationData struct {
-	// CreateOption - This enumerates the possible sources of a disk's creation. Possible values include: 'DiskCreateOptionEmpty', 'DiskCreateOptionAttach', 'DiskCreateOptionFromImage', 'DiskCreateOptionImport', 'DiskCreateOptionCopy', 'DiskCreateOptionRestore', 'DiskCreateOptionUpload'
+	// CreateOption - This enumerates the possible sources of a disk's creation. Possible values include: 'DiskCreateOptionEmpty', 'DiskCreateOptionAttach', 'DiskCreateOptionFromImage', 'DiskCreateOptionImport', 'DiskCreateOptionCopy', 'DiskCreateOptionRestore', 'DiskCreateOptionUpload', 'DiskCreateOptionClone'
 	CreateOption DiskCreateOption `json:"createOption,omitempty"`
 	// StorageAccountID - Required if createOption is Import. The Azure Resource Manager identifier of the storage account containing the blob to import as a disk.
 	StorageAccountID *string `json:"storageAccountId,omitempty"`
@@ -4140,6 +4140,8 @@ type DiskProperties struct {
 	ShareInfo *[]ShareInfoElement `json:"shareInfo,omitempty"`
 	// NetworkAccessPolicy - Possible values include: 'NetworkAccessPolicyAllowAll', 'NetworkAccessPolicyAllowPrivate', 'NetworkAccessPolicyDenyAll'
 	NetworkAccessPolicy NetworkAccessPolicy `json:"networkAccessPolicy,omitempty"`
+	// PublicNetworkAccess - Possible values include: 'PublicNetworkAccessEnabled', 'PublicNetworkAccessDisabled'
+	PublicNetworkAccess PublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
 	// DiskAccessID - ARM id of the DiskAccess resource for using private endpoints on disks.
 	DiskAccessID *string `json:"diskAccessId,omitempty"`
 	// Tier - Performance tier of the disk (e.g, P4, S10) as described here: https://azure.microsoft.com/en-us/pricing/details/managed-disks/. Does not apply to Ultra disks.
@@ -4152,6 +4154,8 @@ type DiskProperties struct {
 	SupportsHibernation *bool `json:"supportsHibernation,omitempty"`
 	// SecurityProfile - Contains the security related information for the resource.
 	SecurityProfile *DiskSecurityProfile `json:"securityProfile,omitempty"`
+	// CompletionPercent - Percent complete of a clone operation
+	CompletionPercent *float64 `json:"completionPercent,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for DiskProperties.
@@ -4199,6 +4203,9 @@ func (dp DiskProperties) MarshalJSON() ([]byte, error) {
 	if dp.NetworkAccessPolicy != "" {
 		objectMap["networkAccessPolicy"] = dp.NetworkAccessPolicy
 	}
+	if dp.PublicNetworkAccess != "" {
+		objectMap["publicNetworkAccess"] = dp.PublicNetworkAccess
+	}
 	if dp.DiskAccessID != nil {
 		objectMap["diskAccessId"] = dp.DiskAccessID
 	}
@@ -4213,6 +4220,9 @@ func (dp DiskProperties) MarshalJSON() ([]byte, error) {
 	}
 	if dp.SecurityProfile != nil {
 		objectMap["securityProfile"] = dp.SecurityProfile
+	}
+	if dp.CompletionPercent != nil {
+		objectMap["completionPercent"] = dp.CompletionPercent
 	}
 	return json.Marshal(objectMap)
 }
@@ -4287,6 +4297,49 @@ func (drp *DiskRestorePoint) UnmarshalJSON(body []byte) error {
 	}
 
 	return nil
+}
+
+// DiskRestorePointGrantAccessFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type DiskRestorePointGrantAccessFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(DiskRestorePointClient) (AccessURI, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *DiskRestorePointGrantAccessFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for DiskRestorePointGrantAccessFuture.Result.
+func (future *DiskRestorePointGrantAccessFuture) result(client DiskRestorePointClient) (au AccessURI, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "compute.DiskRestorePointGrantAccessFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		au.Response.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("compute.DiskRestorePointGrantAccessFuture")
+		return
+	}
+	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+	if au.Response.Response, err = future.GetResult(sender); err == nil && au.Response.Response.StatusCode != http.StatusNoContent {
+		au, err = client.GrantAccessResponder(au.Response.Response)
+		if err != nil {
+			err = autorest.NewErrorWithError(err, "compute.DiskRestorePointGrantAccessFuture", "Result", au.Response.Response, "Failure responding to request")
+		}
+	}
+	return
 }
 
 // DiskRestorePointList the List Disk Restore Points operation response.
@@ -4468,6 +4521,14 @@ type DiskRestorePointProperties struct {
 	Encryption *Encryption `json:"encryption,omitempty"`
 	// SupportsHibernation - Indicates the OS on a disk supports hibernation.
 	SupportsHibernation *bool `json:"supportsHibernation,omitempty"`
+	// NetworkAccessPolicy - Possible values include: 'NetworkAccessPolicyAllowAll', 'NetworkAccessPolicyAllowPrivate', 'NetworkAccessPolicyDenyAll'
+	NetworkAccessPolicy NetworkAccessPolicy `json:"networkAccessPolicy,omitempty"`
+	// PublicNetworkAccess - Possible values include: 'PublicNetworkAccessEnabled', 'PublicNetworkAccessDisabled'
+	PublicNetworkAccess PublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
+	// DiskAccessID - ARM id of the DiskAccess resource for using private endpoints on disks.
+	DiskAccessID *string `json:"diskAccessId,omitempty"`
+	// CompletionPercent - Percent complete of a clone operation
+	CompletionPercent *float64 `json:"completionPercent,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for DiskRestorePointProperties.
@@ -4482,7 +4543,56 @@ func (drpp DiskRestorePointProperties) MarshalJSON() ([]byte, error) {
 	if drpp.SupportsHibernation != nil {
 		objectMap["supportsHibernation"] = drpp.SupportsHibernation
 	}
+	if drpp.NetworkAccessPolicy != "" {
+		objectMap["networkAccessPolicy"] = drpp.NetworkAccessPolicy
+	}
+	if drpp.PublicNetworkAccess != "" {
+		objectMap["publicNetworkAccess"] = drpp.PublicNetworkAccess
+	}
+	if drpp.DiskAccessID != nil {
+		objectMap["diskAccessId"] = drpp.DiskAccessID
+	}
+	if drpp.CompletionPercent != nil {
+		objectMap["completionPercent"] = drpp.CompletionPercent
+	}
 	return json.Marshal(objectMap)
+}
+
+// DiskRestorePointRevokeAccessFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type DiskRestorePointRevokeAccessFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(DiskRestorePointClient) (autorest.Response, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *DiskRestorePointRevokeAccessFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for DiskRestorePointRevokeAccessFuture.Result.
+func (future *DiskRestorePointRevokeAccessFuture) result(client DiskRestorePointClient) (ar autorest.Response, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "compute.DiskRestorePointRevokeAccessFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		ar.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("compute.DiskRestorePointRevokeAccessFuture")
+		return
+	}
+	ar.Response = future.Response()
+	return
 }
 
 // DisksCreateOrUpdateFuture an abstraction for monitoring and retrieving the results of a long-running
@@ -4797,6 +4907,8 @@ type DiskUpdateProperties struct {
 	Encryption *Encryption `json:"encryption,omitempty"`
 	// NetworkAccessPolicy - Possible values include: 'NetworkAccessPolicyAllowAll', 'NetworkAccessPolicyAllowPrivate', 'NetworkAccessPolicyDenyAll'
 	NetworkAccessPolicy NetworkAccessPolicy `json:"networkAccessPolicy,omitempty"`
+	// PublicNetworkAccess - Possible values include: 'PublicNetworkAccessEnabled', 'PublicNetworkAccessDisabled'
+	PublicNetworkAccess PublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
 	// DiskAccessID - ARM id of the DiskAccess resource for using private endpoints on disks.
 	DiskAccessID *string `json:"diskAccessId,omitempty"`
 	// Tier - Performance tier of the disk (e.g, P4, S10) as described here: https://azure.microsoft.com/en-us/pricing/details/managed-disks/. Does not apply to Ultra disks.
@@ -4843,6 +4955,9 @@ func (dup DiskUpdateProperties) MarshalJSON() ([]byte, error) {
 	}
 	if dup.NetworkAccessPolicy != "" {
 		objectMap["networkAccessPolicy"] = dup.NetworkAccessPolicy
+	}
+	if dup.PublicNetworkAccess != "" {
+		objectMap["publicNetworkAccess"] = dup.PublicNetworkAccess
 	}
 	if dup.DiskAccessID != nil {
 		objectMap["diskAccessId"] = dup.DiskAccessID
@@ -8879,7 +8994,7 @@ type ManagedArtifact struct {
 
 // ManagedDiskParameters the parameters of a managed disk.
 type ManagedDiskParameters struct {
-	// StorageAccountType - Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. Possible values include: 'StorageAccountTypesStandardLRS', 'StorageAccountTypesPremiumLRS', 'StorageAccountTypesStandardSSDLRS', 'StorageAccountTypesUltraSSDLRS', 'StorageAccountTypesPremiumZRS', 'StorageAccountTypesStandardSSDZRS'
+	// StorageAccountType - Specifies the storage account type for the managed disk. Managed OS disk storage account type can only be set when you create the scale set. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. Possible values include: 'StorageAccountTypesStandardLRS', 'StorageAccountTypesPremiumLRS', 'StorageAccountTypesStandardSSDLRS', 'StorageAccountTypesUltraSSDLRS', 'StorageAccountTypesPremiumZRS', 'StorageAccountTypesStandardSSDZRS'
 	StorageAccountType StorageAccountTypes `json:"storageAccountType,omitempty"`
 	// DiskEncryptionSet - Specifies the customer managed disk encryption set resource id for the managed disk.
 	DiskEncryptionSet *DiskEncryptionSetParameters `json:"diskEncryptionSet,omitempty"`
@@ -10393,10 +10508,10 @@ func (pr ProxyResource) MarshalJSON() ([]byte, error) {
 
 // PublicIPAddressSku describes the public IP Sku
 type PublicIPAddressSku struct {
-	// PublicIPAddressSkuName - Specify public IP sku name. Possible values include: 'PublicIPAddressSkuNameBasic', 'PublicIPAddressSkuNameStandard'
-	PublicIPAddressSkuName PublicIPAddressSkuName `json:"publicIPAddressSkuName,omitempty"`
-	// PublicIPAddressSkuTier - Specify public IP sku tier. Possible values include: 'PublicIPAddressSkuTierRegional', 'PublicIPAddressSkuTierGlobal'
-	PublicIPAddressSkuTier PublicIPAddressSkuTier `json:"publicIPAddressSkuTier,omitempty"`
+	// Name - Specify public IP sku name. Possible values include: 'PublicIPAddressSkuNameBasic', 'PublicIPAddressSkuNameStandard'
+	Name PublicIPAddressSkuName `json:"name,omitempty"`
+	// Tier - Specify public IP sku tier. Possible values include: 'PublicIPAddressSkuTierRegional', 'PublicIPAddressSkuTierGlobal'
+	Tier PublicIPAddressSkuTier `json:"tier,omitempty"`
 }
 
 // PurchasePlan used for establishing the purchase context of any 3rd Party artifact through MarketPlace.
@@ -13374,6 +13489,8 @@ type SnapshotProperties struct {
 	Encryption *Encryption `json:"encryption,omitempty"`
 	// NetworkAccessPolicy - Possible values include: 'NetworkAccessPolicyAllowAll', 'NetworkAccessPolicyAllowPrivate', 'NetworkAccessPolicyDenyAll'
 	NetworkAccessPolicy NetworkAccessPolicy `json:"networkAccessPolicy,omitempty"`
+	// PublicNetworkAccess - Possible values include: 'PublicNetworkAccessEnabled', 'PublicNetworkAccessDisabled'
+	PublicNetworkAccess PublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
 	// DiskAccessID - ARM id of the DiskAccess resource for using private endpoints on disks.
 	DiskAccessID *string `json:"diskAccessId,omitempty"`
 	// SupportsHibernation - Indicates the OS on a snapshot supports hibernation.
@@ -13412,6 +13529,9 @@ func (sp SnapshotProperties) MarshalJSON() ([]byte, error) {
 	}
 	if sp.NetworkAccessPolicy != "" {
 		objectMap["networkAccessPolicy"] = sp.NetworkAccessPolicy
+	}
+	if sp.PublicNetworkAccess != "" {
+		objectMap["publicNetworkAccess"] = sp.PublicNetworkAccess
 	}
 	if sp.DiskAccessID != nil {
 		objectMap["diskAccessId"] = sp.DiskAccessID
@@ -13721,6 +13841,8 @@ type SnapshotUpdateProperties struct {
 	Encryption *Encryption `json:"encryption,omitempty"`
 	// NetworkAccessPolicy - Possible values include: 'NetworkAccessPolicyAllowAll', 'NetworkAccessPolicyAllowPrivate', 'NetworkAccessPolicyDenyAll'
 	NetworkAccessPolicy NetworkAccessPolicy `json:"networkAccessPolicy,omitempty"`
+	// PublicNetworkAccess - Possible values include: 'PublicNetworkAccessEnabled', 'PublicNetworkAccessDisabled'
+	PublicNetworkAccess PublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
 	// DiskAccessID - ARM id of the DiskAccess resource for using private endpoints on disks.
 	DiskAccessID *string `json:"diskAccessId,omitempty"`
 	// SupportsHibernation - Indicates the OS on a snapshot supports hibernation.
