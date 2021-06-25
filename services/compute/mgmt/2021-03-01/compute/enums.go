@@ -187,6 +187,9 @@ type DiskCreateOption string
 const (
 	// DiskCreateOptionAttach Disk will be attached to a VM.
 	DiskCreateOptionAttach DiskCreateOption = "Attach"
+	// DiskCreateOptionClone Create a new disk by using a slow/deep copy process, where the resource creation
+	// is considered complete only after all data has been copied from the source.
+	DiskCreateOptionClone DiskCreateOption = "Clone"
 	// DiskCreateOptionCopy Create a new disk or snapshot by copying from a disk or snapshot specified by the
 	// given sourceResourceId.
 	DiskCreateOptionCopy DiskCreateOption = "Copy"
@@ -207,7 +210,7 @@ const (
 
 // PossibleDiskCreateOptionValues returns an array of possible values for the DiskCreateOption const type.
 func PossibleDiskCreateOptionValues() []DiskCreateOption {
-	return []DiskCreateOption{DiskCreateOptionAttach, DiskCreateOptionCopy, DiskCreateOptionEmpty, DiskCreateOptionFromImage, DiskCreateOptionImport, DiskCreateOptionRestore, DiskCreateOptionUpload}
+	return []DiskCreateOption{DiskCreateOptionAttach, DiskCreateOptionClone, DiskCreateOptionCopy, DiskCreateOptionEmpty, DiskCreateOptionFromImage, DiskCreateOptionImport, DiskCreateOptionRestore, DiskCreateOptionUpload}
 }
 
 // DiskCreateOptionTypes enumerates the values for disk create option types.
@@ -1026,6 +1029,21 @@ const (
 // PossiblePublicIPAllocationMethodValues returns an array of possible values for the PublicIPAllocationMethod const type.
 func PossiblePublicIPAllocationMethodValues() []PublicIPAllocationMethod {
 	return []PublicIPAllocationMethod{PublicIPAllocationMethodDynamic, PublicIPAllocationMethodStatic}
+}
+
+// PublicNetworkAccess enumerates the values for public network access.
+type PublicNetworkAccess string
+
+const (
+	// PublicNetworkAccessDisabled The disk cannot be exported unless it is associated with a diskAccess
+	PublicNetworkAccessDisabled PublicNetworkAccess = "Disabled"
+	// PublicNetworkAccessEnabled Export on disk will depend on the networkAccessPolicy
+	PublicNetworkAccessEnabled PublicNetworkAccess = "Enabled"
+)
+
+// PossiblePublicNetworkAccessValues returns an array of possible values for the PublicNetworkAccess const type.
+func PossiblePublicNetworkAccessValues() []PublicNetworkAccess {
+	return []PublicNetworkAccess{PublicNetworkAccessDisabled, PublicNetworkAccessEnabled}
 }
 
 // ReplicationState enumerates the values for replication state.
