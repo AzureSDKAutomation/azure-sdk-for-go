@@ -1,5 +1,5 @@
 {
-  "commit": "92ab22b49bd085116af0c61fada2c6c360702e9e",
+  "commit": "fb6d4094f679e8f4de404756a82a974fbe6fb737",
   "readme": "/_/azure-rest-api-specs/specification/netapp/resource-manager/readme.md",
   "tag": "package-netapp-2020-11-01",
   "use": "@microsoft.azure/autorest.go@2.1.183",
