@@ -1,4 +1,4 @@
-package signalr
+package webpubsub
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14,7 +14,7 @@ import (
 	"net/http"
 )
 
-// UsagesClient is the REST API for Azure SignalR Service
+// UsagesClient is the REST API for Azure WebPubSub Service
 type UsagesClient struct {
 	BaseClient
 }
@@ -33,13 +33,13 @@ func NewUsagesClientWithBaseURI(baseURI string, subscriptionID string) UsagesCli
 // List list resource usage quotas by location.
 // Parameters:
 // location - the location like "eastus"
-func (client UsagesClient) List(ctx context.Context, location string) (result UsageListPage, err error) {
+func (client UsagesClient) List(ctx context.Context, location string) (result SignalRServiceUsageListPage, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/UsagesClient.List")
 		defer func() {
 			sc := -1
-			if result.ul.Response.Response != nil {
-				sc = result.ul.Response.Response.StatusCode
+			if result.srsul.Response.Response != nil {
+				sc = result.srsul.Response.Response.StatusCode
 			}
 			tracing.EndSpan(ctx, sc, err)
 		}()
@@ -47,23 +47,23 @@ func (client UsagesClient) List(ctx context.Context, location string) (result Us
 	result.fn = client.listNextResults
 	req, err := client.ListPreparer(ctx, location)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.UsagesClient", "List", nil, "Failure preparing request")
+		err = autorest.NewErrorWithError(err, "webpubsub.UsagesClient", "List", nil, "Failure preparing request")
 		return
 	}
 
 	resp, err := client.ListSender(req)
 	if err != nil {
-		result.ul.Response = autorest.Response{Response: resp}
-		err = autorest.NewErrorWithError(err, "signalr.UsagesClient", "List", resp, "Failure sending request")
+		result.srsul.Response = autorest.Response{Response: resp}
+		err = autorest.NewErrorWithError(err, "webpubsub.UsagesClient", "List", resp, "Failure sending request")
 		return
 	}
 
-	result.ul, err = client.ListResponder(resp)
+	result.srsul, err = client.ListResponder(resp)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.UsagesClient", "List", resp, "Failure responding to request")
+		err = autorest.NewErrorWithError(err, "webpubsub.UsagesClient", "List", resp, "Failure responding to request")
 		return
 	}
-	if result.ul.hasNextLink() && result.ul.IsEmpty() {
+	if result.srsul.hasNextLink() && result.srsul.IsEmpty() {
 		err = result.NextWithContext(ctx)
 		return
 	}
@@ -78,7 +78,7 @@ func (client UsagesClient) ListPreparer(ctx context.Context, location string) (*
 		"subscriptionId": autorest.Encode("path", client.SubscriptionID),
 	}
 
-	const APIVersion = "2020-07-01-preview"
+	const APIVersion = "2021-06-01-preview"
 	queryParameters := map[string]interface{}{
 		"api-version": APIVersion,
 	}
@@ -99,7 +99,7 @@ func (client UsagesClient) ListSender(req *http.Request) (*http.Response, error)
 
 // ListResponder handles the response to the List request. The method always
 // closes the http.Response Body.
-func (client UsagesClient) ListResponder(resp *http.Response) (result UsageList, err error) {
+func (client UsagesClient) ListResponder(resp *http.Response) (result SignalRServiceUsageList, err error) {
 	err = autorest.Respond(
 		resp,
 		azure.WithErrorUnlessStatusCode(http.StatusOK),
@@ -110,10 +110,10 @@ func (client UsagesClient) ListResponder(resp *http.Response) (result UsageList,
 }
 
 // listNextResults retrieves the next set of results, if any.
-func (client UsagesClient) listNextResults(ctx context.Context, lastResults UsageList) (result UsageList, err error) {
-	req, err := lastResults.usageListPreparer(ctx)
+func (client UsagesClient) listNextResults(ctx context.Context, lastResults SignalRServiceUsageList) (result SignalRServiceUsageList, err error) {
+	req, err := lastResults.signalRServiceUsageListPreparer(ctx)
 	if err != nil {
-		return result, autorest.NewErrorWithError(err, "signalr.UsagesClient", "listNextResults", nil, "Failure preparing next results request")
+		return result, autorest.NewErrorWithError(err, "webpubsub.UsagesClient", "listNextResults", nil, "Failure preparing next results request")
 	}
 	if req == nil {
 		return
@@ -121,17 +121,17 @@ func (client UsagesClient) listNextResults(ctx context.Context, lastResults Usag
 	resp, err := client.ListSender(req)
 	if err != nil {
 		result.Response = autorest.Response{Response: resp}
-		return result, autorest.NewErrorWithError(err, "signalr.UsagesClient", "listNextResults", resp, "Failure sending next results request")
+		return result, autorest.NewErrorWithError(err, "webpubsub.UsagesClient", "listNextResults", resp, "Failure sending next results request")
 	}
 	result, err = client.ListResponder(resp)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.UsagesClient", "listNextResults", resp, "Failure responding to next results request")
+		err = autorest.NewErrorWithError(err, "webpubsub.UsagesClient", "listNextResults", resp, "Failure responding to next results request")
 	}
 	return
 }
 
 // ListComplete enumerates all values, automatically crossing page boundaries as required.
-func (client UsagesClient) ListComplete(ctx context.Context, location string) (result UsageListIterator, err error) {
+func (client UsagesClient) ListComplete(ctx context.Context, location string) (result SignalRServiceUsageListIterator, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/UsagesClient.List")
 		defer func() {

@@ -1,4 +1,4 @@
-package signalr
+package webpubsub
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
@@ -11,19 +11,14 @@ import (
 	"encoding/json"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
+	"github.com/Azure/go-autorest/autorest/date"
 	"github.com/Azure/go-autorest/autorest/to"
 	"github.com/Azure/go-autorest/tracing"
 	"net/http"
 )
 
 // The package's fully qualified name.
-const fqdn = "github.com/Azure/azure-sdk-for-go/services/preview/signalr/mgmt/2020-07-01-preview/signalr"
-
-// CorsSettings cross-Origin Resource Sharing (CORS) settings.
-type CorsSettings struct {
-	// AllowedOrigins - Gets or sets the list of origins that should be allowed to make cross-origin calls (for example: http://example.com:12345). Use "*" to allow all. If omitted, allow all by default.
-	AllowedOrigins *[]string `json:"allowedOrigins,omitempty"`
-}
+const fqdn = "github.com/Azure/azure-sdk-for-go/services/preview/webpubsub/mgmt/2021-06-01-preview/webpubsub"
 
 // CreateOrUpdateFuture an abstraction for monitoring and retrieving the results of a long-running
 // operation.
@@ -50,39 +45,22 @@ func (future *CreateOrUpdateFuture) result(client Client) (rt ResourceType, err 
 	var done bool
 	done, err = future.DoneWithContext(context.Background(), client)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.CreateOrUpdateFuture", "Result", future.Response(), "Polling failure")
+		err = autorest.NewErrorWithError(err, "webpubsub.CreateOrUpdateFuture", "Result", future.Response(), "Polling failure")
 		return
 	}
 	if !done {
 		rt.Response.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("signalr.CreateOrUpdateFuture")
+		err = azure.NewAsyncOpIncompleteError("webpubsub.CreateOrUpdateFuture")
 		return
 	}
 	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
 	if rt.Response.Response, err = future.GetResult(sender); err == nil && rt.Response.Response.StatusCode != http.StatusNoContent {
 		rt, err = client.CreateOrUpdateResponder(rt.Response.Response)
 		if err != nil {
-			err = autorest.NewErrorWithError(err, "signalr.CreateOrUpdateFuture", "Result", rt.Response.Response, "Failure responding to request")
+			err = autorest.NewErrorWithError(err, "webpubsub.CreateOrUpdateFuture", "Result", rt.Response.Response, "Failure responding to request")
 		}
 	}
 	return
-}
-
-// CreateOrUpdateProperties settings used to provision or configure the resource.
-type CreateOrUpdateProperties struct {
-	// Features - List of SignalR featureFlags. e.g. ServiceMode.
-	//
-	// FeatureFlags that are not included in the parameters for the update operation will not be modified.
-	// And the response will only include featureFlags that are explicitly set.
-	// When a featureFlag is not explicitly set, SignalR service will use its globally default value.
-	// But keep in mind, the default value doesn't mean "false". It varies in terms of different FeatureFlags.
-	Features *[]Feature `json:"features,omitempty"`
-	// Cors - Cross-Origin Resource Sharing (CORS) settings.
-	Cors *CorsSettings `json:"cors,omitempty"`
-	// Upstream - Upstream settings when the Azure SignalR is in server-less mode.
-	Upstream *ServerlessUpstreamSettings `json:"upstream,omitempty"`
-	// NetworkACLs - Network ACLs
-	NetworkACLs *NetworkACLs `json:"networkACLs,omitempty"`
 }
 
 // DeleteFuture an abstraction for monitoring and retrieving the results of a long-running operation.
@@ -109,16 +87,34 @@ func (future *DeleteFuture) result(client Client) (ar autorest.Response, err err
 	var done bool
 	done, err = future.DoneWithContext(context.Background(), client)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.DeleteFuture", "Result", future.Response(), "Polling failure")
+		err = autorest.NewErrorWithError(err, "webpubsub.DeleteFuture", "Result", future.Response(), "Polling failure")
 		return
 	}
 	if !done {
 		ar.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("signalr.DeleteFuture")
+		err = azure.NewAsyncOpIncompleteError("webpubsub.DeleteFuture")
 		return
 	}
 	ar.Response = future.Response()
 	return
+}
+
+// DiagnosticConfiguration diagnostic configuration of a Microsoft.SignalRService resource. Used together
+// with Azure monitor DiagnosticSettings.
+type DiagnosticConfiguration struct {
+	// EnableConnectivityLogs - Indicate whether or not enable Connectivity logs.
+	// Available values: Enabled, Disabled.
+	// Case insensitive.
+	EnableConnectivityLogs *string `json:"enableConnectivityLogs,omitempty"`
+	// EnableMessagingLogs - Indicate whether or not enable Messaging logs.
+	// Available values: Enabled, Disabled.
+	// Case insensitive.
+	EnableMessagingLogs *string `json:"enableMessagingLogs,omitempty"`
+	// EnableLiveTrace - Indicate whether or not enable Live Trace.
+	// Available values: Enabled, Disabled.
+	// Case insensitive.
+	// Live Trace allows you to know what's happening inside Azure SignalR service, it will give you live traces in real time, it will be helpful when you developing your own Azure SignalR based web application or self-troubleshooting some issues.
+	EnableLiveTrace *string `json:"enableLiveTrace,omitempty"`
 }
 
 // Dimension specifications of the Dimension of metrics.
@@ -133,50 +129,80 @@ type Dimension struct {
 	ToBeExportedForShoebox *bool `json:"toBeExportedForShoebox,omitempty"`
 }
 
-// ErrorResponse contains information about an API error.
-type ErrorResponse struct {
-	// Error - Describes a particular API error with an error code and a message.
-	Error *ErrorResponseBody `json:"error,omitempty"`
+// ErrorAdditionalInfo the resource management error additional info.
+type ErrorAdditionalInfo struct {
+	// Type - READ-ONLY; The additional info type.
+	Type *string `json:"type,omitempty"`
+	// Info - READ-ONLY; The additional info.
+	Info interface{} `json:"info,omitempty"`
 }
 
-// ErrorResponseBody describes a particular API error with an error code and a message.
-type ErrorResponseBody struct {
-	// Code - An error code that describes the error condition more precisely than an HTTP status code.
-	// Can be used to programmatically handle specific error cases.
-	Code *string `json:"code,omitempty"`
-	// Message - A message that describes the error in detail and provides debugging information.
-	Message *string `json:"message,omitempty"`
-	// Target - The target of the particular error (for example, the name of the property in error).
-	Target *string `json:"target,omitempty"`
-	// Details - Contains nested errors that are related to this error.
-	Details *[]ErrorResponseBody `json:"details,omitempty"`
-}
-
-// Feature feature of a SignalR resource, which controls the SignalR runtime behavior.
-type Feature struct {
-	// Flag - FeatureFlags is the supported features of Azure SignalR service.
-	// - ServiceMode: Flag for backend server for SignalR service. Values allowed: "Default": have your own backend server; "Serverless": your application doesn't have a backend server; "Classic": for backward compatibility. Support both Default and Serverless mode but not recommended; "PredefinedOnly": for future use.
-	// - EnableConnectivityLogs: "true"/"false", to enable/disable the connectivity log category respectively. Possible values include: 'ServiceMode', 'EnableConnectivityLogs', 'EnableMessagingLogs'
-	Flag FeatureFlags `json:"flag,omitempty"`
-	// Value - Value of the feature flag. See Azure SignalR service document https://docs.microsoft.com/azure/azure-signalr/ for allowed values.
-	Value *string `json:"value,omitempty"`
-	// Properties - Optional properties related to this feature.
-	Properties map[string]*string `json:"properties"`
-}
-
-// MarshalJSON is the custom marshaler for Feature.
-func (f Feature) MarshalJSON() ([]byte, error) {
+// MarshalJSON is the custom marshaler for ErrorAdditionalInfo.
+func (eai ErrorAdditionalInfo) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
-	if f.Flag != "" {
-		objectMap["flag"] = f.Flag
-	}
-	if f.Value != nil {
-		objectMap["value"] = f.Value
-	}
-	if f.Properties != nil {
-		objectMap["properties"] = f.Properties
+	return json.Marshal(objectMap)
+}
+
+// ErrorDetail the error detail.
+type ErrorDetail struct {
+	// Code - READ-ONLY; The error code.
+	Code *string `json:"code,omitempty"`
+	// Message - READ-ONLY; The error message.
+	Message *string `json:"message,omitempty"`
+	// Target - READ-ONLY; The error target.
+	Target *string `json:"target,omitempty"`
+	// Details - READ-ONLY; The error details.
+	Details *[]ErrorDetail `json:"details,omitempty"`
+	// AdditionalInfo - READ-ONLY; The error additional info.
+	AdditionalInfo *[]ErrorAdditionalInfo `json:"additionalInfo,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for ErrorDetail.
+func (ed ErrorDetail) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	return json.Marshal(objectMap)
+}
+
+// ErrorResponse common error response for all Azure Resource Manager APIs to return error details for
+// failed operations. (This also follows the OData error response format.).
+type ErrorResponse struct {
+	// Error - The error object.
+	Error *ErrorDetail `json:"error,omitempty"`
+}
+
+// EventHandlerSettings the settings for event handler in webpubsub service
+type EventHandlerSettings struct {
+	// Items - Get or set the EventHandler items. The key is the hub name and the value is the corresponding EventHandlerTemplate.
+	Items map[string][]EventHandlerTemplate `json:"items"`
+}
+
+// MarshalJSON is the custom marshaler for EventHandlerSettings.
+func (ehs EventHandlerSettings) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if ehs.Items != nil {
+		objectMap["items"] = ehs.Items
 	}
 	return json.Marshal(objectMap)
+}
+
+// EventHandlerTemplate eventHandler template item settings.
+type EventHandlerTemplate struct {
+	// URLTemplate - Gets or sets the EventHandler URL template. You can use a predefined parameter {hub} and {event} inside the template, the value of the EventHandler URL is dynamically calculated when the client request comes in.
+	// For example, UrlTemplate can be `http://example.com/api/{hub}/{event}`. The host part can't contains parameters.
+	URLTemplate *string `json:"urlTemplate,omitempty"`
+	// UserEventPattern - Gets or sets the matching pattern for event names.
+	// There are 3 kind of patterns supported:
+	//     1. "*", it to matches any event name
+	//     2. Combine multiple events with ",", for example "event1,event2", it matches event "event1" and "event2"
+	//     3. The single event name, for example, "event1", it matches "event1"
+	UserEventPattern *string `json:"userEventPattern,omitempty"`
+	// SystemEventPattern - Gets ot sets the system event pattern.
+	// There are 2 kind of patterns supported:
+	//     1. The single event name, for example, "connect", it matches "connect"
+	//     2. Combine multiple events with ",", for example "connect,disconnected", it matches event "connect" and "disconnected"
+	SystemEventPattern *string `json:"systemEventPattern,omitempty"`
+	// Auth - Gets or sets the auth settings for an event handler. If not set, no auth is used.
+	Auth *UpstreamAuthSettings `json:"auth,omitempty"`
 }
 
 // Keys a class represents the access keys of the resource.
@@ -271,7 +297,7 @@ type NameAvailability struct {
 type NameAvailabilityParameters struct {
 	// Type - The resource type. Can be "Microsoft.SignalRService/SignalR" or "Microsoft.SignalRService/webPubSub"
 	Type *string `json:"type,omitempty"`
-	// Name - The SignalR service name to validate. e.g."my-signalR-name-here"
+	// Name - The resource name to validate. e.g."my-resource-name"
 	Name *string `json:"name,omitempty"`
 }
 
@@ -501,9 +527,11 @@ type PrivateEndpointACL struct {
 	Deny *[]RequestType `json:"deny,omitempty"`
 }
 
-// PrivateEndpointConnection a private endpoint connection to SignalR resource
+// PrivateEndpointConnection a private endpoint connection to an azure resource
 type PrivateEndpointConnection struct {
 	autorest.Response `json:"-"`
+	// SystemData - READ-ONLY; Metadata pertaining to creation and last modification of the resource.
+	SystemData *SystemData `json:"systemData,omitempty"`
 	// PrivateEndpointConnectionProperties - Properties of the private endpoint connection
 	*PrivateEndpointConnectionProperties `json:"properties,omitempty"`
 	// ID - READ-ONLY; Fully qualified resource Id for the resource.
@@ -532,6 +560,15 @@ func (pec *PrivateEndpointConnection) UnmarshalJSON(body []byte) error {
 	}
 	for k, v := range m {
 		switch k {
+		case "systemData":
+			if v != nil {
+				var systemData SystemData
+				err = json.Unmarshal(*v, &systemData)
+				if err != nil {
+					return err
+				}
+				pec.SystemData = &systemData
+			}
 		case "properties":
 			if v != nil {
 				var privateEndpointConnectionProperties PrivateEndpointConnectionProperties
@@ -572,6 +609,166 @@ func (pec *PrivateEndpointConnection) UnmarshalJSON(body []byte) error {
 	}
 
 	return nil
+}
+
+// PrivateEndpointConnectionList a list of private endpoint connections
+type PrivateEndpointConnectionList struct {
+	autorest.Response `json:"-"`
+	// Value - The list of the private endpoint connections
+	Value *[]PrivateEndpointConnection `json:"value,omitempty"`
+	// NextLink - Request URL that can be used to query next page of private endpoint connections. Returned when the total number of requested private endpoint connections exceed maximum page size.
+	NextLink *string `json:"nextLink,omitempty"`
+}
+
+// PrivateEndpointConnectionListIterator provides access to a complete listing of PrivateEndpointConnection
+// values.
+type PrivateEndpointConnectionListIterator struct {
+	i    int
+	page PrivateEndpointConnectionListPage
+}
+
+// NextWithContext advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+func (iter *PrivateEndpointConnectionListIterator) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/PrivateEndpointConnectionListIterator.NextWithContext")
+		defer func() {
+			sc := -1
+			if iter.Response().Response.Response != nil {
+				sc = iter.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	iter.i++
+	if iter.i < len(iter.page.Values()) {
+		return nil
+	}
+	err = iter.page.NextWithContext(ctx)
+	if err != nil {
+		iter.i--
+		return err
+	}
+	iter.i = 0
+	return nil
+}
+
+// Next advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (iter *PrivateEndpointConnectionListIterator) Next() error {
+	return iter.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the enumeration should be started or is not yet complete.
+func (iter PrivateEndpointConnectionListIterator) NotDone() bool {
+	return iter.page.NotDone() && iter.i < len(iter.page.Values())
+}
+
+// Response returns the raw server response from the last page request.
+func (iter PrivateEndpointConnectionListIterator) Response() PrivateEndpointConnectionList {
+	return iter.page.Response()
+}
+
+// Value returns the current value or a zero-initialized value if the
+// iterator has advanced beyond the end of the collection.
+func (iter PrivateEndpointConnectionListIterator) Value() PrivateEndpointConnection {
+	if !iter.page.NotDone() {
+		return PrivateEndpointConnection{}
+	}
+	return iter.page.Values()[iter.i]
+}
+
+// Creates a new instance of the PrivateEndpointConnectionListIterator type.
+func NewPrivateEndpointConnectionListIterator(page PrivateEndpointConnectionListPage) PrivateEndpointConnectionListIterator {
+	return PrivateEndpointConnectionListIterator{page: page}
+}
+
+// IsEmpty returns true if the ListResult contains no values.
+func (pecl PrivateEndpointConnectionList) IsEmpty() bool {
+	return pecl.Value == nil || len(*pecl.Value) == 0
+}
+
+// hasNextLink returns true if the NextLink is not empty.
+func (pecl PrivateEndpointConnectionList) hasNextLink() bool {
+	return pecl.NextLink != nil && len(*pecl.NextLink) != 0
+}
+
+// privateEndpointConnectionListPreparer prepares a request to retrieve the next set of results.
+// It returns nil if no more results exist.
+func (pecl PrivateEndpointConnectionList) privateEndpointConnectionListPreparer(ctx context.Context) (*http.Request, error) {
+	if !pecl.hasNextLink() {
+		return nil, nil
+	}
+	return autorest.Prepare((&http.Request{}).WithContext(ctx),
+		autorest.AsJSON(),
+		autorest.AsGet(),
+		autorest.WithBaseURL(to.String(pecl.NextLink)))
+}
+
+// PrivateEndpointConnectionListPage contains a page of PrivateEndpointConnection values.
+type PrivateEndpointConnectionListPage struct {
+	fn   func(context.Context, PrivateEndpointConnectionList) (PrivateEndpointConnectionList, error)
+	pecl PrivateEndpointConnectionList
+}
+
+// NextWithContext advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+func (page *PrivateEndpointConnectionListPage) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/PrivateEndpointConnectionListPage.NextWithContext")
+		defer func() {
+			sc := -1
+			if page.Response().Response.Response != nil {
+				sc = page.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	for {
+		next, err := page.fn(ctx, page.pecl)
+		if err != nil {
+			return err
+		}
+		page.pecl = next
+		if !next.hasNextLink() || !next.IsEmpty() {
+			break
+		}
+	}
+	return nil
+}
+
+// Next advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (page *PrivateEndpointConnectionListPage) Next() error {
+	return page.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the page enumeration should be started or is not yet complete.
+func (page PrivateEndpointConnectionListPage) NotDone() bool {
+	return !page.pecl.IsEmpty()
+}
+
+// Response returns the raw server response from the last page request.
+func (page PrivateEndpointConnectionListPage) Response() PrivateEndpointConnectionList {
+	return page.pecl
+}
+
+// Values returns the slice of values for the current page or nil if there are no values.
+func (page PrivateEndpointConnectionListPage) Values() []PrivateEndpointConnection {
+	if page.pecl.IsEmpty() {
+		return nil
+	}
+	return *page.pecl.Value
+}
+
+// Creates a new instance of the PrivateEndpointConnectionListPage type.
+func NewPrivateEndpointConnectionListPage(cur PrivateEndpointConnectionList, getNextPage func(context.Context, PrivateEndpointConnectionList) (PrivateEndpointConnectionList, error)) PrivateEndpointConnectionListPage {
+	return PrivateEndpointConnectionListPage{
+		fn:   getNextPage,
+		pecl: cur,
+	}
 }
 
 // PrivateEndpointConnectionProperties private endpoint connection properties
@@ -621,12 +818,12 @@ func (future *PrivateEndpointConnectionsDeleteFuture) result(client PrivateEndpo
 	var done bool
 	done, err = future.DoneWithContext(context.Background(), client)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.PrivateEndpointConnectionsDeleteFuture", "Result", future.Response(), "Polling failure")
+		err = autorest.NewErrorWithError(err, "webpubsub.PrivateEndpointConnectionsDeleteFuture", "Result", future.Response(), "Polling failure")
 		return
 	}
 	if !done {
 		ar.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("signalr.PrivateEndpointConnectionsDeleteFuture")
+		err = azure.NewAsyncOpIncompleteError("webpubsub.PrivateEndpointConnectionsDeleteFuture")
 		return
 	}
 	ar.Response = future.Response()
@@ -705,8 +902,7 @@ func (plr *PrivateLinkResource) UnmarshalJSON(body []byte) error {
 	return nil
 }
 
-// PrivateLinkResourceList contains a list of AzSignalR.Models.Response.PrivateLink.PrivateLinkResource and
-// a possible link to query more results
+// PrivateLinkResourceList contains a list of PrivateLinkResource and a possible link to query more results
 type PrivateLinkResourceList struct {
 	autorest.Response `json:"-"`
 	// Value - List of PrivateLinkResource
@@ -874,6 +1070,8 @@ type PrivateLinkResourceProperties struct {
 	RequiredMembers *[]string `json:"requiredMembers,omitempty"`
 	// RequiredZoneNames - Required private DNS zone names
 	RequiredZoneNames *[]string `json:"requiredZoneNames,omitempty"`
+	// ShareablePrivateLinkResourceTypes - The list of resources that are onboarded to private link service
+	ShareablePrivateLinkResourceTypes *[]ShareablePrivateLinkResourceType `json:"shareablePrivateLinkResourceTypes,omitempty"`
 }
 
 // PrivateLinkServiceConnectionState connection state of the private endpoint connection
@@ -902,21 +1100,28 @@ type Properties struct {
 	Version *string `json:"version,omitempty"`
 	// PrivateEndpointConnections - READ-ONLY; Private endpoint connections to the resource.
 	PrivateEndpointConnections *[]PrivateEndpointConnection `json:"privateEndpointConnections,omitempty"`
+	// SharedPrivateLinkResources - READ-ONLY; The list of shared private link resources.
+	SharedPrivateLinkResources *[]SharedPrivateLinkResource `json:"sharedPrivateLinkResources,omitempty"`
 	// TLS - TLS settings.
 	TLS *TLSSettings `json:"tls,omitempty"`
-	// Features - List of SignalR featureFlags. e.g. ServiceMode.
-	//
-	// FeatureFlags that are not included in the parameters for the update operation will not be modified.
-	// And the response will only include featureFlags that are explicitly set.
-	// When a featureFlag is not explicitly set, SignalR service will use its globally default value.
-	// But keep in mind, the default value doesn't mean "false". It varies in terms of different FeatureFlags.
-	Features *[]Feature `json:"features,omitempty"`
-	// Cors - Cross-Origin Resource Sharing (CORS) settings.
-	Cors *CorsSettings `json:"cors,omitempty"`
-	// Upstream - Upstream settings when the Azure SignalR is in server-less mode.
-	Upstream *ServerlessUpstreamSettings `json:"upstream,omitempty"`
+	// DiagnosticConfiguration - Diagnostic configuration of a Microsoft.SignalRService resource. Used together with Azure monitor DiagnosticSettings.
+	DiagnosticConfiguration *DiagnosticConfiguration `json:"diagnosticConfiguration,omitempty"`
+	// EventHandler - The settings for event handler in webpubsub service.
+	EventHandler *EventHandlerSettings `json:"eventHandler,omitempty"`
 	// NetworkACLs - Network ACLs
 	NetworkACLs *NetworkACLs `json:"networkACLs,omitempty"`
+	// PublicNetworkAccess - Enable or disable public network access. Default to "Enabled".
+	// When it's Enabled, network ACLs still apply.
+	// When it's Disabled, public network access is always disabled no matter what you set in network ACLs.
+	PublicNetworkAccess *string `json:"publicNetworkAccess,omitempty"`
+	// DisableLocalAuth - DisableLocalAuth
+	// Enable or disable local auth with AccessKey
+	// When set as true, connection with AccessKey=xxx won't work.
+	DisableLocalAuth *bool `json:"disableLocalAuth,omitempty"`
+	// DisableAadAuth - DisableLocalAuth
+	// Enable or disable aad auth
+	// When set as true, connection with AuthType=aad won't work.
+	DisableAadAuth *bool `json:"disableAadAuth,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for Properties.
@@ -925,17 +1130,23 @@ func (p Properties) MarshalJSON() ([]byte, error) {
 	if p.TLS != nil {
 		objectMap["tls"] = p.TLS
 	}
-	if p.Features != nil {
-		objectMap["features"] = p.Features
+	if p.DiagnosticConfiguration != nil {
+		objectMap["diagnosticConfiguration"] = p.DiagnosticConfiguration
 	}
-	if p.Cors != nil {
-		objectMap["cors"] = p.Cors
-	}
-	if p.Upstream != nil {
-		objectMap["upstream"] = p.Upstream
+	if p.EventHandler != nil {
+		objectMap["eventHandler"] = p.EventHandler
 	}
 	if p.NetworkACLs != nil {
 		objectMap["networkACLs"] = p.NetworkACLs
+	}
+	if p.PublicNetworkAccess != nil {
+		objectMap["publicNetworkAccess"] = p.PublicNetworkAccess
+	}
+	if p.DisableLocalAuth != nil {
+		objectMap["disableLocalAuth"] = p.DisableLocalAuth
+	}
+	if p.DisableAadAuth != nil {
+		objectMap["disableAadAuth"] = p.DisableAadAuth
 	}
 	return json.Marshal(objectMap)
 }
@@ -982,19 +1193,19 @@ func (future *RegenerateKeyFuture) result(client Client) (kVar Keys, err error) 
 	var done bool
 	done, err = future.DoneWithContext(context.Background(), client)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.RegenerateKeyFuture", "Result", future.Response(), "Polling failure")
+		err = autorest.NewErrorWithError(err, "webpubsub.RegenerateKeyFuture", "Result", future.Response(), "Polling failure")
 		return
 	}
 	if !done {
 		kVar.Response.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("signalr.RegenerateKeyFuture")
+		err = azure.NewAsyncOpIncompleteError("webpubsub.RegenerateKeyFuture")
 		return
 	}
 	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
 	if kVar.Response.Response, err = future.GetResult(sender); err == nil && kVar.Response.Response.StatusCode != http.StatusNoContent {
 		kVar, err = client.RegenerateKeyResponder(kVar.Response.Response)
 		if err != nil {
-			err = autorest.NewErrorWithError(err, "signalr.RegenerateKeyFuture", "Result", kVar.Response.Response, "Failure responding to request")
+			err = autorest.NewErrorWithError(err, "webpubsub.RegenerateKeyFuture", "Result", kVar.Response.Response, "Failure responding to request")
 		}
 	}
 	return
@@ -1196,7 +1407,7 @@ type ResourceSku struct {
 	Size *string `json:"size,omitempty"`
 	// Family - READ-ONLY; Not used. Retained for future use.
 	Family *string `json:"family,omitempty"`
-	// Capacity - Optional, integer. The unit count of SignalR resource. 1 by default.
+	// Capacity - Optional, integer. The unit count of the resource. 1 by default.
 	//
 	// If present, following values are allowed:
 	//     Free: 1
@@ -1226,10 +1437,10 @@ type ResourceType struct {
 	Sku *ResourceSku `json:"sku,omitempty"`
 	// Properties - Settings used to provision or configure the resource
 	*Properties `json:"properties,omitempty"`
-	// Kind - The kind of the service - e.g. "SignalR" for "Microsoft.SignalRService/SignalR". Possible values include: 'SignalR', 'RawWebSockets'
-	Kind ServiceKind `json:"kind,omitempty"`
 	// Identity - The managed identity response
 	Identity *ManagedIdentity `json:"identity,omitempty"`
+	// SystemData - READ-ONLY; Metadata pertaining to creation and last modification of the resource.
+	SystemData *SystemData `json:"systemData,omitempty"`
 	// Location - The GEO location of the resource. e.g. West US | East US | North Central US | South Central US.
 	Location *string `json:"location,omitempty"`
 	// Tags - Tags of the service which is a list of key value pairs that describe the resource.
@@ -1250,9 +1461,6 @@ func (rt ResourceType) MarshalJSON() ([]byte, error) {
 	}
 	if rt.Properties != nil {
 		objectMap["properties"] = rt.Properties
-	}
-	if rt.Kind != "" {
-		objectMap["kind"] = rt.Kind
 	}
 	if rt.Identity != nil {
 		objectMap["identity"] = rt.Identity
@@ -1293,15 +1501,6 @@ func (rt *ResourceType) UnmarshalJSON(body []byte) error {
 				}
 				rt.Properties = &properties
 			}
-		case "kind":
-			if v != nil {
-				var kind ServiceKind
-				err = json.Unmarshal(*v, &kind)
-				if err != nil {
-					return err
-				}
-				rt.Kind = kind
-			}
 		case "identity":
 			if v != nil {
 				var identity ManagedIdentity
@@ -1310,6 +1509,15 @@ func (rt *ResourceType) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				rt.Identity = &identity
+			}
+		case "systemData":
+			if v != nil {
+				var systemData SystemData
+				err = json.Unmarshal(*v, &systemData)
+				if err != nil {
+					return err
+				}
+				rt.SystemData = &systemData
 			}
 		case "location":
 			if v != nil {
@@ -1386,22 +1594,16 @@ func (future *RestartFuture) result(client Client) (ar autorest.Response, err er
 	var done bool
 	done, err = future.DoneWithContext(context.Background(), client)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.RestartFuture", "Result", future.Response(), "Polling failure")
+		err = autorest.NewErrorWithError(err, "webpubsub.RestartFuture", "Result", future.Response(), "Polling failure")
 		return
 	}
 	if !done {
 		ar.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("signalr.RestartFuture")
+		err = azure.NewAsyncOpIncompleteError("webpubsub.RestartFuture")
 		return
 	}
 	ar.Response = future.Response()
 	return
-}
-
-// ServerlessUpstreamSettings the settings for the Upstream when the service is in server-less mode.
-type ServerlessUpstreamSettings struct {
-	// Templates - Gets or sets the list of Upstream URL templates. Order matters, and the first matching template takes effects.
-	Templates *[]UpstreamTemplate `json:"templates,omitempty"`
 }
 
 // ServiceSpecification an object that describes a specification.
@@ -1410,6 +1612,578 @@ type ServiceSpecification struct {
 	MetricSpecifications *[]MetricSpecification `json:"metricSpecifications,omitempty"`
 	// LogSpecifications - Specifications of the Logs for Azure Monitoring.
 	LogSpecifications *[]LogSpecification `json:"logSpecifications,omitempty"`
+}
+
+// ShareablePrivateLinkResourceProperties describes the properties of a resource type that has been
+// onboarded to private link service
+type ShareablePrivateLinkResourceProperties struct {
+	// Description - The description of the resource type that has been onboarded to private link service
+	Description *string `json:"description,omitempty"`
+	// GroupID - The resource provider group id for the resource that has been onboarded to private link service
+	GroupID *string `json:"groupId,omitempty"`
+	// Type - The resource provider type for the resource that has been onboarded to private link service
+	Type *string `json:"type,omitempty"`
+}
+
+// ShareablePrivateLinkResourceType describes a  resource type that has been onboarded to private link
+// service
+type ShareablePrivateLinkResourceType struct {
+	// Name - The name of the resource type that has been onboarded to private link service
+	Name *string `json:"name,omitempty"`
+	// Properties - Describes the properties of a resource type that has been onboarded to private link service
+	Properties *ShareablePrivateLinkResourceProperties `json:"properties,omitempty"`
+}
+
+// SharedPrivateLinkResource describes a Shared Private Link Resource
+type SharedPrivateLinkResource struct {
+	autorest.Response `json:"-"`
+	// SystemData - READ-ONLY; Metadata pertaining to creation and last modification of the resource.
+	SystemData *SystemData `json:"systemData,omitempty"`
+	// SharedPrivateLinkResourceProperties - Describes the properties of a Shared Private Link Resource
+	*SharedPrivateLinkResourceProperties `json:"properties,omitempty"`
+	// ID - READ-ONLY; Fully qualified resource Id for the resource.
+	ID *string `json:"id,omitempty"`
+	// Name - READ-ONLY; The name of the resource.
+	Name *string `json:"name,omitempty"`
+	// Type - READ-ONLY; The type of the resource - e.g. "Microsoft.SignalRService/SignalR"
+	Type *string `json:"type,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for SharedPrivateLinkResource.
+func (splr SharedPrivateLinkResource) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if splr.SharedPrivateLinkResourceProperties != nil {
+		objectMap["properties"] = splr.SharedPrivateLinkResourceProperties
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for SharedPrivateLinkResource struct.
+func (splr *SharedPrivateLinkResource) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "systemData":
+			if v != nil {
+				var systemData SystemData
+				err = json.Unmarshal(*v, &systemData)
+				if err != nil {
+					return err
+				}
+				splr.SystemData = &systemData
+			}
+		case "properties":
+			if v != nil {
+				var sharedPrivateLinkResourceProperties SharedPrivateLinkResourceProperties
+				err = json.Unmarshal(*v, &sharedPrivateLinkResourceProperties)
+				if err != nil {
+					return err
+				}
+				splr.SharedPrivateLinkResourceProperties = &sharedPrivateLinkResourceProperties
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				splr.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				splr.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				splr.Type = &typeVar
+			}
+		}
+	}
+
+	return nil
+}
+
+// SharedPrivateLinkResourceList a list of shared private link resources
+type SharedPrivateLinkResourceList struct {
+	autorest.Response `json:"-"`
+	// Value - The list of the shared private link resources
+	Value *[]SharedPrivateLinkResource `json:"value,omitempty"`
+	// NextLink - Request URL that can be used to query next page of private endpoint connections. Returned when the total number of requested private endpoint connections exceed maximum page size.
+	NextLink *string `json:"nextLink,omitempty"`
+}
+
+// SharedPrivateLinkResourceListIterator provides access to a complete listing of SharedPrivateLinkResource
+// values.
+type SharedPrivateLinkResourceListIterator struct {
+	i    int
+	page SharedPrivateLinkResourceListPage
+}
+
+// NextWithContext advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+func (iter *SharedPrivateLinkResourceListIterator) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SharedPrivateLinkResourceListIterator.NextWithContext")
+		defer func() {
+			sc := -1
+			if iter.Response().Response.Response != nil {
+				sc = iter.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	iter.i++
+	if iter.i < len(iter.page.Values()) {
+		return nil
+	}
+	err = iter.page.NextWithContext(ctx)
+	if err != nil {
+		iter.i--
+		return err
+	}
+	iter.i = 0
+	return nil
+}
+
+// Next advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (iter *SharedPrivateLinkResourceListIterator) Next() error {
+	return iter.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the enumeration should be started or is not yet complete.
+func (iter SharedPrivateLinkResourceListIterator) NotDone() bool {
+	return iter.page.NotDone() && iter.i < len(iter.page.Values())
+}
+
+// Response returns the raw server response from the last page request.
+func (iter SharedPrivateLinkResourceListIterator) Response() SharedPrivateLinkResourceList {
+	return iter.page.Response()
+}
+
+// Value returns the current value or a zero-initialized value if the
+// iterator has advanced beyond the end of the collection.
+func (iter SharedPrivateLinkResourceListIterator) Value() SharedPrivateLinkResource {
+	if !iter.page.NotDone() {
+		return SharedPrivateLinkResource{}
+	}
+	return iter.page.Values()[iter.i]
+}
+
+// Creates a new instance of the SharedPrivateLinkResourceListIterator type.
+func NewSharedPrivateLinkResourceListIterator(page SharedPrivateLinkResourceListPage) SharedPrivateLinkResourceListIterator {
+	return SharedPrivateLinkResourceListIterator{page: page}
+}
+
+// IsEmpty returns true if the ListResult contains no values.
+func (splrl SharedPrivateLinkResourceList) IsEmpty() bool {
+	return splrl.Value == nil || len(*splrl.Value) == 0
+}
+
+// hasNextLink returns true if the NextLink is not empty.
+func (splrl SharedPrivateLinkResourceList) hasNextLink() bool {
+	return splrl.NextLink != nil && len(*splrl.NextLink) != 0
+}
+
+// sharedPrivateLinkResourceListPreparer prepares a request to retrieve the next set of results.
+// It returns nil if no more results exist.
+func (splrl SharedPrivateLinkResourceList) sharedPrivateLinkResourceListPreparer(ctx context.Context) (*http.Request, error) {
+	if !splrl.hasNextLink() {
+		return nil, nil
+	}
+	return autorest.Prepare((&http.Request{}).WithContext(ctx),
+		autorest.AsJSON(),
+		autorest.AsGet(),
+		autorest.WithBaseURL(to.String(splrl.NextLink)))
+}
+
+// SharedPrivateLinkResourceListPage contains a page of SharedPrivateLinkResource values.
+type SharedPrivateLinkResourceListPage struct {
+	fn    func(context.Context, SharedPrivateLinkResourceList) (SharedPrivateLinkResourceList, error)
+	splrl SharedPrivateLinkResourceList
+}
+
+// NextWithContext advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+func (page *SharedPrivateLinkResourceListPage) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SharedPrivateLinkResourceListPage.NextWithContext")
+		defer func() {
+			sc := -1
+			if page.Response().Response.Response != nil {
+				sc = page.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	for {
+		next, err := page.fn(ctx, page.splrl)
+		if err != nil {
+			return err
+		}
+		page.splrl = next
+		if !next.hasNextLink() || !next.IsEmpty() {
+			break
+		}
+	}
+	return nil
+}
+
+// Next advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (page *SharedPrivateLinkResourceListPage) Next() error {
+	return page.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the page enumeration should be started or is not yet complete.
+func (page SharedPrivateLinkResourceListPage) NotDone() bool {
+	return !page.splrl.IsEmpty()
+}
+
+// Response returns the raw server response from the last page request.
+func (page SharedPrivateLinkResourceListPage) Response() SharedPrivateLinkResourceList {
+	return page.splrl
+}
+
+// Values returns the slice of values for the current page or nil if there are no values.
+func (page SharedPrivateLinkResourceListPage) Values() []SharedPrivateLinkResource {
+	if page.splrl.IsEmpty() {
+		return nil
+	}
+	return *page.splrl.Value
+}
+
+// Creates a new instance of the SharedPrivateLinkResourceListPage type.
+func NewSharedPrivateLinkResourceListPage(cur SharedPrivateLinkResourceList, getNextPage func(context.Context, SharedPrivateLinkResourceList) (SharedPrivateLinkResourceList, error)) SharedPrivateLinkResourceListPage {
+	return SharedPrivateLinkResourceListPage{
+		fn:    getNextPage,
+		splrl: cur,
+	}
+}
+
+// SharedPrivateLinkResourceProperties describes the properties of an existing Shared Private Link Resource
+type SharedPrivateLinkResourceProperties struct {
+	// GroupID - The group id from the provider of resource the shared private link resource is for
+	GroupID *string `json:"groupId,omitempty"`
+	// PrivateLinkResourceID - The resource id of the resource the shared private link resource is for
+	PrivateLinkResourceID *string `json:"privateLinkResourceId,omitempty"`
+	// ProvisioningState - READ-ONLY; Provisioning state of the shared private link resource. Possible values include: 'Unknown', 'Succeeded', 'Failed', 'Canceled', 'Running', 'Creating', 'Updating', 'Deleting', 'Moving'
+	ProvisioningState ProvisioningState `json:"provisioningState,omitempty"`
+	// RequestMessage - The request message for requesting approval of the shared private link resource
+	RequestMessage *string `json:"requestMessage,omitempty"`
+	// Status - READ-ONLY; Status of the shared private link resource. Possible values include: 'SharedPrivateLinkResourceStatusPending', 'SharedPrivateLinkResourceStatusApproved', 'SharedPrivateLinkResourceStatusRejected', 'SharedPrivateLinkResourceStatusDisconnected', 'SharedPrivateLinkResourceStatusTimeout'
+	Status SharedPrivateLinkResourceStatus `json:"status,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for SharedPrivateLinkResourceProperties.
+func (splrp SharedPrivateLinkResourceProperties) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if splrp.GroupID != nil {
+		objectMap["groupId"] = splrp.GroupID
+	}
+	if splrp.PrivateLinkResourceID != nil {
+		objectMap["privateLinkResourceId"] = splrp.PrivateLinkResourceID
+	}
+	if splrp.RequestMessage != nil {
+		objectMap["requestMessage"] = splrp.RequestMessage
+	}
+	return json.Marshal(objectMap)
+}
+
+// SharedPrivateLinkResourcesCreateOrUpdateFuture an abstraction for monitoring and retrieving the results
+// of a long-running operation.
+type SharedPrivateLinkResourcesCreateOrUpdateFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(SharedPrivateLinkResourcesClient) (SharedPrivateLinkResource, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *SharedPrivateLinkResourcesCreateOrUpdateFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for SharedPrivateLinkResourcesCreateOrUpdateFuture.Result.
+func (future *SharedPrivateLinkResourcesCreateOrUpdateFuture) result(client SharedPrivateLinkResourcesClient) (splr SharedPrivateLinkResource, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "webpubsub.SharedPrivateLinkResourcesCreateOrUpdateFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		splr.Response.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("webpubsub.SharedPrivateLinkResourcesCreateOrUpdateFuture")
+		return
+	}
+	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+	if splr.Response.Response, err = future.GetResult(sender); err == nil && splr.Response.Response.StatusCode != http.StatusNoContent {
+		splr, err = client.CreateOrUpdateResponder(splr.Response.Response)
+		if err != nil {
+			err = autorest.NewErrorWithError(err, "webpubsub.SharedPrivateLinkResourcesCreateOrUpdateFuture", "Result", splr.Response.Response, "Failure responding to request")
+		}
+	}
+	return
+}
+
+// SharedPrivateLinkResourcesDeleteFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type SharedPrivateLinkResourcesDeleteFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(SharedPrivateLinkResourcesClient) (autorest.Response, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *SharedPrivateLinkResourcesDeleteFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for SharedPrivateLinkResourcesDeleteFuture.Result.
+func (future *SharedPrivateLinkResourcesDeleteFuture) result(client SharedPrivateLinkResourcesClient) (ar autorest.Response, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "webpubsub.SharedPrivateLinkResourcesDeleteFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		ar.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("webpubsub.SharedPrivateLinkResourcesDeleteFuture")
+		return
+	}
+	ar.Response = future.Response()
+	return
+}
+
+// SignalRServiceUsage object that describes a specific usage of the resources.
+type SignalRServiceUsage struct {
+	// ID - Fully qualified ARM resource id
+	ID *string `json:"id,omitempty"`
+	// CurrentValue - Current value for the usage quota.
+	CurrentValue *int64 `json:"currentValue,omitempty"`
+	// Limit - The maximum permitted value for the usage quota. If there is no limit, this value will be -1.
+	Limit *int64 `json:"limit,omitempty"`
+	// Name - Localizable String object containing the name and a localized value.
+	Name *SignalRServiceUsageName `json:"name,omitempty"`
+	// Unit - Representing the units of the usage quota. Possible values are: Count, Bytes, Seconds, Percent, CountPerSecond, BytesPerSecond.
+	Unit *string `json:"unit,omitempty"`
+}
+
+// SignalRServiceUsageList object that includes an array of the resource usages and a possible link for
+// next set.
+type SignalRServiceUsageList struct {
+	autorest.Response `json:"-"`
+	// Value - List of the resource usages
+	Value *[]SignalRServiceUsage `json:"value,omitempty"`
+	// NextLink - The URL the client should use to fetch the next page (per server side paging).
+	// It's null for now, added for future use.
+	NextLink *string `json:"nextLink,omitempty"`
+}
+
+// SignalRServiceUsageListIterator provides access to a complete listing of SignalRServiceUsage values.
+type SignalRServiceUsageListIterator struct {
+	i    int
+	page SignalRServiceUsageListPage
+}
+
+// NextWithContext advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+func (iter *SignalRServiceUsageListIterator) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SignalRServiceUsageListIterator.NextWithContext")
+		defer func() {
+			sc := -1
+			if iter.Response().Response.Response != nil {
+				sc = iter.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	iter.i++
+	if iter.i < len(iter.page.Values()) {
+		return nil
+	}
+	err = iter.page.NextWithContext(ctx)
+	if err != nil {
+		iter.i--
+		return err
+	}
+	iter.i = 0
+	return nil
+}
+
+// Next advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (iter *SignalRServiceUsageListIterator) Next() error {
+	return iter.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the enumeration should be started or is not yet complete.
+func (iter SignalRServiceUsageListIterator) NotDone() bool {
+	return iter.page.NotDone() && iter.i < len(iter.page.Values())
+}
+
+// Response returns the raw server response from the last page request.
+func (iter SignalRServiceUsageListIterator) Response() SignalRServiceUsageList {
+	return iter.page.Response()
+}
+
+// Value returns the current value or a zero-initialized value if the
+// iterator has advanced beyond the end of the collection.
+func (iter SignalRServiceUsageListIterator) Value() SignalRServiceUsage {
+	if !iter.page.NotDone() {
+		return SignalRServiceUsage{}
+	}
+	return iter.page.Values()[iter.i]
+}
+
+// Creates a new instance of the SignalRServiceUsageListIterator type.
+func NewSignalRServiceUsageListIterator(page SignalRServiceUsageListPage) SignalRServiceUsageListIterator {
+	return SignalRServiceUsageListIterator{page: page}
+}
+
+// IsEmpty returns true if the ListResult contains no values.
+func (srsul SignalRServiceUsageList) IsEmpty() bool {
+	return srsul.Value == nil || len(*srsul.Value) == 0
+}
+
+// hasNextLink returns true if the NextLink is not empty.
+func (srsul SignalRServiceUsageList) hasNextLink() bool {
+	return srsul.NextLink != nil && len(*srsul.NextLink) != 0
+}
+
+// signalRServiceUsageListPreparer prepares a request to retrieve the next set of results.
+// It returns nil if no more results exist.
+func (srsul SignalRServiceUsageList) signalRServiceUsageListPreparer(ctx context.Context) (*http.Request, error) {
+	if !srsul.hasNextLink() {
+		return nil, nil
+	}
+	return autorest.Prepare((&http.Request{}).WithContext(ctx),
+		autorest.AsJSON(),
+		autorest.AsGet(),
+		autorest.WithBaseURL(to.String(srsul.NextLink)))
+}
+
+// SignalRServiceUsageListPage contains a page of SignalRServiceUsage values.
+type SignalRServiceUsageListPage struct {
+	fn    func(context.Context, SignalRServiceUsageList) (SignalRServiceUsageList, error)
+	srsul SignalRServiceUsageList
+}
+
+// NextWithContext advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+func (page *SignalRServiceUsageListPage) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SignalRServiceUsageListPage.NextWithContext")
+		defer func() {
+			sc := -1
+			if page.Response().Response.Response != nil {
+				sc = page.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	for {
+		next, err := page.fn(ctx, page.srsul)
+		if err != nil {
+			return err
+		}
+		page.srsul = next
+		if !next.hasNextLink() || !next.IsEmpty() {
+			break
+		}
+	}
+	return nil
+}
+
+// Next advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (page *SignalRServiceUsageListPage) Next() error {
+	return page.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the page enumeration should be started or is not yet complete.
+func (page SignalRServiceUsageListPage) NotDone() bool {
+	return !page.srsul.IsEmpty()
+}
+
+// Response returns the raw server response from the last page request.
+func (page SignalRServiceUsageListPage) Response() SignalRServiceUsageList {
+	return page.srsul
+}
+
+// Values returns the slice of values for the current page or nil if there are no values.
+func (page SignalRServiceUsageListPage) Values() []SignalRServiceUsage {
+	if page.srsul.IsEmpty() {
+		return nil
+	}
+	return *page.srsul.Value
+}
+
+// Creates a new instance of the SignalRServiceUsageListPage type.
+func NewSignalRServiceUsageListPage(cur SignalRServiceUsageList, getNextPage func(context.Context, SignalRServiceUsageList) (SignalRServiceUsageList, error)) SignalRServiceUsageListPage {
+	return SignalRServiceUsageListPage{
+		fn:    getNextPage,
+		srsul: cur,
+	}
+}
+
+// SignalRServiceUsageName localizable String object containing the name and a localized value.
+type SignalRServiceUsageName struct {
+	// Value - The identifier of the usage.
+	Value *string `json:"value,omitempty"`
+	// LocalizedValue - Localized name of the usage.
+	LocalizedValue *string `json:"localizedValue,omitempty"`
+}
+
+// SystemData metadata pertaining to creation and last modification of the resource.
+type SystemData struct {
+	// CreatedBy - The identity that created the resource.
+	CreatedBy *string `json:"createdBy,omitempty"`
+	// CreatedByType - The type of identity that created the resource. Possible values include: 'CreatedByTypeUser', 'CreatedByTypeApplication', 'CreatedByTypeManagedIdentity', 'CreatedByTypeKey'
+	CreatedByType CreatedByType `json:"createdByType,omitempty"`
+	// CreatedAt - The timestamp of resource creation (UTC).
+	CreatedAt *date.Time `json:"createdAt,omitempty"`
+	// LastModifiedBy - The identity that last modified the resource.
+	LastModifiedBy *string `json:"lastModifiedBy,omitempty"`
+	// LastModifiedByType - The type of identity that last modified the resource. Possible values include: 'CreatedByTypeUser', 'CreatedByTypeApplication', 'CreatedByTypeManagedIdentity', 'CreatedByTypeKey'
+	LastModifiedByType CreatedByType `json:"lastModifiedByType,omitempty"`
+	// LastModifiedAt - The timestamp of resource last modification (UTC)
+	LastModifiedAt *date.Time `json:"lastModifiedAt,omitempty"`
 }
 
 // TLSSettings TLS settings for the resource
@@ -1468,19 +2242,19 @@ func (future *UpdateFuture) result(client Client) (rt ResourceType, err error) {
 	var done bool
 	done, err = future.DoneWithContext(context.Background(), client)
 	if err != nil {
-		err = autorest.NewErrorWithError(err, "signalr.UpdateFuture", "Result", future.Response(), "Polling failure")
+		err = autorest.NewErrorWithError(err, "webpubsub.UpdateFuture", "Result", future.Response(), "Polling failure")
 		return
 	}
 	if !done {
 		rt.Response.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("signalr.UpdateFuture")
+		err = azure.NewAsyncOpIncompleteError("webpubsub.UpdateFuture")
 		return
 	}
 	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
 	if rt.Response.Response, err = future.GetResult(sender); err == nil && rt.Response.Response.StatusCode != http.StatusNoContent {
 		rt, err = client.UpdateResponder(rt.Response.Response)
 		if err != nil {
-			err = autorest.NewErrorWithError(err, "signalr.UpdateFuture", "Result", rt.Response.Response, "Failure responding to request")
+			err = autorest.NewErrorWithError(err, "webpubsub.UpdateFuture", "Result", rt.Response.Response, "Failure responding to request")
 		}
 	}
 	return
@@ -1492,217 +2266,6 @@ type UpstreamAuthSettings struct {
 	Type UpstreamAuthType `json:"type,omitempty"`
 	// ManagedIdentity - Gets or sets the managed identity settings. It's required if the auth type is set to ManagedIdentity.
 	ManagedIdentity *ManagedIdentitySettings `json:"managedIdentity,omitempty"`
-}
-
-// UpstreamTemplate upstream template item settings. It defines the Upstream URL of the incoming requests.
-// The template defines the pattern of the event, the hub or the category of the incoming request that
-// matches current URL template.
-type UpstreamTemplate struct {
-	// HubPattern - Gets or sets the matching pattern for hub names. If not set, it matches any hub.
-	// There are 3 kind of patterns supported:
-	//     1. "*", it to matches any hub name
-	//     2. Combine multiple hubs with ",", for example "hub1,hub2", it matches "hub1" and "hub2"
-	//     3. The single hub name, for example, "hub1", it matches "hub1"
-	HubPattern *string `json:"hubPattern,omitempty"`
-	// EventPattern - Gets or sets the matching pattern for event names. If not set, it matches any event.
-	// There are 3 kind of patterns supported:
-	//     1. "*", it to matches any event name
-	//     2. Combine multiple events with ",", for example "connect,disconnect", it matches event "connect" and "disconnect"
-	//     3. The single event name, for example, "connect", it matches "connect"
-	EventPattern *string `json:"eventPattern,omitempty"`
-	// CategoryPattern - Gets or sets the matching pattern for category names. If not set, it matches any category.
-	// There are 3 kind of patterns supported:
-	//     1. "*", it to matches any category name
-	//     2. Combine multiple categories with ",", for example "connections,messages", it matches category "connections" and "messages"
-	//     3. The single category name, for example, "connections", it matches the category "connections"
-	CategoryPattern *string `json:"categoryPattern,omitempty"`
-	// URLTemplate - Gets or sets the Upstream URL template. You can use 3 predefined parameters {hub}, {category} {event} inside the template, the value of the Upstream URL is dynamically calculated when the client request comes in.
-	// For example, if the urlTemplate is `http://example.com/{hub}/api/{event}`, with a client request from hub `chat` connects, it will first POST to this URL: `http://example.com/chat/api/connect`.
-	URLTemplate *string `json:"urlTemplate,omitempty"`
-	// Auth - Gets or sets the auth settings for an upstream. If not set, no auth is used for upstream messages.
-	Auth *UpstreamAuthSettings `json:"auth,omitempty"`
-}
-
-// Usage object that describes a specific usage of the resources.
-type Usage struct {
-	// ID - Fully qualified ARM resource id
-	ID *string `json:"id,omitempty"`
-	// CurrentValue - Current value for the usage quota.
-	CurrentValue *int64 `json:"currentValue,omitempty"`
-	// Limit - The maximum permitted value for the usage quota. If there is no limit, this value will be -1.
-	Limit *int64 `json:"limit,omitempty"`
-	// Name - Localizable String object containing the name and a localized value.
-	Name *UsageName `json:"name,omitempty"`
-	// Unit - Representing the units of the usage quota. Possible values are: Count, Bytes, Seconds, Percent, CountPerSecond, BytesPerSecond.
-	Unit *string `json:"unit,omitempty"`
-}
-
-// UsageList object that includes an array of the resource usages and a possible link for next set.
-type UsageList struct {
-	autorest.Response `json:"-"`
-	// Value - List of the resource usages
-	Value *[]Usage `json:"value,omitempty"`
-	// NextLink - The URL the client should use to fetch the next page (per server side paging).
-	// It's null for now, added for future use.
-	NextLink *string `json:"nextLink,omitempty"`
-}
-
-// UsageListIterator provides access to a complete listing of Usage values.
-type UsageListIterator struct {
-	i    int
-	page UsageListPage
-}
-
-// NextWithContext advances to the next value.  If there was an error making
-// the request the iterator does not advance and the error is returned.
-func (iter *UsageListIterator) NextWithContext(ctx context.Context) (err error) {
-	if tracing.IsEnabled() {
-		ctx = tracing.StartSpan(ctx, fqdn+"/UsageListIterator.NextWithContext")
-		defer func() {
-			sc := -1
-			if iter.Response().Response.Response != nil {
-				sc = iter.Response().Response.Response.StatusCode
-			}
-			tracing.EndSpan(ctx, sc, err)
-		}()
-	}
-	iter.i++
-	if iter.i < len(iter.page.Values()) {
-		return nil
-	}
-	err = iter.page.NextWithContext(ctx)
-	if err != nil {
-		iter.i--
-		return err
-	}
-	iter.i = 0
-	return nil
-}
-
-// Next advances to the next value.  If there was an error making
-// the request the iterator does not advance and the error is returned.
-// Deprecated: Use NextWithContext() instead.
-func (iter *UsageListIterator) Next() error {
-	return iter.NextWithContext(context.Background())
-}
-
-// NotDone returns true if the enumeration should be started or is not yet complete.
-func (iter UsageListIterator) NotDone() bool {
-	return iter.page.NotDone() && iter.i < len(iter.page.Values())
-}
-
-// Response returns the raw server response from the last page request.
-func (iter UsageListIterator) Response() UsageList {
-	return iter.page.Response()
-}
-
-// Value returns the current value or a zero-initialized value if the
-// iterator has advanced beyond the end of the collection.
-func (iter UsageListIterator) Value() Usage {
-	if !iter.page.NotDone() {
-		return Usage{}
-	}
-	return iter.page.Values()[iter.i]
-}
-
-// Creates a new instance of the UsageListIterator type.
-func NewUsageListIterator(page UsageListPage) UsageListIterator {
-	return UsageListIterator{page: page}
-}
-
-// IsEmpty returns true if the ListResult contains no values.
-func (ul UsageList) IsEmpty() bool {
-	return ul.Value == nil || len(*ul.Value) == 0
-}
-
-// hasNextLink returns true if the NextLink is not empty.
-func (ul UsageList) hasNextLink() bool {
-	return ul.NextLink != nil && len(*ul.NextLink) != 0
-}
-
-// usageListPreparer prepares a request to retrieve the next set of results.
-// It returns nil if no more results exist.
-func (ul UsageList) usageListPreparer(ctx context.Context) (*http.Request, error) {
-	if !ul.hasNextLink() {
-		return nil, nil
-	}
-	return autorest.Prepare((&http.Request{}).WithContext(ctx),
-		autorest.AsJSON(),
-		autorest.AsGet(),
-		autorest.WithBaseURL(to.String(ul.NextLink)))
-}
-
-// UsageListPage contains a page of Usage values.
-type UsageListPage struct {
-	fn func(context.Context, UsageList) (UsageList, error)
-	ul UsageList
-}
-
-// NextWithContext advances to the next page of values.  If there was an error making
-// the request the page does not advance and the error is returned.
-func (page *UsageListPage) NextWithContext(ctx context.Context) (err error) {
-	if tracing.IsEnabled() {
-		ctx = tracing.StartSpan(ctx, fqdn+"/UsageListPage.NextWithContext")
-		defer func() {
-			sc := -1
-			if page.Response().Response.Response != nil {
-				sc = page.Response().Response.Response.StatusCode
-			}
-			tracing.EndSpan(ctx, sc, err)
-		}()
-	}
-	for {
-		next, err := page.fn(ctx, page.ul)
-		if err != nil {
-			return err
-		}
-		page.ul = next
-		if !next.hasNextLink() || !next.IsEmpty() {
-			break
-		}
-	}
-	return nil
-}
-
-// Next advances to the next page of values.  If there was an error making
-// the request the page does not advance and the error is returned.
-// Deprecated: Use NextWithContext() instead.
-func (page *UsageListPage) Next() error {
-	return page.NextWithContext(context.Background())
-}
-
-// NotDone returns true if the page enumeration should be started or is not yet complete.
-func (page UsageListPage) NotDone() bool {
-	return !page.ul.IsEmpty()
-}
-
-// Response returns the raw server response from the last page request.
-func (page UsageListPage) Response() UsageList {
-	return page.ul
-}
-
-// Values returns the slice of values for the current page or nil if there are no values.
-func (page UsageListPage) Values() []Usage {
-	if page.ul.IsEmpty() {
-		return nil
-	}
-	return *page.ul.Value
-}
-
-// Creates a new instance of the UsageListPage type.
-func NewUsageListPage(cur UsageList, getNextPage func(context.Context, UsageList) (UsageList, error)) UsageListPage {
-	return UsageListPage{
-		fn: getNextPage,
-		ul: cur,
-	}
-}
-
-// UsageName localizable String object containing the name and a localized value.
-type UsageName struct {
-	// Value - The identifier of the usage.
-	Value *string `json:"value,omitempty"`
-	// LocalizedValue - Localized name of the usage.
-	LocalizedValue *string `json:"localizedValue,omitempty"`
 }
 
 // UserAssignedIdentityProperty properties of user assigned identity.
