@@ -110,6 +110,8 @@ const (
 	DataConnectorKindAzureAdvancedThreatProtection DataConnectorKind = "AzureAdvancedThreatProtection"
 	// DataConnectorKindAzureSecurityCenter ...
 	DataConnectorKindAzureSecurityCenter DataConnectorKind = "AzureSecurityCenter"
+	// DataConnectorKindDynamics365 ...
+	DataConnectorKindDynamics365 DataConnectorKind = "Dynamics365"
 	// DataConnectorKindMicrosoftCloudAppSecurity ...
 	DataConnectorKindMicrosoftCloudAppSecurity DataConnectorKind = "MicrosoftCloudAppSecurity"
 	// DataConnectorKindMicrosoftDefenderAdvancedThreatProtection ...
@@ -122,7 +124,7 @@ const (
 
 // PossibleDataConnectorKindValues returns an array of possible values for the DataConnectorKind const type.
 func PossibleDataConnectorKindValues() []DataConnectorKind {
-	return []DataConnectorKind{DataConnectorKindAmazonWebServicesCloudTrail, DataConnectorKindAzureActiveDirectory, DataConnectorKindAzureAdvancedThreatProtection, DataConnectorKindAzureSecurityCenter, DataConnectorKindMicrosoftCloudAppSecurity, DataConnectorKindMicrosoftDefenderAdvancedThreatProtection, DataConnectorKindOffice365, DataConnectorKindThreatIntelligence}
+	return []DataConnectorKind{DataConnectorKindAmazonWebServicesCloudTrail, DataConnectorKindAzureActiveDirectory, DataConnectorKindAzureAdvancedThreatProtection, DataConnectorKindAzureSecurityCenter, DataConnectorKindDynamics365, DataConnectorKindMicrosoftCloudAppSecurity, DataConnectorKindMicrosoftDefenderAdvancedThreatProtection, DataConnectorKindOffice365, DataConnectorKindThreatIntelligence}
 }
 
 // DataTypeState enumerates the values for data type state.
@@ -281,6 +283,8 @@ const (
 	KindBasicDataConnectorKindAzureSecurityCenter KindBasicDataConnector = "AzureSecurityCenter"
 	// KindBasicDataConnectorKindDataConnector ...
 	KindBasicDataConnectorKindDataConnector KindBasicDataConnector = "DataConnector"
+	// KindBasicDataConnectorKindDynamics365 ...
+	KindBasicDataConnectorKindDynamics365 KindBasicDataConnector = "Dynamics365"
 	// KindBasicDataConnectorKindMicrosoftCloudAppSecurity ...
 	KindBasicDataConnectorKindMicrosoftCloudAppSecurity KindBasicDataConnector = "MicrosoftCloudAppSecurity"
 	// KindBasicDataConnectorKindMicrosoftDefenderAdvancedThreatProtection ...
@@ -293,7 +297,7 @@ const (
 
 // PossibleKindBasicDataConnectorValues returns an array of possible values for the KindBasicDataConnector const type.
 func PossibleKindBasicDataConnectorValues() []KindBasicDataConnector {
-	return []KindBasicDataConnector{KindBasicDataConnectorKindAmazonWebServicesCloudTrail, KindBasicDataConnectorKindAzureActiveDirectory, KindBasicDataConnectorKindAzureAdvancedThreatProtection, KindBasicDataConnectorKindAzureSecurityCenter, KindBasicDataConnectorKindDataConnector, KindBasicDataConnectorKindMicrosoftCloudAppSecurity, KindBasicDataConnectorKindMicrosoftDefenderAdvancedThreatProtection, KindBasicDataConnectorKindOffice365, KindBasicDataConnectorKindThreatIntelligence}
+	return []KindBasicDataConnector{KindBasicDataConnectorKindAmazonWebServicesCloudTrail, KindBasicDataConnectorKindAzureActiveDirectory, KindBasicDataConnectorKindAzureAdvancedThreatProtection, KindBasicDataConnectorKindAzureSecurityCenter, KindBasicDataConnectorKindDataConnector, KindBasicDataConnectorKindDynamics365, KindBasicDataConnectorKindMicrosoftCloudAppSecurity, KindBasicDataConnectorKindMicrosoftDefenderAdvancedThreatProtection, KindBasicDataConnectorKindOffice365, KindBasicDataConnectorKindThreatIntelligence}
 }
 
 // KindBasicSettings enumerates the values for kind basic settings.
