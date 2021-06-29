@@ -720,13 +720,15 @@ const (
 	IdentityTypeNone IdentityType = "None"
 	// IdentityTypeSystemAssigned ...
 	IdentityTypeSystemAssigned IdentityType = "SystemAssigned"
+	// IdentityTypeSystemAssignedUserAssigned ...
+	IdentityTypeSystemAssignedUserAssigned IdentityType = "SystemAssigned,UserAssigned"
 	// IdentityTypeUserAssigned ...
 	IdentityTypeUserAssigned IdentityType = "UserAssigned"
 )
 
 // PossibleIdentityTypeValues returns an array of possible values for the IdentityType const type.
 func PossibleIdentityTypeValues() []IdentityType {
-	return []IdentityType{IdentityTypeNone, IdentityTypeSystemAssigned, IdentityTypeUserAssigned}
+	return []IdentityType{IdentityTypeNone, IdentityTypeSystemAssigned, IdentityTypeSystemAssignedUserAssigned, IdentityTypeUserAssigned}
 }
 
 // ImplementationMethod enumerates the values for implementation method.
