@@ -640,6 +640,8 @@ type Cluster struct {
 	autorest.Response `json:"-"`
 	// Etag - The ETag for the resource
 	Etag *string `json:"etag,omitempty"`
+	// Zones - The availability zones.
+	Zones *[]string `json:"zones,omitempty"`
 	// Properties - The properties of the cluster.
 	Properties *ClusterGetProperties `json:"properties,omitempty"`
 	// Identity - The identity of the cluster, if configured.
@@ -661,6 +663,9 @@ func (c Cluster) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
 	if c.Etag != nil {
 		objectMap["etag"] = c.Etag
+	}
+	if c.Zones != nil {
+		objectMap["zones"] = c.Zones
 	}
 	if c.Properties != nil {
 		objectMap["properties"] = c.Properties
@@ -699,6 +704,8 @@ type ClusterCreateParametersExtended struct {
 	Location *string `json:"location,omitempty"`
 	// Tags - The resource tags.
 	Tags map[string]*string `json:"tags"`
+	// Zones - The availability zones.
+	Zones *[]string `json:"zones,omitempty"`
 	// Properties - The cluster create parameters.
 	Properties *ClusterCreateProperties `json:"properties,omitempty"`
 	// Identity - The identity of the cluster, if configured.
@@ -713,6 +720,9 @@ func (ccpe ClusterCreateParametersExtended) MarshalJSON() ([]byte, error) {
 	}
 	if ccpe.Tags != nil {
 		objectMap["tags"] = ccpe.Tags
+	}
+	if ccpe.Zones != nil {
+		objectMap["zones"] = ccpe.Zones
 	}
 	if ccpe.Properties != nil {
 		objectMap["properties"] = ccpe.Properties
@@ -767,6 +777,8 @@ type ClusterCreateRequestValidationParameters struct {
 	Location *string `json:"location,omitempty"`
 	// Tags - The resource tags.
 	Tags map[string]*string `json:"tags"`
+	// Zones - The availability zones.
+	Zones *[]string `json:"zones,omitempty"`
 	// Properties - The cluster create parameters.
 	Properties *ClusterCreateProperties `json:"properties,omitempty"`
 	// Identity - The identity of the cluster, if configured.
@@ -793,6 +805,9 @@ func (ccrvp ClusterCreateRequestValidationParameters) MarshalJSON() ([]byte, err
 	}
 	if ccrvp.Tags != nil {
 		objectMap["tags"] = ccrvp.Tags
+	}
+	if ccrvp.Zones != nil {
+		objectMap["zones"] = ccrvp.Zones
 	}
 	if ccrvp.Properties != nil {
 		objectMap["properties"] = ccrvp.Properties
