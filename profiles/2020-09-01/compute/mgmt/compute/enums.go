@@ -397,11 +397,13 @@ type OrchestrationServiceNames string
 const (
 	// AutomaticRepairs ...
 	AutomaticRepairs OrchestrationServiceNames = "AutomaticRepairs"
+	// DummyOrchestrationServiceName ...
+	DummyOrchestrationServiceName OrchestrationServiceNames = "DummyOrchestrationServiceName"
 )
 
 // PossibleOrchestrationServiceNamesValues returns an array of possible values for the OrchestrationServiceNames const type.
 func PossibleOrchestrationServiceNamesValues() []OrchestrationServiceNames {
-	return []OrchestrationServiceNames{AutomaticRepairs}
+	return []OrchestrationServiceNames{AutomaticRepairs, DummyOrchestrationServiceName}
 }
 
 // OrchestrationServiceState enumerates the values for orchestration service state.
