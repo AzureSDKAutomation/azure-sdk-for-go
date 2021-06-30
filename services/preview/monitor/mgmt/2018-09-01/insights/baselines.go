@@ -91,7 +91,7 @@ func (client BaselinesClient) ListPreparer(ctx context.Context, resourceURI stri
 		"resourceUri": resourceURI,
 	}
 
-	const APIVersion = "2019-03-01"
+	const APIVersion = "2018-09-01"
 	queryParameters := map[string]interface{}{
 		"api-version": APIVersion,
 	}
