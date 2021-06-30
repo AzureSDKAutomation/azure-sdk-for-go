@@ -12,8 +12,6 @@ type AppResourceProvisioningState string
 const (
 	// Creating ...
 	Creating AppResourceProvisioningState = "Creating"
-	// Deleting ...
-	Deleting AppResourceProvisioningState = "Deleting"
 	// Failed ...
 	Failed AppResourceProvisioningState = "Failed"
 	// Succeeded ...
@@ -24,7 +22,7 @@ const (
 
 // PossibleAppResourceProvisioningStateValues returns an array of possible values for the AppResourceProvisioningState const type.
 func PossibleAppResourceProvisioningStateValues() []AppResourceProvisioningState {
-	return []AppResourceProvisioningState{Creating, Deleting, Failed, Succeeded, Updating}
+	return []AppResourceProvisioningState{Creating, Failed, Succeeded, Updating}
 }
 
 // ConfigServerState enumerates the values for config server state.
@@ -54,8 +52,6 @@ type DeploymentResourceProvisioningState string
 const (
 	// DeploymentResourceProvisioningStateCreating ...
 	DeploymentResourceProvisioningStateCreating DeploymentResourceProvisioningState = "Creating"
-	// DeploymentResourceProvisioningStateDeleting ...
-	DeploymentResourceProvisioningStateDeleting DeploymentResourceProvisioningState = "Deleting"
 	// DeploymentResourceProvisioningStateFailed ...
 	DeploymentResourceProvisioningStateFailed DeploymentResourceProvisioningState = "Failed"
 	// DeploymentResourceProvisioningStateSucceeded ...
@@ -66,7 +62,7 @@ const (
 
 // PossibleDeploymentResourceProvisioningStateValues returns an array of possible values for the DeploymentResourceProvisioningState const type.
 func PossibleDeploymentResourceProvisioningStateValues() []DeploymentResourceProvisioningState {
-	return []DeploymentResourceProvisioningState{DeploymentResourceProvisioningStateCreating, DeploymentResourceProvisioningStateDeleting, DeploymentResourceProvisioningStateFailed, DeploymentResourceProvisioningStateSucceeded, DeploymentResourceProvisioningStateUpdating}
+	return []DeploymentResourceProvisioningState{DeploymentResourceProvisioningStateCreating, DeploymentResourceProvisioningStateFailed, DeploymentResourceProvisioningStateSucceeded, DeploymentResourceProvisioningStateUpdating}
 }
 
 // DeploymentResourceStatus enumerates the values for deployment resource status.
@@ -111,6 +107,25 @@ const (
 // PossibleManagedIdentityTypeValues returns an array of possible values for the ManagedIdentityType const type.
 func PossibleManagedIdentityTypeValues() []ManagedIdentityType {
 	return []ManagedIdentityType{None, SystemAssigned, SystemAssignedUserAssigned, UserAssigned}
+}
+
+// MonitoringSettingState enumerates the values for monitoring setting state.
+type MonitoringSettingState string
+
+const (
+	// MonitoringSettingStateFailed ...
+	MonitoringSettingStateFailed MonitoringSettingState = "Failed"
+	// MonitoringSettingStateNotAvailable ...
+	MonitoringSettingStateNotAvailable MonitoringSettingState = "NotAvailable"
+	// MonitoringSettingStateSucceeded ...
+	MonitoringSettingStateSucceeded MonitoringSettingState = "Succeeded"
+	// MonitoringSettingStateUpdating ...
+	MonitoringSettingStateUpdating MonitoringSettingState = "Updating"
+)
+
+// PossibleMonitoringSettingStateValues returns an array of possible values for the MonitoringSettingState const type.
+func PossibleMonitoringSettingStateValues() []MonitoringSettingState {
+	return []MonitoringSettingState{MonitoringSettingStateFailed, MonitoringSettingStateNotAvailable, MonitoringSettingStateSucceeded, MonitoringSettingStateUpdating}
 }
 
 // ProvisioningState enumerates the values for provisioning state.
@@ -253,25 +268,6 @@ func PossibleTestKeyTypeValues() []TestKeyType {
 	return []TestKeyType{Primary, Secondary}
 }
 
-// TraceProxyState enumerates the values for trace proxy state.
-type TraceProxyState string
-
-const (
-	// TraceProxyStateFailed ...
-	TraceProxyStateFailed TraceProxyState = "Failed"
-	// TraceProxyStateNotAvailable ...
-	TraceProxyStateNotAvailable TraceProxyState = "NotAvailable"
-	// TraceProxyStateSucceeded ...
-	TraceProxyStateSucceeded TraceProxyState = "Succeeded"
-	// TraceProxyStateUpdating ...
-	TraceProxyStateUpdating TraceProxyState = "Updating"
-)
-
-// PossibleTraceProxyStateValues returns an array of possible values for the TraceProxyState const type.
-func PossibleTraceProxyStateValues() []TraceProxyState {
-	return []TraceProxyState{TraceProxyStateFailed, TraceProxyStateNotAvailable, TraceProxyStateSucceeded, TraceProxyStateUpdating}
-}
-
 // TrafficDirection enumerates the values for traffic direction.
 type TrafficDirection string
 
@@ -291,6 +287,8 @@ func PossibleTrafficDirectionValues() []TrafficDirection {
 type UserSourceType string
 
 const (
+	// Container ...
+	Container UserSourceType = "Container"
 	// Jar ...
 	Jar UserSourceType = "Jar"
 	// NetCoreZip ...
@@ -301,5 +299,5 @@ const (
 
 // PossibleUserSourceTypeValues returns an array of possible values for the UserSourceType const type.
 func PossibleUserSourceTypeValues() []UserSourceType {
-	return []UserSourceType{Jar, NetCoreZip, Source}
+	return []UserSourceType{Container, Jar, NetCoreZip, Source}
 }
