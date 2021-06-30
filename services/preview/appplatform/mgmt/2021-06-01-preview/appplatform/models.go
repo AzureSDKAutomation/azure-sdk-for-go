@@ -18,7 +18,7 @@ import (
 )
 
 // The package's fully qualified name.
-const fqdn = "github.com/Azure/azure-sdk-for-go/services/preview/appplatform/mgmt/2020-11-01-preview/appplatform"
+const fqdn = "github.com/Azure/azure-sdk-for-go/services/preview/appplatform/mgmt/2021-06-01-preview/appplatform"
 
 // ApplicationInsightsAgentVersions application Insights agent versions properties payload
 type ApplicationInsightsAgentVersions struct {
@@ -1473,6 +1473,20 @@ func (future *ConfigServersValidateFuture) result(client ConfigServersClient) (c
 	return
 }
 
+// CustomContainer custom container payload
+type CustomContainer struct {
+	// Server - The name of the registry that contains the container image
+	Server *string `json:"server,omitempty"`
+	// ContainerImage - Container image of the custom container. This should be in the form of <repository>:<tag> without the server name of the registry
+	ContainerImage *string `json:"containerImage,omitempty"`
+	// Command - Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided.
+	Command *[]string `json:"command,omitempty"`
+	// Args - Arguments to the entrypoint. The docker image's CMD is used if this is not provided.
+	Args *[]string `json:"args,omitempty"`
+	// ImageRegistryCredential - Credential of the image registry
+	ImageRegistryCredential *ImageRegistryCredential `json:"imageRegistryCredential,omitempty"`
+}
+
 // CustomDomainProperties custom domain of app resource payload.
 type CustomDomainProperties struct {
 	// Thumbprint - The thumbprint of bound certificate.
@@ -2138,10 +2152,12 @@ func (future *DeploymentsDeleteFuture) result(client DeploymentsClient) (ar auto
 
 // DeploymentSettings deployment settings payload
 type DeploymentSettings struct {
-	// CPU - Required CPU, basic tier should be 1, standard tier should be in range (1, 4)
+	// CPU - Required CPU. This should be 1 for Basic tier, and in range [1, 4] for Standard tier. This is deprecated starting from API version 2021-06-01-preview. Please use the resourceRequests field to set the CPU size.
 	CPU *int32 `json:"cpu,omitempty"`
-	// MemoryInGB - Required Memory size in GB, basic tier should be in range (1, 2), standard tier should be in range (1, 8)
+	// MemoryInGB - Required Memory size in GB. This should be in range [1, 2] for Basic tier, and in range [1, 8] for Standard tier. This is deprecated starting from API version 2021-06-01-preview. Please use the resourceRequests field to set the the memory size.
 	MemoryInGB *int32 `json:"memoryInGB,omitempty"`
+	// ResourceRequests - The requested resource quantity for required CPU and Memory. It is recommended that using this field to represent the required CPU and Memory, the old field cpu and memoryInGB will be deprecated later.
+	ResourceRequests *ResourceRequests `json:"resourceRequests,omitempty"`
 	// JvmOptions - JVM parameter
 	JvmOptions *string `json:"jvmOptions,omitempty"`
 	// NetCoreMainEntryPath - The path to the .NET executable relative to zip root
@@ -2160,6 +2176,9 @@ func (ds DeploymentSettings) MarshalJSON() ([]byte, error) {
 	}
 	if ds.MemoryInGB != nil {
 		objectMap["memoryInGB"] = ds.MemoryInGB
+	}
+	if ds.ResourceRequests != nil {
+		objectMap["resourceRequests"] = ds.ResourceRequests
 	}
 	if ds.JvmOptions != nil {
 		objectMap["jvmOptions"] = ds.JvmOptions
@@ -2362,6 +2381,14 @@ type GitPatternRepository struct {
 	PrivateKey *string `json:"privateKey,omitempty"`
 	// StrictHostKeyChecking - Strict host key checking or not.
 	StrictHostKeyChecking *bool `json:"strictHostKeyChecking,omitempty"`
+}
+
+// ImageRegistryCredential credential of the image registry
+type ImageRegistryCredential struct {
+	// Username - The username of the image registry credential
+	Username *string `json:"username,omitempty"`
+	// Password - The password of the image registry credential
+	Password *string `json:"password,omitempty"`
 }
 
 // LogFileURLResponse log file URL payload
@@ -2751,6 +2778,14 @@ type Resource struct {
 func (r Resource) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
 	return json.Marshal(objectMap)
+}
+
+// ResourceRequests deployment resource request payload
+type ResourceRequests struct {
+	// CPU - Required CPU. 1 core can be represented by 1 or 1000m. This should be 500m or 1 for Basic tier, and {500m, 1, 2, 3, 4} for Standard tier.
+	CPU *string `json:"cpu,omitempty"`
+	// Memory - Required memory. 1 GB can be represented by 1Gi or 1024Mi. This should be {512Mi, 1Gi, 2Gi} for Basic tier, and {512Mi, 1Gi, 2Gi, ..., 8Gi} for Standard tier.
+	Memory *string `json:"memory,omitempty"`
 }
 
 // ResourceSku describes an available Azure Spring Cloud SKU.
@@ -3402,7 +3437,7 @@ func (tr TrackedResource) MarshalJSON() ([]byte, error) {
 
 // UserSourceInfo source information for a deployment
 type UserSourceInfo struct {
-	// Type - Type of the source uploaded. Possible values include: 'Jar', 'NetCoreZip', 'Source'
+	// Type - Type of the source uploaded. Possible values include: 'Jar', 'NetCoreZip', 'Source', 'Container'
 	Type UserSourceType `json:"type,omitempty"`
 	// RelativePath - Relative path of the storage which stores the source
 	RelativePath *string `json:"relativePath,omitempty"`
@@ -3411,4 +3446,6 @@ type UserSourceInfo struct {
 	// ArtifactSelector - Selector for the artifact to be used for the deployment for multi-module projects. This should be
 	// the relative path to the target module/project.
 	ArtifactSelector *string `json:"artifactSelector,omitempty"`
+	// CustomContainer - Custom container payload
+	CustomContainer *CustomContainer `json:"customContainer,omitempty"`
 }
