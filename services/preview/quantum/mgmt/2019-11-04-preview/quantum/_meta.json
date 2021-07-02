@@ -1,5 +1,5 @@
 {
-  "commit": "138759b8a5987252fd66658078907e1d93969c85",
+  "commit": "bab1970a5bb2edc4b176bd2ce7fe85a4b7a7b1ae",
   "readme": "/_/azure-rest-api-specs/specification/quantum/resource-manager/readme.md",
   "tag": "package-2019-11-04-preview",
   "use": "@microsoft.azure/autorest.go@2.1.183",
