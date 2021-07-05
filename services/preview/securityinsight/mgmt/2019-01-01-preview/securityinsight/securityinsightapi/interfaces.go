@@ -51,17 +51,6 @@ type AlertRuleTemplatesClientAPI interface {
 
 var _ AlertRuleTemplatesClientAPI = (*securityinsight.AlertRuleTemplatesClient)(nil)
 
-// AutomationRulesClientAPI contains the set of methods on the AutomationRulesClient type.
-type AutomationRulesClientAPI interface {
-	CreateOrUpdate(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, automationRuleID string, automationRule securityinsight.AutomationRule) (result securityinsight.AutomationRule, err error)
-	Delete(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, automationRuleID string) (result autorest.Response, err error)
-	Get(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, automationRuleID string) (result securityinsight.AutomationRule, err error)
-	List(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string) (result securityinsight.AutomationRulesListPage, err error)
-	ListComplete(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string) (result securityinsight.AutomationRulesListIterator, err error)
-}
-
-var _ AutomationRulesClientAPI = (*securityinsight.AutomationRulesClient)(nil)
-
 // CasesClientAPI contains the set of methods on the CasesClient type.
 type CasesClientAPI interface {
 	CreateOrUpdate(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, caseID string, caseParameter securityinsight.Case) (result securityinsight.Case, err error)
@@ -128,6 +117,20 @@ type BookmarkClientAPI interface {
 }
 
 var _ BookmarkClientAPI = (*securityinsight.BookmarkClient)(nil)
+
+// IPGeodataClientAPI contains the set of methods on the IPGeodataClient type.
+type IPGeodataClientAPI interface {
+	Get(ctx context.Context, resourceGroupName string, IPAddress string) (result securityinsight.EnrichmentIPGeodata, err error)
+}
+
+var _ IPGeodataClientAPI = (*securityinsight.IPGeodataClient)(nil)
+
+// DomainWhoisClientAPI contains the set of methods on the DomainWhoisClient type.
+type DomainWhoisClientAPI interface {
+	Get(ctx context.Context, resourceGroupName string, domain string) (result securityinsight.EnrichmentDomainWhois, err error)
+}
+
+var _ DomainWhoisClientAPI = (*securityinsight.DomainWhoisClient)(nil)
 
 // DataConnectorsClientAPI contains the set of methods on the DataConnectorsClient type.
 type DataConnectorsClientAPI interface {
@@ -303,3 +306,14 @@ type ThreatIntelligenceIndicatorMetricsClientAPI interface {
 }
 
 var _ ThreatIntelligenceIndicatorMetricsClientAPI = (*securityinsight.ThreatIntelligenceIndicatorMetricsClient)(nil)
+
+// AutomationRulesClientAPI contains the set of methods on the AutomationRulesClient type.
+type AutomationRulesClientAPI interface {
+	CreateOrUpdate(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, automationRuleID string, automationRule securityinsight.AutomationRule) (result securityinsight.AutomationRule, err error)
+	Delete(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, automationRuleID string) (result autorest.Response, err error)
+	Get(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string, automationRuleID string) (result securityinsight.AutomationRule, err error)
+	List(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string) (result securityinsight.AutomationRulesListPage, err error)
+	ListComplete(ctx context.Context, resourceGroupName string, operationalInsightsResourceProvider string, workspaceName string) (result securityinsight.AutomationRulesListIterator, err error)
+}
+
+var _ AutomationRulesClientAPI = (*securityinsight.AutomationRulesClient)(nil)
