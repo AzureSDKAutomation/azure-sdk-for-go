@@ -586,3 +586,18 @@ type RestorableDroppedSQLPoolsClientAPI interface {
 }
 
 var _ RestorableDroppedSQLPoolsClientAPI = (*synapse.RestorableDroppedSQLPoolsClient)(nil)
+
+// SparkConfigurationClientAPI contains the set of methods on the SparkConfigurationClient type.
+type SparkConfigurationClientAPI interface {
+	Get(ctx context.Context, resourceGroupName string, sparkConfigurationName string, workspaceName string) (result synapse.SparkConfigurationResource, err error)
+}
+
+var _ SparkConfigurationClientAPI = (*synapse.SparkConfigurationClient)(nil)
+
+// SparkConfigurationsClientAPI contains the set of methods on the SparkConfigurationsClient type.
+type SparkConfigurationsClientAPI interface {
+	ListByWorkspace(ctx context.Context, resourceGroupName string, workspaceName string) (result synapse.SparkConfigurationListResponsePage, err error)
+	ListByWorkspaceComplete(ctx context.Context, resourceGroupName string, workspaceName string) (result synapse.SparkConfigurationListResponseIterator, err error)
+}
+
+var _ SparkConfigurationsClientAPI = (*synapse.SparkConfigurationsClient)(nil)
