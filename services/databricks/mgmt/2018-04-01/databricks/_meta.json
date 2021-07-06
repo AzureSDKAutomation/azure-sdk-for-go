@@ -1,5 +1,5 @@
 {
-  "commit": "3c764635e7d442b3e74caf593029fcd440b3ef82",
+  "commit": "fce87a0ec9ef7564edee399fc02f5e943b2125c9",
   "readme": "/_/azure-rest-api-specs/specification/databricks/resource-manager/readme.md",
   "tag": "package-2018-04-01",
   "use": "@microsoft.azure/autorest.go@2.1.183",
