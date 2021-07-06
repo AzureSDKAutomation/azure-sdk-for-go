@@ -2549,6 +2549,11 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // ResourceSku describes an available Compute SKU.
 type ResourceSku struct {
 	// ResourceType - READ-ONLY; The type of resource the SKU applies to.
@@ -6588,7 +6593,7 @@ func NewVirtualMachineScaleSetListWithLinkResultPage(cur VirtualMachineScaleSetL
 
 // VirtualMachineScaleSetManagedDiskParameters describes the parameters of a ScaleSet managed disk.
 type VirtualMachineScaleSetManagedDiskParameters struct {
-	// StorageAccountType - Specifies the storage account type for the managed disk. Possible values are: Standard_LRS or Premium_LRS. Possible values include: 'StandardLRS', 'PremiumLRS'
+	// StorageAccountType - Specifies the storage account type for the managed disk. Managed OS disk storage account type can only be set when you create the scale set. Possible values are: Standard_LRS or Premium_LRS. Possible values include: 'StandardLRS', 'PremiumLRS'
 	StorageAccountType StorageAccountTypes `json:"storageAccountType,omitempty"`
 }
 

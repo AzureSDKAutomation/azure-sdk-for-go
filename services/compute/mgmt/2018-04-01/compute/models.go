@@ -2720,6 +2720,11 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // RollbackStatusInfo information about rollback on failed VM instances after a OS Upgrade operation.
 type RollbackStatusInfo struct {
 	// SuccessfullyRolledbackInstanceCount - READ-ONLY; The number of instances which have been successfully rolled back.
@@ -6329,7 +6334,7 @@ func NewVirtualMachineScaleSetListWithLinkResultPage(cur VirtualMachineScaleSetL
 
 // VirtualMachineScaleSetManagedDiskParameters describes the parameters of a ScaleSet managed disk.
 type VirtualMachineScaleSetManagedDiskParameters struct {
-	// StorageAccountType - Specifies the storage account type for the managed disk. Possible values are: Standard_LRS, Premium_LRS, and StandardSSD_LRS. Possible values include: 'StorageAccountTypesStandardLRS', 'StorageAccountTypesPremiumLRS', 'StorageAccountTypesStandardSSDLRS'
+	// StorageAccountType - Specifies the storage account type for the managed disk. Managed OS disk storage account type can only be set when you create the scale set. Possible values are: Standard_LRS, Premium_LRS, and StandardSSD_LRS. Possible values include: 'StorageAccountTypesStandardLRS', 'StorageAccountTypesPremiumLRS', 'StorageAccountTypesStandardSSDLRS'
 	StorageAccountType StorageAccountTypes `json:"storageAccountType,omitempty"`
 }
 

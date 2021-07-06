@@ -18,6 +18,11 @@ import (
 // The package's fully qualified name.
 const fqdn = "github.com/Azure/azure-sdk-for-go/services/compute/mgmt/2017-09-01/skus"
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // ResourceSku describes an available Compute SKU.
 type ResourceSku struct {
 	// ResourceType - READ-ONLY; The type of resource the SKU applies to.
