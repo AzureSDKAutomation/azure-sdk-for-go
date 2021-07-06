@@ -346,6 +346,11 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // SSHConfiguration SSH configuration for Linux-based VMs running on Azure.
 type SSHConfiguration struct {
 	// PublicKeys - the list of SSH public keys used to authenticate with Linux-based VMs.

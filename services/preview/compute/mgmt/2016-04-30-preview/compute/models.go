@@ -2039,6 +2039,11 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // ResourceUpdate the Resource model definition.
 type ResourceUpdate struct {
 	// Tags - Resource tags

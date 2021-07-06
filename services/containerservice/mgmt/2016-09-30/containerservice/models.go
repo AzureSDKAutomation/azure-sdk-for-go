@@ -516,6 +516,11 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // ServicePrincipalProfile information about a service principal identity for the cluster to use for
 // manipulating Azure APIs.
 type ServicePrincipalProfile struct {

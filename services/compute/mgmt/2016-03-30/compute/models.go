@@ -869,6 +869,11 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// ResourceGroupsCheckExistenceResponse ...
+type ResourceGroupsCheckExistenceResponse struct {
+	Body *bool `json:"body,omitempty"`
+}
+
 // Sku describes a virtual machine scale set sku. NOTE: If the new VM SKU is not supported on the hardware
 // the scale set is currently on, you need to deallocate the VMs in the scale set before you modify the SKU
 // name.

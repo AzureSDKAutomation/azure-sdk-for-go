@@ -1,13 +1,9 @@
-# Change History
+# Unreleased
 
 ## Additive Changes
 
-### New Funcs
+### Struct Changes
 
-1. ResourceSku.MarshalJSON() ([]byte, error)
-1. ResourceSkuCapabilities.MarshalJSON() ([]byte, error)
-1. ResourceSkuCapacity.MarshalJSON() ([]byte, error)
-1. ResourceSkuCosts.MarshalJSON() ([]byte, error)
-1. ResourceSkuLocationInfo.MarshalJSON() ([]byte, error)
-1. ResourceSkuRestrictionInfo.MarshalJSON() ([]byte, error)
-1. ResourceSkuRestrictions.MarshalJSON() ([]byte, error)
+#### New Structs
+
+1. ResourceGroupsCheckExistenceResponse
