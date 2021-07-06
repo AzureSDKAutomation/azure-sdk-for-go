@@ -593,6 +593,8 @@ type MetricStatisticType string
 const (
 	// MetricStatisticTypeAverage ...
 	MetricStatisticTypeAverage MetricStatisticType = "Average"
+	// MetricStatisticTypeCount ...
+	MetricStatisticTypeCount MetricStatisticType = "Count"
 	// MetricStatisticTypeMax ...
 	MetricStatisticTypeMax MetricStatisticType = "Max"
 	// MetricStatisticTypeMin ...
@@ -603,7 +605,7 @@ const (
 
 // PossibleMetricStatisticTypeValues returns an array of possible values for the MetricStatisticType const type.
 func PossibleMetricStatisticTypeValues() []MetricStatisticType {
-	return []MetricStatisticType{MetricStatisticTypeAverage, MetricStatisticTypeMax, MetricStatisticTypeMin, MetricStatisticTypeSum}
+	return []MetricStatisticType{MetricStatisticTypeAverage, MetricStatisticTypeCount, MetricStatisticTypeMax, MetricStatisticTypeMin, MetricStatisticTypeSum}
 }
 
 // MetricTriggerType enumerates the values for metric trigger type.
@@ -937,11 +939,13 @@ const (
 	ScaleTypeExactCount ScaleType = "ExactCount"
 	// ScaleTypePercentChangeCount ...
 	ScaleTypePercentChangeCount ScaleType = "PercentChangeCount"
+	// ScaleTypeServiceAllowedNextValue ...
+	ScaleTypeServiceAllowedNextValue ScaleType = "ServiceAllowedNextValue"
 )
 
 // PossibleScaleTypeValues returns an array of possible values for the ScaleType const type.
 func PossibleScaleTypeValues() []ScaleType {
-	return []ScaleType{ScaleTypeChangeCount, ScaleTypeExactCount, ScaleTypePercentChangeCount}
+	return []ScaleType{ScaleTypeChangeCount, ScaleTypeExactCount, ScaleTypePercentChangeCount, ScaleTypeServiceAllowedNextValue}
 }
 
 // TimeAggregationOperator enumerates the values for time aggregation operator.
