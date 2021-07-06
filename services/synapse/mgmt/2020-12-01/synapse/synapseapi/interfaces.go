@@ -571,3 +571,33 @@ type KeysClientAPI interface {
 }
 
 var _ KeysClientAPI = (*synapse.KeysClient)(nil)
+
+// LibraryClientAPI contains the set of methods on the LibraryClient type.
+type LibraryClientAPI interface {
+	Get(ctx context.Context, resourceGroupName string, libraryName string, workspaceName string) (result synapse.LibraryResource, err error)
+}
+
+var _ LibraryClientAPI = (*synapse.LibraryClient)(nil)
+
+// LibrariesClientAPI contains the set of methods on the LibrariesClient type.
+type LibrariesClientAPI interface {
+	ListByWorkspace(ctx context.Context, resourceGroupName string, workspaceName string) (result synapse.LibraryListResponsePage, err error)
+	ListByWorkspaceComplete(ctx context.Context, resourceGroupName string, workspaceName string) (result synapse.LibraryListResponseIterator, err error)
+}
+
+var _ LibrariesClientAPI = (*synapse.LibrariesClient)(nil)
+
+// SparkConfigurationClientAPI contains the set of methods on the SparkConfigurationClient type.
+type SparkConfigurationClientAPI interface {
+	Get(ctx context.Context, resourceGroupName string, sparkConfigurationName string, workspaceName string) (result synapse.SparkConfigurationResource, err error)
+}
+
+var _ SparkConfigurationClientAPI = (*synapse.SparkConfigurationClient)(nil)
+
+// SparkConfigurationsClientAPI contains the set of methods on the SparkConfigurationsClient type.
+type SparkConfigurationsClientAPI interface {
+	ListByWorkspace(ctx context.Context, resourceGroupName string, workspaceName string) (result synapse.SparkConfigurationListResponsePage, err error)
+	ListByWorkspaceComplete(ctx context.Context, resourceGroupName string, workspaceName string) (result synapse.SparkConfigurationListResponseIterator, err error)
+}
+
+var _ SparkConfigurationsClientAPI = (*synapse.SparkConfigurationsClient)(nil)

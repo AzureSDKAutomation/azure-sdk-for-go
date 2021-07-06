@@ -486,7 +486,7 @@ type BigDataPoolResourceProperties struct {
 	DefaultSparkLogFolder *string `json:"defaultSparkLogFolder,omitempty"`
 	// NodeSize - The level of compute power that each node in the Big Data pool has. Possible values include: 'NodeSizeNone', 'NodeSizeSmall', 'NodeSizeMedium', 'NodeSizeLarge', 'NodeSizeXLarge', 'NodeSizeXXLarge', 'NodeSizeXXXLarge'
 	NodeSize NodeSize `json:"nodeSize,omitempty"`
-	// NodeSizeFamily - The kind of nodes that the Big Data pool provides. Possible values include: 'NodeSizeFamilyNone', 'NodeSizeFamilyMemoryOptimized'
+	// NodeSizeFamily - The kind of nodes that the Big Data pool provides. Possible values include: 'NodeSizeFamilyNone', 'NodeSizeFamilyMemoryOptimized', 'NodeSizeFamilyHardwareAcceleratedFPGA', 'NodeSizeFamilyHardwareAcceleratedGPU'
 	NodeSizeFamily NodeSizeFamily `json:"nodeSizeFamily,omitempty"`
 	// LastSucceededTimestamp - READ-ONLY; The time when the Big Data pool was updated successfully.
 	LastSucceededTimestamp *date.Time `json:"lastSucceededTimestamp,omitempty"`
@@ -10677,6 +10677,262 @@ type Sku struct {
 	Capacity *int32 `json:"capacity,omitempty"`
 }
 
+// SparkConfigurationInfo sparkConfiguration Artifact information
+type SparkConfigurationInfo struct {
+	// Description - Description about the SparkConfiguration.
+	Description *string `json:"description,omitempty"`
+	// Configs - SparkConfiguration configs.
+	Configs *string `json:"configs,omitempty"`
+	// Annotations - Annotations for SparkConfiguration.
+	Annotations *[]string `json:"annotations,omitempty"`
+	// Notes - additional Notes.
+	Notes *string `json:"notes,omitempty"`
+}
+
+// SparkConfigurationListResponse a list of SparkConfiguration resources.
+type SparkConfigurationListResponse struct {
+	autorest.Response `json:"-"`
+	// Value - List of SparkConfiguration.
+	Value *[]SparkConfigurationResource `json:"value,omitempty"`
+	// NextLink - The link to the next page of results, if any remaining results exist.
+	NextLink *string `json:"nextLink,omitempty"`
+}
+
+// SparkConfigurationListResponseIterator provides access to a complete listing of
+// SparkConfigurationResource values.
+type SparkConfigurationListResponseIterator struct {
+	i    int
+	page SparkConfigurationListResponsePage
+}
+
+// NextWithContext advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+func (iter *SparkConfigurationListResponseIterator) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SparkConfigurationListResponseIterator.NextWithContext")
+		defer func() {
+			sc := -1
+			if iter.Response().Response.Response != nil {
+				sc = iter.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	iter.i++
+	if iter.i < len(iter.page.Values()) {
+		return nil
+	}
+	err = iter.page.NextWithContext(ctx)
+	if err != nil {
+		iter.i--
+		return err
+	}
+	iter.i = 0
+	return nil
+}
+
+// Next advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (iter *SparkConfigurationListResponseIterator) Next() error {
+	return iter.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the enumeration should be started or is not yet complete.
+func (iter SparkConfigurationListResponseIterator) NotDone() bool {
+	return iter.page.NotDone() && iter.i < len(iter.page.Values())
+}
+
+// Response returns the raw server response from the last page request.
+func (iter SparkConfigurationListResponseIterator) Response() SparkConfigurationListResponse {
+	return iter.page.Response()
+}
+
+// Value returns the current value or a zero-initialized value if the
+// iterator has advanced beyond the end of the collection.
+func (iter SparkConfigurationListResponseIterator) Value() SparkConfigurationResource {
+	if !iter.page.NotDone() {
+		return SparkConfigurationResource{}
+	}
+	return iter.page.Values()[iter.i]
+}
+
+// Creates a new instance of the SparkConfigurationListResponseIterator type.
+func NewSparkConfigurationListResponseIterator(page SparkConfigurationListResponsePage) SparkConfigurationListResponseIterator {
+	return SparkConfigurationListResponseIterator{page: page}
+}
+
+// IsEmpty returns true if the ListResult contains no values.
+func (sclr SparkConfigurationListResponse) IsEmpty() bool {
+	return sclr.Value == nil || len(*sclr.Value) == 0
+}
+
+// hasNextLink returns true if the NextLink is not empty.
+func (sclr SparkConfigurationListResponse) hasNextLink() bool {
+	return sclr.NextLink != nil && len(*sclr.NextLink) != 0
+}
+
+// sparkConfigurationListResponsePreparer prepares a request to retrieve the next set of results.
+// It returns nil if no more results exist.
+func (sclr SparkConfigurationListResponse) sparkConfigurationListResponsePreparer(ctx context.Context) (*http.Request, error) {
+	if !sclr.hasNextLink() {
+		return nil, nil
+	}
+	return autorest.Prepare((&http.Request{}).WithContext(ctx),
+		autorest.AsJSON(),
+		autorest.AsGet(),
+		autorest.WithBaseURL(to.String(sclr.NextLink)))
+}
+
+// SparkConfigurationListResponsePage contains a page of SparkConfigurationResource values.
+type SparkConfigurationListResponsePage struct {
+	fn   func(context.Context, SparkConfigurationListResponse) (SparkConfigurationListResponse, error)
+	sclr SparkConfigurationListResponse
+}
+
+// NextWithContext advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+func (page *SparkConfigurationListResponsePage) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SparkConfigurationListResponsePage.NextWithContext")
+		defer func() {
+			sc := -1
+			if page.Response().Response.Response != nil {
+				sc = page.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	for {
+		next, err := page.fn(ctx, page.sclr)
+		if err != nil {
+			return err
+		}
+		page.sclr = next
+		if !next.hasNextLink() || !next.IsEmpty() {
+			break
+		}
+	}
+	return nil
+}
+
+// Next advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (page *SparkConfigurationListResponsePage) Next() error {
+	return page.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the page enumeration should be started or is not yet complete.
+func (page SparkConfigurationListResponsePage) NotDone() bool {
+	return !page.sclr.IsEmpty()
+}
+
+// Response returns the raw server response from the last page request.
+func (page SparkConfigurationListResponsePage) Response() SparkConfigurationListResponse {
+	return page.sclr
+}
+
+// Values returns the slice of values for the current page or nil if there are no values.
+func (page SparkConfigurationListResponsePage) Values() []SparkConfigurationResource {
+	if page.sclr.IsEmpty() {
+		return nil
+	}
+	return *page.sclr.Value
+}
+
+// Creates a new instance of the SparkConfigurationListResponsePage type.
+func NewSparkConfigurationListResponsePage(cur SparkConfigurationListResponse, getNextPage func(context.Context, SparkConfigurationListResponse) (SparkConfigurationListResponse, error)) SparkConfigurationListResponsePage {
+	return SparkConfigurationListResponsePage{
+		fn:   getNextPage,
+		sclr: cur,
+	}
+}
+
+// SparkConfigurationResource sparkConfiguration response details
+type SparkConfigurationResource struct {
+	autorest.Response `json:"-"`
+	// SparkConfigurationInfo - SparkConfiguration properties.
+	*SparkConfigurationInfo `json:"properties,omitempty"`
+	// Etag - READ-ONLY; Resource Etag.
+	Etag *string `json:"etag,omitempty"`
+	// ID - READ-ONLY; Fully qualified resource ID for the resource. Ex - /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
+	ID *string `json:"id,omitempty"`
+	// Name - READ-ONLY; The name of the resource
+	Name *string `json:"name,omitempty"`
+	// Type - READ-ONLY; The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
+	Type *string `json:"type,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for SparkConfigurationResource.
+func (scr SparkConfigurationResource) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if scr.SparkConfigurationInfo != nil {
+		objectMap["properties"] = scr.SparkConfigurationInfo
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for SparkConfigurationResource struct.
+func (scr *SparkConfigurationResource) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "properties":
+			if v != nil {
+				var sparkConfigurationInfo SparkConfigurationInfo
+				err = json.Unmarshal(*v, &sparkConfigurationInfo)
+				if err != nil {
+					return err
+				}
+				scr.SparkConfigurationInfo = &sparkConfigurationInfo
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				scr.Etag = &etag
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				scr.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				scr.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				scr.Type = &typeVar
+			}
+		}
+	}
+
+	return nil
+}
+
 // SQLPool a SQL Analytics pool
 type SQLPool struct {
 	autorest.Response `json:"-"`
@@ -15947,7 +16203,7 @@ type WorkspacePatchProperties struct {
 	ProvisioningState *string `json:"provisioningState,omitempty"`
 	// Encryption - The encryption details of the workspace
 	Encryption *EncryptionDetails `json:"encryption,omitempty"`
-	// PublicNetworkAccess - Enable or Disable pubic network access to workspace. Possible values include: 'WorkspacePublicNetworkAccessEnabled', 'WorkspacePublicNetworkAccessDisabled'
+	// PublicNetworkAccess - Enable or Disable public network access to workspace. Possible values include: 'WorkspacePublicNetworkAccessEnabled', 'WorkspacePublicNetworkAccessDisabled'
 	PublicNetworkAccess WorkspacePublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
 }
 
@@ -16009,7 +16265,7 @@ type WorkspaceProperties struct {
 	PurviewConfiguration *PurviewConfiguration `json:"purviewConfiguration,omitempty"`
 	// AdlaResourceID - READ-ONLY; The ADLA resource ID.
 	AdlaResourceID *string `json:"adlaResourceId,omitempty"`
-	// PublicNetworkAccess - Enable or Disable pubic network access to workspace. Possible values include: 'WorkspacePublicNetworkAccessEnabled', 'WorkspacePublicNetworkAccessDisabled'
+	// PublicNetworkAccess - Enable or Disable public network access to workspace. Possible values include: 'WorkspacePublicNetworkAccessEnabled', 'WorkspacePublicNetworkAccessDisabled'
 	PublicNetworkAccess WorkspacePublicNetworkAccess `json:"publicNetworkAccess,omitempty"`
 }
 
