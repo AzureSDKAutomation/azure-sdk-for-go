@@ -102,14 +102,6 @@ func (future *DeleteFuture) result(client Client) (ar autorest.Response, err err
 // DiagnosticConfiguration diagnostic configuration of a Microsoft.SignalRService resource. Used together
 // with Azure monitor DiagnosticSettings.
 type DiagnosticConfiguration struct {
-	// EnableConnectivityLogs - Indicate whether or not enable Connectivity logs.
-	// Available values: Enabled, Disabled.
-	// Case insensitive.
-	EnableConnectivityLogs *string `json:"enableConnectivityLogs,omitempty"`
-	// EnableMessagingLogs - Indicate whether or not enable Messaging logs.
-	// Available values: Enabled, Disabled.
-	// Case insensitive.
-	EnableMessagingLogs *string `json:"enableMessagingLogs,omitempty"`
 	// EnableLiveTrace - Indicate whether or not enable Live Trace.
 	// Available values: Enabled, Disabled.
 	// Case insensitive.
