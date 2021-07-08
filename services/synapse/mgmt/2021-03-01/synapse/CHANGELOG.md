@@ -1,59 +1,28 @@
-# Change History
+# Unreleased
 
 ## Additive Changes
 
+### New Constants
+
+1. NodeSizeFamily.NodeSizeFamilyHardwareAcceleratedFPGA
+1. NodeSizeFamily.NodeSizeFamilyHardwareAcceleratedGPU
+
 ### New Funcs
 
-1. AzureEntityResource.MarshalJSON() ([]byte, error)
-1. DataWarehouseUserActivitiesProperties.MarshalJSON() ([]byte, error)
-1. EncryptionProtectorListResult.MarshalJSON() ([]byte, error)
-1. ErrorAdditionalInfo.MarshalJSON() ([]byte, error)
-1. ErrorDetail.MarshalJSON() ([]byte, error)
-1. ExtendedSQLPoolBlobAuditingPolicyListResult.MarshalJSON() ([]byte, error)
-1. ExtendedServerBlobAuditingPolicyListResult.MarshalJSON() ([]byte, error)
-1. IntegrationRuntimeNodeIPAddress.MarshalJSON() ([]byte, error)
-1. LinkedIntegrationRuntime.MarshalJSON() ([]byte, error)
-1. ListSQLPoolSecurityAlertPolicies.MarshalJSON() ([]byte, error)
-1. ManagedIntegrationRuntimeError.MarshalJSON() ([]byte, error)
-1. ManagedIntegrationRuntimeOperationResult.MarshalJSON() ([]byte, error)
-1. ManagedIntegrationRuntimeStatusTypeProperties.MarshalJSON() ([]byte, error)
-1. PrivateEndpoint.MarshalJSON() ([]byte, error)
-1. PrivateEndpointConnectionList.MarshalJSON() ([]byte, error)
-1. PrivateLinkResource.MarshalJSON() ([]byte, error)
-1. PrivateLinkResourceListResult.MarshalJSON() ([]byte, error)
-1. PrivateLinkResourceProperties.MarshalJSON() ([]byte, error)
-1. ProxyResource.MarshalJSON() ([]byte, error)
-1. QueryInterval.MarshalJSON() ([]byte, error)
-1. QueryMetric.MarshalJSON() ([]byte, error)
-1. QueryStatistic.MarshalJSON() ([]byte, error)
-1. RecoverableSQLPoolListResult.MarshalJSON() ([]byte, error)
-1. RecoverableSQLPoolProperties.MarshalJSON() ([]byte, error)
-1. ReplicationLinkProperties.MarshalJSON() ([]byte, error)
-1. Resource.MarshalJSON() ([]byte, error)
-1. RestorableDroppedSQLPoolProperties.MarshalJSON() ([]byte, error)
-1. RestorePointListResult.MarshalJSON() ([]byte, error)
-1. RestorePointProperties.MarshalJSON() ([]byte, error)
-1. SQLPoolBlobAuditingPolicyListResult.MarshalJSON() ([]byte, error)
-1. SQLPoolBlobAuditingPolicySQLPoolOperationListResult.MarshalJSON() ([]byte, error)
-1. SQLPoolColumnListResult.MarshalJSON() ([]byte, error)
-1. SQLPoolOperationProperties.MarshalJSON() ([]byte, error)
-1. SQLPoolSchema.MarshalJSON() ([]byte, error)
-1. SQLPoolSchemaListResult.MarshalJSON() ([]byte, error)
-1. SQLPoolTable.MarshalJSON() ([]byte, error)
-1. SQLPoolTableListResult.MarshalJSON() ([]byte, error)
-1. SQLPoolUsage.MarshalJSON() ([]byte, error)
-1. SQLPoolVulnerabilityAssessmentListResult.MarshalJSON() ([]byte, error)
-1. SQLPoolVulnerabilityAssessmentScanExportProperties.MarshalJSON() ([]byte, error)
-1. SensitivityLabelListResult.MarshalJSON() ([]byte, error)
-1. ServerBlobAuditingPolicyListResult.MarshalJSON() ([]byte, error)
-1. ServerSecurityAlertPolicyListResult.MarshalJSON() ([]byte, error)
-1. ServerUsage.MarshalJSON() ([]byte, error)
-1. ServerVulnerabilityAssessmentListResult.MarshalJSON() ([]byte, error)
-1. SubResource.MarshalJSON() ([]byte, error)
-1. TopQueries.MarshalJSON() ([]byte, error)
-1. TransparentDataEncryptionListResult.MarshalJSON() ([]byte, error)
-1. VulnerabilityAssessmentScanError.MarshalJSON() ([]byte, error)
-1. VulnerabilityAssessmentScanRecordListResult.MarshalJSON() ([]byte, error)
-1. VulnerabilityAssessmentScanRecordProperties.MarshalJSON() ([]byte, error)
-1. WorkloadClassifierListResult.MarshalJSON() ([]byte, error)
-1. WorkloadGroupListResult.MarshalJSON() ([]byte, error)
+1. IntegrationRuntimesClient.OutboundNetworkDependenciesEndpoints(context.Context, string, string, string) (IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse, error)
+1. IntegrationRuntimesClient.OutboundNetworkDependenciesEndpointsPreparer(context.Context, string, string, string) (*http.Request, error)
+1. IntegrationRuntimesClient.OutboundNetworkDependenciesEndpointsResponder(*http.Response) (IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse, error)
+1. IntegrationRuntimesClient.OutboundNetworkDependenciesEndpointsSender(*http.Request) (*http.Response, error)
+
+### Struct Changes
+
+#### New Structs
+
+1. IntegrationRuntimeOutboundNetworkDependenciesCategoryEndpoint
+1. IntegrationRuntimeOutboundNetworkDependenciesEndpoint
+1. IntegrationRuntimeOutboundNetworkDependenciesEndpointDetails
+1. IntegrationRuntimeOutboundNetworkDependenciesEndpointsResponse
+
+#### New Struct Fields
+
+1. IntegrationRuntimeVNetProperties.SubnetID
