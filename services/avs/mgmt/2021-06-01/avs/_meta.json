@@ -1,5 +1,5 @@
 {
-  "commit": "f9883569df850be792a37df17a1a28a5bdcdfc39",
+  "commit": "6327804d87dcf468a4eb628c86418192111388dd",
   "readme": "/_/azure-rest-api-specs/specification/vmware/resource-manager/readme.md",
   "tag": "package-2021-06-01",
   "use": "@microsoft.azure/autorest.go@2.1.183",
