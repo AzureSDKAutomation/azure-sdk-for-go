@@ -426,8 +426,6 @@ func NewConnectedClusterListPage(cur ConnectedClusterList, getNextPage func(cont
 type ConnectedClusterPatch struct {
 	// Tags - Resource tags.
 	Tags map[string]*string `json:"tags"`
-	// Properties - Describes the connected cluster resource properties that can be updated during PATCH operation.
-	Properties interface{} `json:"properties,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for ConnectedClusterPatch.
@@ -435,9 +433,6 @@ func (ccp ConnectedClusterPatch) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
 	if ccp.Tags != nil {
 		objectMap["tags"] = ccp.Tags
-	}
-	if ccp.Properties != nil {
-		objectMap["properties"] = ccp.Properties
 	}
 	return json.Marshal(objectMap)
 }

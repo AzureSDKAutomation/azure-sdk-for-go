@@ -1,12 +1,9 @@
-# Change History
+# Unreleased
 
-## Additive Changes
+## Breaking Changes
 
-### New Funcs
+### Struct Changes
 
-1. AzureEntityResource.MarshalJSON() ([]byte, error)
-1. ErrorAdditionalInfo.MarshalJSON() ([]byte, error)
-1. ErrorDetail.MarshalJSON() ([]byte, error)
-1. Operation.MarshalJSON() ([]byte, error)
-1. ProxyResource.MarshalJSON() ([]byte, error)
-1. Resource.MarshalJSON() ([]byte, error)
+#### Removed Struct Fields
+
+1. ConnectedClusterPatch.Properties

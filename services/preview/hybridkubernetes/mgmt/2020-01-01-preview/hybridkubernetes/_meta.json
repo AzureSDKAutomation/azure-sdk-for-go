@@ -1,5 +1,5 @@
 {
-  "commit": "3c764635e7d442b3e74caf593029fcd440b3ef82",
+  "commit": "53796d9dd6ef64b150f9b5ce72e8b8d39489cbb7",
   "readme": "/_/azure-rest-api-specs/specification/hybridkubernetes/resource-manager/readme.md",
   "tag": "package-2020-01-01-preview",
   "use": "@microsoft.azure/autorest.go@2.1.183",
