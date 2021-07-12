@@ -373,6 +373,8 @@ type DomainServiceProperties struct {
 	FilteredSync FilteredSync `json:"filteredSync,omitempty"`
 	// NotificationSettings - Notification Settings
 	NotificationSettings *NotificationSettings `json:"notificationSettings,omitempty"`
+	// MigrationProperties - READ-ONLY; Migration Properties
+	MigrationProperties *MigrationProperties `json:"migrationProperties,omitempty"`
 	// ProvisioningState - READ-ONLY; the current deployment or provisioning state, which only appears in the response.
 	ProvisioningState *string `json:"provisioningState,omitempty"`
 }
@@ -620,6 +622,30 @@ func (ls LdapsSettings) MarshalJSON() ([]byte, error) {
 	if ls.ExternalAccess != "" {
 		objectMap["externalAccess"] = ls.ExternalAccess
 	}
+	return json.Marshal(objectMap)
+}
+
+// MigrationProgress migration Progress
+type MigrationProgress struct {
+	// CompletionPercentage - Completion Percentage
+	CompletionPercentage *float64 `json:"completionPercentage,omitempty"`
+	// ProgressMessage - Progress Message
+	ProgressMessage *string `json:"progressMessage,omitempty"`
+}
+
+// MigrationProperties migration Properties
+type MigrationProperties struct {
+	// OldSubnetID - READ-ONLY; Old Subnet Id
+	OldSubnetID *string `json:"oldSubnetId,omitempty"`
+	// OldVnetSiteID - READ-ONLY; Old Vnet Site Id
+	OldVnetSiteID *string `json:"oldVnetSiteId,omitempty"`
+	// MigrationProgress - READ-ONLY; Migration Progress
+	MigrationProgress *MigrationProgress `json:"migrationProgress,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for MigrationProperties.
+func (mp MigrationProperties) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
 	return json.Marshal(objectMap)
 }
 
