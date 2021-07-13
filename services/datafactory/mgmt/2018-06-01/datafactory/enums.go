@@ -1452,6 +1452,21 @@ func PossibleSQLAlwaysEncryptedAkvAuthTypeValues() []SQLAlwaysEncryptedAkvAuthTy
 	return []SQLAlwaysEncryptedAkvAuthType{SQLAlwaysEncryptedAkvAuthTypeManagedIdentity, SQLAlwaysEncryptedAkvAuthTypeServicePrincipal}
 }
 
+// SQLDWWriteBehaviorEnum enumerates the values for sqldw write behavior enum.
+type SQLDWWriteBehaviorEnum string
+
+const (
+	// SQLDWWriteBehaviorEnumInsert ...
+	SQLDWWriteBehaviorEnumInsert SQLDWWriteBehaviorEnum = "Insert"
+	// SQLDWWriteBehaviorEnumUpsert ...
+	SQLDWWriteBehaviorEnumUpsert SQLDWWriteBehaviorEnum = "Upsert"
+)
+
+// PossibleSQLDWWriteBehaviorEnumValues returns an array of possible values for the SQLDWWriteBehaviorEnum const type.
+func PossibleSQLDWWriteBehaviorEnumValues() []SQLDWWriteBehaviorEnum {
+	return []SQLDWWriteBehaviorEnum{SQLDWWriteBehaviorEnumInsert, SQLDWWriteBehaviorEnumUpsert}
+}
+
 // SQLPartitionOption enumerates the values for sql partition option.
 type SQLPartitionOption string
 
@@ -1467,6 +1482,23 @@ const (
 // PossibleSQLPartitionOptionValues returns an array of possible values for the SQLPartitionOption const type.
 func PossibleSQLPartitionOptionValues() []SQLPartitionOption {
 	return []SQLPartitionOption{SQLPartitionOptionDynamicRange, SQLPartitionOptionNone, SQLPartitionOptionPhysicalPartitionsOfTable}
+}
+
+// SQLWriteBehaviorEnum enumerates the values for sql write behavior enum.
+type SQLWriteBehaviorEnum string
+
+const (
+	// SQLWriteBehaviorEnumInsert ...
+	SQLWriteBehaviorEnumInsert SQLWriteBehaviorEnum = "Insert"
+	// SQLWriteBehaviorEnumStoredProcedure ...
+	SQLWriteBehaviorEnumStoredProcedure SQLWriteBehaviorEnum = "StoredProcedure"
+	// SQLWriteBehaviorEnumUpsert ...
+	SQLWriteBehaviorEnumUpsert SQLWriteBehaviorEnum = "Upsert"
+)
+
+// PossibleSQLWriteBehaviorEnumValues returns an array of possible values for the SQLWriteBehaviorEnum const type.
+func PossibleSQLWriteBehaviorEnumValues() []SQLWriteBehaviorEnum {
+	return []SQLWriteBehaviorEnum{SQLWriteBehaviorEnumInsert, SQLWriteBehaviorEnumStoredProcedure, SQLWriteBehaviorEnumUpsert}
 }
 
 // SsisObjectMetadataType enumerates the values for ssis object metadata type.
