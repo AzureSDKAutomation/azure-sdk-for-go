@@ -3412,7 +3412,6 @@ func NewAscLocationListPage(cur AscLocationList, getNextPage func(context.Contex
 
 // Assessment security assessment on a resource
 type Assessment struct {
-	autorest.Response     `json:"-"`
 	*AssessmentProperties `json:"properties,omitempty"`
 	// ID - READ-ONLY; Resource Id
 	ID *string `json:"id,omitempty"`
@@ -3498,7 +3497,7 @@ func (al AssessmentLinks) MarshalJSON() ([]byte, error) {
 type AssessmentList struct {
 	autorest.Response `json:"-"`
 	// Value - READ-ONLY; Collection of security assessments in this page
-	Value *[]Assessment `json:"value,omitempty"`
+	Value *[]AssessmentResponse `json:"value,omitempty"`
 	// NextLink - READ-ONLY; The URI to fetch the next page.
 	NextLink *string `json:"nextLink,omitempty"`
 }
@@ -3509,7 +3508,7 @@ func (al AssessmentList) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
-// AssessmentListIterator provides access to a complete listing of Assessment values.
+// AssessmentListIterator provides access to a complete listing of AssessmentResponse values.
 type AssessmentListIterator struct {
 	i    int
 	page AssessmentListPage
@@ -3560,9 +3559,9 @@ func (iter AssessmentListIterator) Response() AssessmentList {
 
 // Value returns the current value or a zero-initialized value if the
 // iterator has advanced beyond the end of the collection.
-func (iter AssessmentListIterator) Value() Assessment {
+func (iter AssessmentListIterator) Value() AssessmentResponse {
 	if !iter.page.NotDone() {
-		return Assessment{}
+		return AssessmentResponse{}
 	}
 	return iter.page.Values()[iter.i]
 }
@@ -3594,7 +3593,7 @@ func (al AssessmentList) assessmentListPreparer(ctx context.Context) (*http.Requ
 		autorest.WithBaseURL(to.String(al.NextLink)))
 }
 
-// AssessmentListPage contains a page of Assessment values.
+// AssessmentListPage contains a page of AssessmentResponse values.
 type AssessmentListPage struct {
 	fn func(context.Context, AssessmentList) (AssessmentList, error)
 	al AssessmentList
@@ -3644,7 +3643,7 @@ func (page AssessmentListPage) Response() AssessmentList {
 }
 
 // Values returns the slice of values for the current page or nil if there are no values.
-func (page AssessmentListPage) Values() []Assessment {
+func (page AssessmentListPage) Values() []AssessmentResponse {
 	if page.al.IsEmpty() {
 		return nil
 	}
@@ -3661,7 +3660,6 @@ func NewAssessmentListPage(cur AssessmentList, getNextPage func(context.Context,
 
 // AssessmentMetadata security assessment metadata
 type AssessmentMetadata struct {
-	autorest.Response             `json:"-"`
 	*AssessmentMetadataProperties `json:"properties,omitempty"`
 	// ID - READ-ONLY; Resource Id
 	ID *string `json:"id,omitempty"`
@@ -3729,171 +3727,6 @@ func (am *AssessmentMetadata) UnmarshalJSON(body []byte) error {
 	}
 
 	return nil
-}
-
-// AssessmentMetadataList list of security assessment metadata
-type AssessmentMetadataList struct {
-	autorest.Response `json:"-"`
-	// Value - READ-ONLY
-	Value *[]AssessmentMetadata `json:"value,omitempty"`
-	// NextLink - READ-ONLY; The URI to fetch the next page.
-	NextLink *string `json:"nextLink,omitempty"`
-}
-
-// MarshalJSON is the custom marshaler for AssessmentMetadataList.
-func (aml AssessmentMetadataList) MarshalJSON() ([]byte, error) {
-	objectMap := make(map[string]interface{})
-	return json.Marshal(objectMap)
-}
-
-// AssessmentMetadataListIterator provides access to a complete listing of AssessmentMetadata values.
-type AssessmentMetadataListIterator struct {
-	i    int
-	page AssessmentMetadataListPage
-}
-
-// NextWithContext advances to the next value.  If there was an error making
-// the request the iterator does not advance and the error is returned.
-func (iter *AssessmentMetadataListIterator) NextWithContext(ctx context.Context) (err error) {
-	if tracing.IsEnabled() {
-		ctx = tracing.StartSpan(ctx, fqdn+"/AssessmentMetadataListIterator.NextWithContext")
-		defer func() {
-			sc := -1
-			if iter.Response().Response.Response != nil {
-				sc = iter.Response().Response.Response.StatusCode
-			}
-			tracing.EndSpan(ctx, sc, err)
-		}()
-	}
-	iter.i++
-	if iter.i < len(iter.page.Values()) {
-		return nil
-	}
-	err = iter.page.NextWithContext(ctx)
-	if err != nil {
-		iter.i--
-		return err
-	}
-	iter.i = 0
-	return nil
-}
-
-// Next advances to the next value.  If there was an error making
-// the request the iterator does not advance and the error is returned.
-// Deprecated: Use NextWithContext() instead.
-func (iter *AssessmentMetadataListIterator) Next() error {
-	return iter.NextWithContext(context.Background())
-}
-
-// NotDone returns true if the enumeration should be started or is not yet complete.
-func (iter AssessmentMetadataListIterator) NotDone() bool {
-	return iter.page.NotDone() && iter.i < len(iter.page.Values())
-}
-
-// Response returns the raw server response from the last page request.
-func (iter AssessmentMetadataListIterator) Response() AssessmentMetadataList {
-	return iter.page.Response()
-}
-
-// Value returns the current value or a zero-initialized value if the
-// iterator has advanced beyond the end of the collection.
-func (iter AssessmentMetadataListIterator) Value() AssessmentMetadata {
-	if !iter.page.NotDone() {
-		return AssessmentMetadata{}
-	}
-	return iter.page.Values()[iter.i]
-}
-
-// Creates a new instance of the AssessmentMetadataListIterator type.
-func NewAssessmentMetadataListIterator(page AssessmentMetadataListPage) AssessmentMetadataListIterator {
-	return AssessmentMetadataListIterator{page: page}
-}
-
-// IsEmpty returns true if the ListResult contains no values.
-func (aml AssessmentMetadataList) IsEmpty() bool {
-	return aml.Value == nil || len(*aml.Value) == 0
-}
-
-// hasNextLink returns true if the NextLink is not empty.
-func (aml AssessmentMetadataList) hasNextLink() bool {
-	return aml.NextLink != nil && len(*aml.NextLink) != 0
-}
-
-// assessmentMetadataListPreparer prepares a request to retrieve the next set of results.
-// It returns nil if no more results exist.
-func (aml AssessmentMetadataList) assessmentMetadataListPreparer(ctx context.Context) (*http.Request, error) {
-	if !aml.hasNextLink() {
-		return nil, nil
-	}
-	return autorest.Prepare((&http.Request{}).WithContext(ctx),
-		autorest.AsJSON(),
-		autorest.AsGet(),
-		autorest.WithBaseURL(to.String(aml.NextLink)))
-}
-
-// AssessmentMetadataListPage contains a page of AssessmentMetadata values.
-type AssessmentMetadataListPage struct {
-	fn  func(context.Context, AssessmentMetadataList) (AssessmentMetadataList, error)
-	aml AssessmentMetadataList
-}
-
-// NextWithContext advances to the next page of values.  If there was an error making
-// the request the page does not advance and the error is returned.
-func (page *AssessmentMetadataListPage) NextWithContext(ctx context.Context) (err error) {
-	if tracing.IsEnabled() {
-		ctx = tracing.StartSpan(ctx, fqdn+"/AssessmentMetadataListPage.NextWithContext")
-		defer func() {
-			sc := -1
-			if page.Response().Response.Response != nil {
-				sc = page.Response().Response.Response.StatusCode
-			}
-			tracing.EndSpan(ctx, sc, err)
-		}()
-	}
-	for {
-		next, err := page.fn(ctx, page.aml)
-		if err != nil {
-			return err
-		}
-		page.aml = next
-		if !next.hasNextLink() || !next.IsEmpty() {
-			break
-		}
-	}
-	return nil
-}
-
-// Next advances to the next page of values.  If there was an error making
-// the request the page does not advance and the error is returned.
-// Deprecated: Use NextWithContext() instead.
-func (page *AssessmentMetadataListPage) Next() error {
-	return page.NextWithContext(context.Background())
-}
-
-// NotDone returns true if the page enumeration should be started or is not yet complete.
-func (page AssessmentMetadataListPage) NotDone() bool {
-	return !page.aml.IsEmpty()
-}
-
-// Response returns the raw server response from the last page request.
-func (page AssessmentMetadataListPage) Response() AssessmentMetadataList {
-	return page.aml
-}
-
-// Values returns the slice of values for the current page or nil if there are no values.
-func (page AssessmentMetadataListPage) Values() []AssessmentMetadata {
-	if page.aml.IsEmpty() {
-		return nil
-	}
-	return *page.aml.Value
-}
-
-// Creates a new instance of the AssessmentMetadataListPage type.
-func NewAssessmentMetadataListPage(cur AssessmentMetadataList, getNextPage func(context.Context, AssessmentMetadataList) (AssessmentMetadataList, error)) AssessmentMetadataListPage {
-	return AssessmentMetadataListPage{
-		fn:  getNextPage,
-		aml: cur,
-	}
 }
 
 // AssessmentMetadataPartnerData describes the partner that created the assessment
@@ -3970,6 +3803,325 @@ func (amp AssessmentMetadataProperties) MarshalJSON() ([]byte, error) {
 	return json.Marshal(objectMap)
 }
 
+// AssessmentMetadataPropertiesResponse describes properties of an assessment metadata response.
+type AssessmentMetadataPropertiesResponse struct {
+	PublishDates           *AssessmentMetadataPropertiesResponsePublishDates `json:"publishDates,omitempty"`
+	PlannedDeprecationDate *string                                           `json:"plannedDeprecationDate,omitempty"`
+	// DisplayName - User friendly display name of the assessment
+	DisplayName *string `json:"displayName,omitempty"`
+	// PolicyDefinitionID - READ-ONLY; Azure resource ID of the policy definition that turns this assessment calculation on
+	PolicyDefinitionID *string `json:"policyDefinitionId,omitempty"`
+	// Description - Human readable description of the assessment
+	Description *string `json:"description,omitempty"`
+	// RemediationDescription - Human readable description of what you should do to mitigate this security issue
+	RemediationDescription *string       `json:"remediationDescription,omitempty"`
+	Categories             *[]Categories `json:"categories,omitempty"`
+	// Severity - The severity level of the assessment. Possible values include: 'SeverityLow', 'SeverityMedium', 'SeverityHigh'
+	Severity Severity `json:"severity,omitempty"`
+	// UserImpact - The user impact of the assessment. Possible values include: 'UserImpactLow', 'UserImpactModerate', 'UserImpactHigh'
+	UserImpact UserImpact `json:"userImpact,omitempty"`
+	// ImplementationEffort - The implementation effort required to remediate this assessment. Possible values include: 'ImplementationEffortLow', 'ImplementationEffortModerate', 'ImplementationEffortHigh'
+	ImplementationEffort ImplementationEffort `json:"implementationEffort,omitempty"`
+	Threats              *[]Threats           `json:"threats,omitempty"`
+	// Preview - True if this assessment is in preview release status
+	Preview *bool `json:"preview,omitempty"`
+	// AssessmentType - BuiltIn if the assessment based on built-in Azure Policy definition, Custom if the assessment based on custom Azure Policy definition. Possible values include: 'BuiltIn', 'CustomPolicy', 'CustomerManaged', 'VerifiedPartner'
+	AssessmentType AssessmentType                 `json:"assessmentType,omitempty"`
+	PartnerData    *AssessmentMetadataPartnerData `json:"partnerData,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentMetadataPropertiesResponse.
+func (ampr AssessmentMetadataPropertiesResponse) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if ampr.PublishDates != nil {
+		objectMap["publishDates"] = ampr.PublishDates
+	}
+	if ampr.PlannedDeprecationDate != nil {
+		objectMap["plannedDeprecationDate"] = ampr.PlannedDeprecationDate
+	}
+	if ampr.DisplayName != nil {
+		objectMap["displayName"] = ampr.DisplayName
+	}
+	if ampr.Description != nil {
+		objectMap["description"] = ampr.Description
+	}
+	if ampr.RemediationDescription != nil {
+		objectMap["remediationDescription"] = ampr.RemediationDescription
+	}
+	if ampr.Categories != nil {
+		objectMap["categories"] = ampr.Categories
+	}
+	if ampr.Severity != "" {
+		objectMap["severity"] = ampr.Severity
+	}
+	if ampr.UserImpact != "" {
+		objectMap["userImpact"] = ampr.UserImpact
+	}
+	if ampr.ImplementationEffort != "" {
+		objectMap["implementationEffort"] = ampr.ImplementationEffort
+	}
+	if ampr.Threats != nil {
+		objectMap["threats"] = ampr.Threats
+	}
+	if ampr.Preview != nil {
+		objectMap["preview"] = ampr.Preview
+	}
+	if ampr.AssessmentType != "" {
+		objectMap["assessmentType"] = ampr.AssessmentType
+	}
+	if ampr.PartnerData != nil {
+		objectMap["partnerData"] = ampr.PartnerData
+	}
+	return json.Marshal(objectMap)
+}
+
+// AssessmentMetadataPropertiesResponsePublishDates ...
+type AssessmentMetadataPropertiesResponsePublishDates struct {
+	PublicProd *PublishDates `json:"PublicProd,omitempty"`
+	Fairfax    *PublishDates `json:"Fairfax,omitempty"`
+	MoonCake   *PublishDates `json:"MoonCake,omitempty"`
+	USSec      *PublishDates `json:"USSec,omitempty"`
+	USNat      *PublishDates `json:"USNat,omitempty"`
+}
+
+// AssessmentMetadataResponse security assessment metadata response
+type AssessmentMetadataResponse struct {
+	autorest.Response                     `json:"-"`
+	*AssessmentMetadataPropertiesResponse `json:"properties,omitempty"`
+	// ID - READ-ONLY; Resource Id
+	ID *string `json:"id,omitempty"`
+	// Name - READ-ONLY; Resource name
+	Name *string `json:"name,omitempty"`
+	// Type - READ-ONLY; Resource type
+	Type *string `json:"type,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentMetadataResponse.
+func (amr AssessmentMetadataResponse) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if amr.AssessmentMetadataPropertiesResponse != nil {
+		objectMap["properties"] = amr.AssessmentMetadataPropertiesResponse
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for AssessmentMetadataResponse struct.
+func (amr *AssessmentMetadataResponse) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "properties":
+			if v != nil {
+				var assessmentMetadataPropertiesResponse AssessmentMetadataPropertiesResponse
+				err = json.Unmarshal(*v, &assessmentMetadataPropertiesResponse)
+				if err != nil {
+					return err
+				}
+				amr.AssessmentMetadataPropertiesResponse = &assessmentMetadataPropertiesResponse
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				amr.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				amr.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				amr.Type = &typeVar
+			}
+		}
+	}
+
+	return nil
+}
+
+// AssessmentMetadataResponseList list of security assessment metadata
+type AssessmentMetadataResponseList struct {
+	autorest.Response `json:"-"`
+	// Value - READ-ONLY
+	Value *[]AssessmentMetadataResponse `json:"value,omitempty"`
+	// NextLink - READ-ONLY; The URI to fetch the next page.
+	NextLink *string `json:"nextLink,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentMetadataResponseList.
+func (amrl AssessmentMetadataResponseList) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	return json.Marshal(objectMap)
+}
+
+// AssessmentMetadataResponseListIterator provides access to a complete listing of
+// AssessmentMetadataResponse values.
+type AssessmentMetadataResponseListIterator struct {
+	i    int
+	page AssessmentMetadataResponseListPage
+}
+
+// NextWithContext advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+func (iter *AssessmentMetadataResponseListIterator) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/AssessmentMetadataResponseListIterator.NextWithContext")
+		defer func() {
+			sc := -1
+			if iter.Response().Response.Response != nil {
+				sc = iter.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	iter.i++
+	if iter.i < len(iter.page.Values()) {
+		return nil
+	}
+	err = iter.page.NextWithContext(ctx)
+	if err != nil {
+		iter.i--
+		return err
+	}
+	iter.i = 0
+	return nil
+}
+
+// Next advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (iter *AssessmentMetadataResponseListIterator) Next() error {
+	return iter.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the enumeration should be started or is not yet complete.
+func (iter AssessmentMetadataResponseListIterator) NotDone() bool {
+	return iter.page.NotDone() && iter.i < len(iter.page.Values())
+}
+
+// Response returns the raw server response from the last page request.
+func (iter AssessmentMetadataResponseListIterator) Response() AssessmentMetadataResponseList {
+	return iter.page.Response()
+}
+
+// Value returns the current value or a zero-initialized value if the
+// iterator has advanced beyond the end of the collection.
+func (iter AssessmentMetadataResponseListIterator) Value() AssessmentMetadataResponse {
+	if !iter.page.NotDone() {
+		return AssessmentMetadataResponse{}
+	}
+	return iter.page.Values()[iter.i]
+}
+
+// Creates a new instance of the AssessmentMetadataResponseListIterator type.
+func NewAssessmentMetadataResponseListIterator(page AssessmentMetadataResponseListPage) AssessmentMetadataResponseListIterator {
+	return AssessmentMetadataResponseListIterator{page: page}
+}
+
+// IsEmpty returns true if the ListResult contains no values.
+func (amrl AssessmentMetadataResponseList) IsEmpty() bool {
+	return amrl.Value == nil || len(*amrl.Value) == 0
+}
+
+// hasNextLink returns true if the NextLink is not empty.
+func (amrl AssessmentMetadataResponseList) hasNextLink() bool {
+	return amrl.NextLink != nil && len(*amrl.NextLink) != 0
+}
+
+// assessmentMetadataResponseListPreparer prepares a request to retrieve the next set of results.
+// It returns nil if no more results exist.
+func (amrl AssessmentMetadataResponseList) assessmentMetadataResponseListPreparer(ctx context.Context) (*http.Request, error) {
+	if !amrl.hasNextLink() {
+		return nil, nil
+	}
+	return autorest.Prepare((&http.Request{}).WithContext(ctx),
+		autorest.AsJSON(),
+		autorest.AsGet(),
+		autorest.WithBaseURL(to.String(amrl.NextLink)))
+}
+
+// AssessmentMetadataResponseListPage contains a page of AssessmentMetadataResponse values.
+type AssessmentMetadataResponseListPage struct {
+	fn   func(context.Context, AssessmentMetadataResponseList) (AssessmentMetadataResponseList, error)
+	amrl AssessmentMetadataResponseList
+}
+
+// NextWithContext advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+func (page *AssessmentMetadataResponseListPage) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/AssessmentMetadataResponseListPage.NextWithContext")
+		defer func() {
+			sc := -1
+			if page.Response().Response.Response != nil {
+				sc = page.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	for {
+		next, err := page.fn(ctx, page.amrl)
+		if err != nil {
+			return err
+		}
+		page.amrl = next
+		if !next.hasNextLink() || !next.IsEmpty() {
+			break
+		}
+	}
+	return nil
+}
+
+// Next advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (page *AssessmentMetadataResponseListPage) Next() error {
+	return page.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the page enumeration should be started or is not yet complete.
+func (page AssessmentMetadataResponseListPage) NotDone() bool {
+	return !page.amrl.IsEmpty()
+}
+
+// Response returns the raw server response from the last page request.
+func (page AssessmentMetadataResponseListPage) Response() AssessmentMetadataResponseList {
+	return page.amrl
+}
+
+// Values returns the slice of values for the current page or nil if there are no values.
+func (page AssessmentMetadataResponseListPage) Values() []AssessmentMetadataResponse {
+	if page.amrl.IsEmpty() {
+		return nil
+	}
+	return *page.amrl.Value
+}
+
+// Creates a new instance of the AssessmentMetadataResponseListPage type.
+func NewAssessmentMetadataResponseListPage(cur AssessmentMetadataResponseList, getNextPage func(context.Context, AssessmentMetadataResponseList) (AssessmentMetadataResponseList, error)) AssessmentMetadataResponseListPage {
+	return AssessmentMetadataResponseListPage{
+		fn:   getNextPage,
+		amrl: cur,
+	}
+}
+
 // AssessmentPartnerData data regarding 3rd party partner integration
 type AssessmentPartnerData struct {
 	// PartnerName - Name of the company of the partner
@@ -3980,10 +4132,10 @@ type AssessmentPartnerData struct {
 
 // AssessmentProperties describes properties of an assessment.
 type AssessmentProperties struct {
+	Status          *AssessmentStatus    `json:"status,omitempty"`
 	ResourceDetails BasicResourceDetails `json:"resourceDetails,omitempty"`
 	// DisplayName - READ-ONLY; User friendly display name of the assessment
-	DisplayName *string           `json:"displayName,omitempty"`
-	Status      *AssessmentStatus `json:"status,omitempty"`
+	DisplayName *string `json:"displayName,omitempty"`
 	// AdditionalData - Additional data regarding the assessment
 	AdditionalData map[string]*string            `json:"additionalData"`
 	Links          *AssessmentLinks              `json:"links,omitempty"`
@@ -3994,10 +4146,10 @@ type AssessmentProperties struct {
 // MarshalJSON is the custom marshaler for AssessmentProperties.
 func (ap AssessmentProperties) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
-	objectMap["resourceDetails"] = ap.ResourceDetails
 	if ap.Status != nil {
 		objectMap["status"] = ap.Status
 	}
+	objectMap["resourceDetails"] = ap.ResourceDetails
 	if ap.AdditionalData != nil {
 		objectMap["additionalData"] = ap.AdditionalData
 	}
@@ -4022,6 +4174,15 @@ func (ap *AssessmentProperties) UnmarshalJSON(body []byte) error {
 	}
 	for k, v := range m {
 		switch k {
+		case "status":
+			if v != nil {
+				var status AssessmentStatus
+				err = json.Unmarshal(*v, &status)
+				if err != nil {
+					return err
+				}
+				ap.Status = &status
+			}
 		case "resourceDetails":
 			if v != nil {
 				resourceDetails, err := unmarshalBasicResourceDetails(*v)
@@ -4038,15 +4199,6 @@ func (ap *AssessmentProperties) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				ap.DisplayName = &displayName
-			}
-		case "status":
-			if v != nil {
-				var status AssessmentStatus
-				err = json.Unmarshal(*v, &status)
-				if err != nil {
-					return err
-				}
-				ap.Status = &status
 			}
 		case "additionalData":
 			if v != nil {
@@ -4090,6 +4242,289 @@ func (ap *AssessmentProperties) UnmarshalJSON(body []byte) error {
 	return nil
 }
 
+// AssessmentPropertiesBase describes properties of an assessment.
+type AssessmentPropertiesBase struct {
+	ResourceDetails BasicResourceDetails `json:"resourceDetails,omitempty"`
+	// DisplayName - READ-ONLY; User friendly display name of the assessment
+	DisplayName *string `json:"displayName,omitempty"`
+	// AdditionalData - Additional data regarding the assessment
+	AdditionalData map[string]*string            `json:"additionalData"`
+	Links          *AssessmentLinks              `json:"links,omitempty"`
+	Metadata       *AssessmentMetadataProperties `json:"metadata,omitempty"`
+	PartnersData   *AssessmentPartnerData        `json:"partnersData,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentPropertiesBase.
+func (apb AssessmentPropertiesBase) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	objectMap["resourceDetails"] = apb.ResourceDetails
+	if apb.AdditionalData != nil {
+		objectMap["additionalData"] = apb.AdditionalData
+	}
+	if apb.Links != nil {
+		objectMap["links"] = apb.Links
+	}
+	if apb.Metadata != nil {
+		objectMap["metadata"] = apb.Metadata
+	}
+	if apb.PartnersData != nil {
+		objectMap["partnersData"] = apb.PartnersData
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for AssessmentPropertiesBase struct.
+func (apb *AssessmentPropertiesBase) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "resourceDetails":
+			if v != nil {
+				resourceDetails, err := unmarshalBasicResourceDetails(*v)
+				if err != nil {
+					return err
+				}
+				apb.ResourceDetails = resourceDetails
+			}
+		case "displayName":
+			if v != nil {
+				var displayName string
+				err = json.Unmarshal(*v, &displayName)
+				if err != nil {
+					return err
+				}
+				apb.DisplayName = &displayName
+			}
+		case "additionalData":
+			if v != nil {
+				var additionalData map[string]*string
+				err = json.Unmarshal(*v, &additionalData)
+				if err != nil {
+					return err
+				}
+				apb.AdditionalData = additionalData
+			}
+		case "links":
+			if v != nil {
+				var links AssessmentLinks
+				err = json.Unmarshal(*v, &links)
+				if err != nil {
+					return err
+				}
+				apb.Links = &links
+			}
+		case "metadata":
+			if v != nil {
+				var metadata AssessmentMetadataProperties
+				err = json.Unmarshal(*v, &metadata)
+				if err != nil {
+					return err
+				}
+				apb.Metadata = &metadata
+			}
+		case "partnersData":
+			if v != nil {
+				var partnersData AssessmentPartnerData
+				err = json.Unmarshal(*v, &partnersData)
+				if err != nil {
+					return err
+				}
+				apb.PartnersData = &partnersData
+			}
+		}
+	}
+
+	return nil
+}
+
+// AssessmentPropertiesResponse describes properties of an assessment.
+type AssessmentPropertiesResponse struct {
+	Status          *AssessmentStatusResponse `json:"status,omitempty"`
+	ResourceDetails BasicResourceDetails      `json:"resourceDetails,omitempty"`
+	// DisplayName - READ-ONLY; User friendly display name of the assessment
+	DisplayName *string `json:"displayName,omitempty"`
+	// AdditionalData - Additional data regarding the assessment
+	AdditionalData map[string]*string            `json:"additionalData"`
+	Links          *AssessmentLinks              `json:"links,omitempty"`
+	Metadata       *AssessmentMetadataProperties `json:"metadata,omitempty"`
+	PartnersData   *AssessmentPartnerData        `json:"partnersData,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentPropertiesResponse.
+func (apr AssessmentPropertiesResponse) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if apr.Status != nil {
+		objectMap["status"] = apr.Status
+	}
+	objectMap["resourceDetails"] = apr.ResourceDetails
+	if apr.AdditionalData != nil {
+		objectMap["additionalData"] = apr.AdditionalData
+	}
+	if apr.Links != nil {
+		objectMap["links"] = apr.Links
+	}
+	if apr.Metadata != nil {
+		objectMap["metadata"] = apr.Metadata
+	}
+	if apr.PartnersData != nil {
+		objectMap["partnersData"] = apr.PartnersData
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for AssessmentPropertiesResponse struct.
+func (apr *AssessmentPropertiesResponse) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "status":
+			if v != nil {
+				var status AssessmentStatusResponse
+				err = json.Unmarshal(*v, &status)
+				if err != nil {
+					return err
+				}
+				apr.Status = &status
+			}
+		case "resourceDetails":
+			if v != nil {
+				resourceDetails, err := unmarshalBasicResourceDetails(*v)
+				if err != nil {
+					return err
+				}
+				apr.ResourceDetails = resourceDetails
+			}
+		case "displayName":
+			if v != nil {
+				var displayName string
+				err = json.Unmarshal(*v, &displayName)
+				if err != nil {
+					return err
+				}
+				apr.DisplayName = &displayName
+			}
+		case "additionalData":
+			if v != nil {
+				var additionalData map[string]*string
+				err = json.Unmarshal(*v, &additionalData)
+				if err != nil {
+					return err
+				}
+				apr.AdditionalData = additionalData
+			}
+		case "links":
+			if v != nil {
+				var links AssessmentLinks
+				err = json.Unmarshal(*v, &links)
+				if err != nil {
+					return err
+				}
+				apr.Links = &links
+			}
+		case "metadata":
+			if v != nil {
+				var metadata AssessmentMetadataProperties
+				err = json.Unmarshal(*v, &metadata)
+				if err != nil {
+					return err
+				}
+				apr.Metadata = &metadata
+			}
+		case "partnersData":
+			if v != nil {
+				var partnersData AssessmentPartnerData
+				err = json.Unmarshal(*v, &partnersData)
+				if err != nil {
+					return err
+				}
+				apr.PartnersData = &partnersData
+			}
+		}
+	}
+
+	return nil
+}
+
+// AssessmentResponse security assessment on a resource - response format
+type AssessmentResponse struct {
+	autorest.Response             `json:"-"`
+	*AssessmentPropertiesResponse `json:"properties,omitempty"`
+	// ID - READ-ONLY; Resource Id
+	ID *string `json:"id,omitempty"`
+	// Name - READ-ONLY; Resource name
+	Name *string `json:"name,omitempty"`
+	// Type - READ-ONLY; Resource type
+	Type *string `json:"type,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentResponse.
+func (ar AssessmentResponse) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if ar.AssessmentPropertiesResponse != nil {
+		objectMap["properties"] = ar.AssessmentPropertiesResponse
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for AssessmentResponse struct.
+func (ar *AssessmentResponse) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "properties":
+			if v != nil {
+				var assessmentPropertiesResponse AssessmentPropertiesResponse
+				err = json.Unmarshal(*v, &assessmentPropertiesResponse)
+				if err != nil {
+					return err
+				}
+				ar.AssessmentPropertiesResponse = &assessmentPropertiesResponse
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				ar.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				ar.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				ar.Type = &typeVar
+			}
+		}
+	}
+
+	return nil
+}
+
 // AssessmentStatus the result of the assessment
 type AssessmentStatus struct {
 	// Code - Programmatic code for the status of the assessment. Possible values include: 'Healthy', 'Unhealthy', 'NotApplicable'
@@ -4098,6 +4533,35 @@ type AssessmentStatus struct {
 	Cause *string `json:"cause,omitempty"`
 	// Description - Human readable description of the assessment status
 	Description *string `json:"description,omitempty"`
+}
+
+// AssessmentStatusResponse the result of the assessment
+type AssessmentStatusResponse struct {
+	// FirstEvaluationDate - READ-ONLY; The time that the assessment was created and first evaluated. Returned as UTC time in ISO 8601 format
+	FirstEvaluationDate *date.Time `json:"firstEvaluationDate,omitempty"`
+	// StatusChangeDate - READ-ONLY; The time that the status of the assessment last changed. Returned as UTC time in ISO 8601 format
+	StatusChangeDate *date.Time `json:"statusChangeDate,omitempty"`
+	// Code - Programmatic code for the status of the assessment. Possible values include: 'Healthy', 'Unhealthy', 'NotApplicable'
+	Code AssessmentStatusCode `json:"code,omitempty"`
+	// Cause - Programmatic code for the cause of the assessment status
+	Cause *string `json:"cause,omitempty"`
+	// Description - Human readable description of the assessment status
+	Description *string `json:"description,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AssessmentStatusResponse.
+func (asr AssessmentStatusResponse) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if asr.Code != "" {
+		objectMap["code"] = asr.Code
+	}
+	if asr.Cause != nil {
+		objectMap["cause"] = asr.Cause
+	}
+	if asr.Description != nil {
+		objectMap["description"] = asr.Description
+	}
+	return json.Marshal(objectMap)
 }
 
 // AtaExternalSecuritySolution represents an ATA security solution which sends logs to an OMS workspace
@@ -15771,6 +16235,12 @@ type ProxyServerProperties struct {
 	IP *string `json:"ip,omitempty"`
 	// Port - Proxy server port
 	Port *string `json:"port,omitempty"`
+}
+
+// PublishDates ...
+type PublishDates struct {
+	GA     *string `json:"GA,omitempty"`
+	Public *string `json:"Public,omitempty"`
 }
 
 // PublisherInfo represents the publisher information of a process/rule

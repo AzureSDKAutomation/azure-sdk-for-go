@@ -251,23 +251,23 @@ var _ ServerVulnerabilityAssessmentClientAPI = (*security.ServerVulnerabilityAss
 
 // AssessmentsMetadataClientAPI contains the set of methods on the AssessmentsMetadataClient type.
 type AssessmentsMetadataClientAPI interface {
-	CreateInSubscription(ctx context.Context, assessmentMetadataName string, assessmentMetadata security.AssessmentMetadata) (result security.AssessmentMetadata, err error)
+	CreateInSubscription(ctx context.Context, assessmentMetadataName string, assessmentMetadata security.AssessmentMetadata) (result security.AssessmentMetadataResponse, err error)
 	DeleteInSubscription(ctx context.Context, assessmentMetadataName string) (result autorest.Response, err error)
-	Get(ctx context.Context, assessmentMetadataName string) (result security.AssessmentMetadata, err error)
-	GetInSubscription(ctx context.Context, assessmentMetadataName string) (result security.AssessmentMetadata, err error)
-	List(ctx context.Context) (result security.AssessmentMetadataListPage, err error)
-	ListComplete(ctx context.Context) (result security.AssessmentMetadataListIterator, err error)
-	ListBySubscription(ctx context.Context) (result security.AssessmentMetadataListPage, err error)
-	ListBySubscriptionComplete(ctx context.Context) (result security.AssessmentMetadataListIterator, err error)
+	Get(ctx context.Context, assessmentMetadataName string) (result security.AssessmentMetadataResponse, err error)
+	GetInSubscription(ctx context.Context, assessmentMetadataName string) (result security.AssessmentMetadataResponse, err error)
+	List(ctx context.Context) (result security.AssessmentMetadataResponseListPage, err error)
+	ListComplete(ctx context.Context) (result security.AssessmentMetadataResponseListIterator, err error)
+	ListBySubscription(ctx context.Context) (result security.AssessmentMetadataResponseListPage, err error)
+	ListBySubscriptionComplete(ctx context.Context) (result security.AssessmentMetadataResponseListIterator, err error)
 }
 
 var _ AssessmentsMetadataClientAPI = (*security.AssessmentsMetadataClient)(nil)
 
 // AssessmentsClientAPI contains the set of methods on the AssessmentsClient type.
 type AssessmentsClientAPI interface {
-	CreateOrUpdate(ctx context.Context, resourceID string, assessmentName string, assessment security.Assessment) (result security.Assessment, err error)
+	CreateOrUpdate(ctx context.Context, resourceID string, assessmentName string, assessment security.Assessment) (result security.AssessmentResponse, err error)
 	Delete(ctx context.Context, resourceID string, assessmentName string) (result autorest.Response, err error)
-	Get(ctx context.Context, resourceID string, assessmentName string, expand security.ExpandEnum) (result security.Assessment, err error)
+	Get(ctx context.Context, resourceID string, assessmentName string, expand security.ExpandEnum) (result security.AssessmentResponse, err error)
 	List(ctx context.Context, scope string) (result security.AssessmentListPage, err error)
 	ListComplete(ctx context.Context, scope string) (result security.AssessmentListIterator, err error)
 }
