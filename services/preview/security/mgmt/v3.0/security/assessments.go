@@ -10,7 +10,6 @@ import (
 	"context"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/Azure/go-autorest/autorest/validation"
 	"github.com/Azure/go-autorest/tracing"
 	"net/http"
 )
@@ -37,7 +36,7 @@ func NewAssessmentsClientWithBaseURI(baseURI string, subscriptionID string, ascL
 // resourceID - the identifier of the resource.
 // assessmentName - the Assessment Key - Unique key for the assessment type
 // assessment - calculated assessment on a pre-defined assessment metadata
-func (client AssessmentsClient) CreateOrUpdate(ctx context.Context, resourceID string, assessmentName string, assessment Assessment) (result Assessment, err error) {
+func (client AssessmentsClient) CreateOrUpdate(ctx context.Context, resourceID string, assessmentName string, assessment Assessment) (result AssessmentResponse, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/AssessmentsClient.CreateOrUpdate")
 		defer func() {
@@ -48,25 +47,6 @@ func (client AssessmentsClient) CreateOrUpdate(ctx context.Context, resourceID s
 			tracing.EndSpan(ctx, sc, err)
 		}()
 	}
-	if err := validation.Validate([]validation.Validation{
-		{TargetValue: assessment,
-			Constraints: []validation.Constraint{{Target: "assessment.AssessmentProperties", Name: validation.Null, Rule: false,
-				Chain: []validation.Constraint{{Target: "assessment.AssessmentProperties.Status", Name: validation.Null, Rule: true, Chain: nil},
-					{Target: "assessment.AssessmentProperties.Metadata", Name: validation.Null, Rule: false,
-						Chain: []validation.Constraint{{Target: "assessment.AssessmentProperties.Metadata.DisplayName", Name: validation.Null, Rule: true, Chain: nil},
-							{Target: "assessment.AssessmentProperties.Metadata.PartnerData", Name: validation.Null, Rule: false,
-								Chain: []validation.Constraint{{Target: "assessment.AssessmentProperties.Metadata.PartnerData.PartnerName", Name: validation.Null, Rule: true, Chain: nil},
-									{Target: "assessment.AssessmentProperties.Metadata.PartnerData.Secret", Name: validation.Null, Rule: true, Chain: nil},
-								}},
-						}},
-					{Target: "assessment.AssessmentProperties.PartnersData", Name: validation.Null, Rule: false,
-						Chain: []validation.Constraint{{Target: "assessment.AssessmentProperties.PartnersData.PartnerName", Name: validation.Null, Rule: true, Chain: nil},
-							{Target: "assessment.AssessmentProperties.PartnersData.Secret", Name: validation.Null, Rule: true, Chain: nil},
-						}},
-				}}}}}); err != nil {
-		return result, validation.NewError("security.AssessmentsClient", "CreateOrUpdate", err.Error())
-	}
-
 	req, err := client.CreateOrUpdatePreparer(ctx, resourceID, assessmentName, assessment)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "security.AssessmentsClient", "CreateOrUpdate", nil, "Failure preparing request")
@@ -119,7 +99,7 @@ func (client AssessmentsClient) CreateOrUpdateSender(req *http.Request) (*http.R
 
 // CreateOrUpdateResponder handles the response to the CreateOrUpdate request. The method always
 // closes the http.Response Body.
-func (client AssessmentsClient) CreateOrUpdateResponder(resp *http.Response) (result Assessment, err error) {
+func (client AssessmentsClient) CreateOrUpdateResponder(resp *http.Response) (result AssessmentResponse, err error) {
 	err = autorest.Respond(
 		resp,
 		azure.WithErrorUnlessStatusCode(http.StatusOK, http.StatusCreated),
@@ -209,7 +189,7 @@ func (client AssessmentsClient) DeleteResponder(resp *http.Response) (result aut
 // resourceID - the identifier of the resource.
 // assessmentName - the Assessment Key - Unique key for the assessment type
 // expand - oData expand. Optional.
-func (client AssessmentsClient) Get(ctx context.Context, resourceID string, assessmentName string, expand ExpandEnum) (result Assessment, err error) {
+func (client AssessmentsClient) Get(ctx context.Context, resourceID string, assessmentName string, expand ExpandEnum) (result AssessmentResponse, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/AssessmentsClient.Get")
 		defer func() {
@@ -273,7 +253,7 @@ func (client AssessmentsClient) GetSender(req *http.Request) (*http.Response, er
 
 // GetResponder handles the response to the Get request. The method always
 // closes the http.Response Body.
-func (client AssessmentsClient) GetResponder(resp *http.Response) (result Assessment, err error) {
+func (client AssessmentsClient) GetResponder(resp *http.Response) (result AssessmentResponse, err error) {
 	err = autorest.Respond(
 		resp,
 		azure.WithErrorUnlessStatusCode(http.StatusOK),
