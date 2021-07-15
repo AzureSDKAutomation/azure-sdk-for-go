@@ -22773,7 +22773,7 @@ type ResourceIdentity struct {
 	UserAssignedIdentities map[string]*UserIdentity `json:"userAssignedIdentities"`
 	// PrincipalID - READ-ONLY; The Azure Active Directory principal id.
 	PrincipalID *uuid.UUID `json:"principalId,omitempty"`
-	// Type - The identity type. Set this to 'SystemAssigned' in order to automatically create and assign an Azure Active Directory principal for the resource. Possible values include: 'IdentityTypeNone', 'IdentityTypeSystemAssigned', 'IdentityTypeUserAssigned'
+	// Type - The identity type. Set this to 'SystemAssigned' in order to automatically create and assign an Azure Active Directory principal for the resource. Possible values include: 'IdentityTypeNone', 'IdentityTypeSystemAssigned', 'IdentityTypeUserAssigned', 'IdentityTypeSystemAssignedUserAssigned'
 	Type IdentityType `json:"type,omitempty"`
 	// TenantID - READ-ONLY; The Azure Active Directory tenant id.
 	TenantID *uuid.UUID `json:"tenantId,omitempty"`
@@ -22787,30 +22787,6 @@ func (ri ResourceIdentity) MarshalJSON() ([]byte, error) {
 	}
 	if ri.Type != "" {
 		objectMap["type"] = ri.Type
-	}
-	return json.Marshal(objectMap)
-}
-
-// ResourceIdentityWithUserAssignedIdentities azure Active Directory identity configuration for a resource.
-type ResourceIdentityWithUserAssignedIdentities struct {
-	// UserAssignedIdentities - The resource ids of the user assigned identities to use
-	UserAssignedIdentities map[string]*UserIdentity `json:"userAssignedIdentities"`
-	// PrincipalID - READ-ONLY; The Azure Active Directory principal id.
-	PrincipalID *uuid.UUID `json:"principalId,omitempty"`
-	// Type - The identity type. Set this to 'SystemAssigned' in order to automatically create and assign an Azure Active Directory principal for the resource. Possible values include: 'IdentityTypeNone', 'IdentityTypeSystemAssigned', 'IdentityTypeUserAssigned'
-	Type IdentityType `json:"type,omitempty"`
-	// TenantID - READ-ONLY; The Azure Active Directory tenant id.
-	TenantID *uuid.UUID `json:"tenantId,omitempty"`
-}
-
-// MarshalJSON is the custom marshaler for ResourceIdentityWithUserAssignedIdentities.
-func (riwuai ResourceIdentityWithUserAssignedIdentities) MarshalJSON() ([]byte, error) {
-	objectMap := make(map[string]interface{})
-	if riwuai.UserAssignedIdentities != nil {
-		objectMap["userAssignedIdentities"] = riwuai.UserAssignedIdentities
-	}
-	if riwuai.Type != "" {
-		objectMap["type"] = riwuai.Type
 	}
 	return json.Marshal(objectMap)
 }
