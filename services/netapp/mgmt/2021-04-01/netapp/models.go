@@ -29,6 +29,8 @@ type Account struct {
 	ID *string `json:"id,omitempty"`
 	// Name - READ-ONLY; Resource name
 	Name *string `json:"name,omitempty"`
+	// Etag - READ-ONLY; A unique read-only string that changes whenever the resource is updated.
+	Etag *string `json:"etag,omitempty"`
 	// Type - READ-ONLY; Resource type
 	Type *string `json:"type,omitempty"`
 	// Tags - Resource tags
@@ -89,6 +91,15 @@ func (a *Account) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				a.Name = &name
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				a.Etag = &etag
 			}
 		case "type":
 			if v != nil {
@@ -968,6 +979,8 @@ type BackupPolicy struct {
 	ID *string `json:"id,omitempty"`
 	// Name - READ-ONLY; Resource name
 	Name *string `json:"name,omitempty"`
+	// Etag - READ-ONLY; A unique read-only string that changes whenever the resource is updated.
+	Etag *string `json:"etag,omitempty"`
 	// Type - READ-ONLY; Resource type
 	Type *string `json:"type,omitempty"`
 	// Tags - Resource tags
@@ -1026,6 +1039,15 @@ func (bp *BackupPolicy) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				bp.Name = &name
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				bp.Etag = &etag
 			}
 		case "type":
 			if v != nil {
@@ -1264,6 +1286,8 @@ func (bpp *BackupPolicyPatch) UnmarshalJSON(body []byte) error {
 type BackupPolicyProperties struct {
 	// Name - READ-ONLY; Name of backup policy
 	Name *string `json:"name,omitempty"`
+	// BackupPolicyID - READ-ONLY; Backup Policy Resource ID
+	BackupPolicyID *string `json:"backupPolicyId,omitempty"`
 	// ProvisioningState - READ-ONLY; Azure lifecycle management
 	ProvisioningState *string `json:"provisioningState,omitempty"`
 	// DailyBackupsToKeep - Daily backups count to keep
@@ -1515,6 +1539,8 @@ type CapacityPool struct {
 	ID *string `json:"id,omitempty"`
 	// Name - READ-ONLY; Resource name
 	Name *string `json:"name,omitempty"`
+	// Etag - READ-ONLY; A unique read-only string that changes whenever the resource is updated.
+	Etag *string `json:"etag,omitempty"`
 	// Type - READ-ONLY; Resource type
 	Type *string `json:"type,omitempty"`
 	// Tags - Resource tags
@@ -1573,6 +1599,15 @@ func (cp *CapacityPool) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				cp.Name = &name
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				cp.Etag = &etag
 			}
 		case "type":
 			if v != nil {
@@ -1974,6 +2009,16 @@ type MetricSpecification struct {
 	DisplayDescription *string `json:"displayDescription,omitempty"`
 	// Unit - Unit could be Bytes or Count.
 	Unit *string `json:"unit,omitempty"`
+	// SupportedAggregationTypes - Support metric aggregation type.
+	SupportedAggregationTypes *[]MetricAggregationType `json:"supportedAggregationTypes,omitempty"`
+	// SupportedTimeGrainTypes - The supported time grain types for the metrics.
+	SupportedTimeGrainTypes *[]string `json:"supportedTimeGrainTypes,omitempty"`
+	// InternalMetricName - The internal metric name.
+	InternalMetricName *string `json:"internalMetricName,omitempty"`
+	// SourceMdmAccount - The source MDM account.
+	SourceMdmAccount *string `json:"sourceMdmAccount,omitempty"`
+	// SourceMdmNamespace - The source MDM namespace.
+	SourceMdmNamespace *string `json:"sourceMdmNamespace,omitempty"`
 	// Dimensions - Dimensions of blobs, including blob type and access tier.
 	Dimensions *[]Dimension `json:"dimensions,omitempty"`
 	// AggregationType - Aggregation type could be Average.
@@ -2263,6 +2308,8 @@ type PoolProperties struct {
 	QosType QosType `json:"qosType,omitempty"`
 	// CoolAccess - If enabled (true) the pool can contain cool Access enabled volumes.
 	CoolAccess *bool `json:"coolAccess,omitempty"`
+	// EncryptionType - Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool. Possible values include: 'EncryptionTypeSingle', 'EncryptionTypeDouble'
+	EncryptionType EncryptionType `json:"encryptionType,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for PoolProperties.
@@ -2279,6 +2326,9 @@ func (pp PoolProperties) MarshalJSON() ([]byte, error) {
 	}
 	if pp.CoolAccess != nil {
 		objectMap["coolAccess"] = pp.CoolAccess
+	}
+	if pp.EncryptionType != "" {
+		objectMap["encryptionType"] = pp.EncryptionType
 	}
 	return json.Marshal(objectMap)
 }
@@ -2684,6 +2734,8 @@ type SnapshotPolicy struct {
 	ID *string `json:"id,omitempty"`
 	// Name - READ-ONLY; Resource name
 	Name *string `json:"name,omitempty"`
+	// Etag - READ-ONLY; A unique read-only string that changes whenever the resource is updated.
+	Etag *string `json:"etag,omitempty"`
 	// Type - READ-ONLY; Resource type
 	Type *string `json:"type,omitempty"`
 	// Tags - Resource tags
@@ -2742,6 +2794,15 @@ func (sp *SnapshotPolicy) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				sp.Name = &name
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				sp.Etag = &etag
 			}
 		case "type":
 			if v != nil {
@@ -3290,6 +3351,8 @@ type Volume struct {
 	ID *string `json:"id,omitempty"`
 	// Name - READ-ONLY; Resource name
 	Name *string `json:"name,omitempty"`
+	// Etag - READ-ONLY; A unique read-only string that changes whenever the resource is updated.
+	Etag *string `json:"etag,omitempty"`
 	// Type - READ-ONLY; Resource type
 	Type *string `json:"type,omitempty"`
 	// Tags - Resource tags
@@ -3348,6 +3411,15 @@ func (vVar *Volume) UnmarshalJSON(body []byte) error {
 					return err
 				}
 				vVar.Name = &name
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				vVar.Etag = &etag
 			}
 		case "type":
 			if v != nil {

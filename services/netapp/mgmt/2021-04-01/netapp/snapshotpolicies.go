@@ -98,6 +98,7 @@ func (client SnapshotPoliciesClient) CreatePreparer(ctx context.Context, body Sn
 
 	body.ID = nil
 	body.Name = nil
+	body.Etag = nil
 	body.Type = nil
 	preparer := autorest.CreatePreparer(
 		autorest.AsContentType("application/json; charset=utf-8"),
@@ -461,6 +462,92 @@ func (client SnapshotPoliciesClient) ListVolumesSender(req *http.Request) (*http
 // ListVolumesResponder handles the response to the ListVolumes request. The method always
 // closes the http.Response Body.
 func (client SnapshotPoliciesClient) ListVolumesResponder(resp *http.Response) (result SnapshotPolicyVolumeList, err error) {
+	err = autorest.Respond(
+		resp,
+		azure.WithErrorUnlessStatusCode(http.StatusOK),
+		autorest.ByUnmarshallingJSON(&result),
+		autorest.ByClosing())
+	result.Response = autorest.Response{Response: resp}
+	return
+}
+
+// ListVolumesOldVersion get volumes associated with snapshot policy, older version for backwards compatibility
+// Parameters:
+// resourceGroupName - the name of the resource group.
+// accountName - the name of the NetApp account
+// snapshotPolicyName - the name of the snapshot policy target
+func (client SnapshotPoliciesClient) ListVolumesOldVersion(ctx context.Context, resourceGroupName string, accountName string, snapshotPolicyName string) (result SnapshotPolicyVolumeList, err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/SnapshotPoliciesClient.ListVolumesOldVersion")
+		defer func() {
+			sc := -1
+			if result.Response.Response != nil {
+				sc = result.Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	if err := validation.Validate([]validation.Validation{
+		{TargetValue: resourceGroupName,
+			Constraints: []validation.Constraint{{Target: "resourceGroupName", Name: validation.MaxLength, Rule: 90, Chain: nil},
+				{Target: "resourceGroupName", Name: validation.MinLength, Rule: 1, Chain: nil},
+				{Target: "resourceGroupName", Name: validation.Pattern, Rule: `^[-\w\._\(\)]+$`, Chain: nil}}}}); err != nil {
+		return result, validation.NewError("netapp.SnapshotPoliciesClient", "ListVolumesOldVersion", err.Error())
+	}
+
+	req, err := client.ListVolumesOldVersionPreparer(ctx, resourceGroupName, accountName, snapshotPolicyName)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "netapp.SnapshotPoliciesClient", "ListVolumesOldVersion", nil, "Failure preparing request")
+		return
+	}
+
+	resp, err := client.ListVolumesOldVersionSender(req)
+	if err != nil {
+		result.Response = autorest.Response{Response: resp}
+		err = autorest.NewErrorWithError(err, "netapp.SnapshotPoliciesClient", "ListVolumesOldVersion", resp, "Failure sending request")
+		return
+	}
+
+	result, err = client.ListVolumesOldVersionResponder(resp)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "netapp.SnapshotPoliciesClient", "ListVolumesOldVersion", resp, "Failure responding to request")
+		return
+	}
+
+	return
+}
+
+// ListVolumesOldVersionPreparer prepares the ListVolumesOldVersion request.
+func (client SnapshotPoliciesClient) ListVolumesOldVersionPreparer(ctx context.Context, resourceGroupName string, accountName string, snapshotPolicyName string) (*http.Request, error) {
+	pathParameters := map[string]interface{}{
+		"accountName":        autorest.Encode("path", accountName),
+		"resourceGroupName":  autorest.Encode("path", resourceGroupName),
+		"snapshotPolicyName": autorest.Encode("path", snapshotPolicyName),
+		"subscriptionId":     autorest.Encode("path", client.SubscriptionID),
+	}
+
+	const APIVersion = "2021-04-01"
+	queryParameters := map[string]interface{}{
+		"api-version": APIVersion,
+	}
+
+	preparer := autorest.CreatePreparer(
+		autorest.AsGet(),
+		autorest.WithBaseURL(client.BaseURI),
+		autorest.WithPathParameters("/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/snapshotPolicies/{snapshotPolicyName}/listVolumes", pathParameters),
+		autorest.WithQueryParameters(queryParameters))
+	return preparer.Prepare((&http.Request{}).WithContext(ctx))
+}
+
+// ListVolumesOldVersionSender sends the ListVolumesOldVersion request. The method will close the
+// http.Response Body if it receives an error.
+func (client SnapshotPoliciesClient) ListVolumesOldVersionSender(req *http.Request) (*http.Response, error) {
+	return client.Send(req, azure.DoRetryWithRegistration(client.Client))
+}
+
+// ListVolumesOldVersionResponder handles the response to the ListVolumesOldVersion request. The method always
+// closes the http.Response Body.
+func (client SnapshotPoliciesClient) ListVolumesOldVersionResponder(resp *http.Response) (result SnapshotPolicyVolumeList, err error) {
 	err = autorest.Respond(
 		resp,
 		azure.WithErrorUnlessStatusCode(http.StatusOK),
