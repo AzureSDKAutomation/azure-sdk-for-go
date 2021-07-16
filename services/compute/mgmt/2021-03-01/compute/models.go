@@ -4289,6 +4289,49 @@ func (drp *DiskRestorePoint) UnmarshalJSON(body []byte) error {
 	return nil
 }
 
+// DiskRestorePointGrantAccessFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type DiskRestorePointGrantAccessFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(DiskRestorePointClient) (AccessURI, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *DiskRestorePointGrantAccessFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for DiskRestorePointGrantAccessFuture.Result.
+func (future *DiskRestorePointGrantAccessFuture) result(client DiskRestorePointClient) (au AccessURI, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "compute.DiskRestorePointGrantAccessFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		au.Response.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("compute.DiskRestorePointGrantAccessFuture")
+		return
+	}
+	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+	if au.Response.Response, err = future.GetResult(sender); err == nil && au.Response.Response.StatusCode != http.StatusNoContent {
+		au, err = client.GrantAccessResponder(au.Response.Response)
+		if err != nil {
+			err = autorest.NewErrorWithError(err, "compute.DiskRestorePointGrantAccessFuture", "Result", au.Response.Response, "Failure responding to request")
+		}
+	}
+	return
+}
+
 // DiskRestorePointList the List Disk Restore Points operation response.
 type DiskRestorePointList struct {
 	autorest.Response `json:"-"`
@@ -4483,6 +4526,43 @@ func (drpp DiskRestorePointProperties) MarshalJSON() ([]byte, error) {
 		objectMap["supportsHibernation"] = drpp.SupportsHibernation
 	}
 	return json.Marshal(objectMap)
+}
+
+// DiskRestorePointRevokeAccessFuture an abstraction for monitoring and retrieving the results of a
+// long-running operation.
+type DiskRestorePointRevokeAccessFuture struct {
+	azure.FutureAPI
+	// Result returns the result of the asynchronous operation.
+	// If the operation has not completed it will return an error.
+	Result func(DiskRestorePointClient) (autorest.Response, error)
+}
+
+// UnmarshalJSON is the custom unmarshaller for CreateFuture.
+func (future *DiskRestorePointRevokeAccessFuture) UnmarshalJSON(body []byte) error {
+	var azFuture azure.Future
+	if err := json.Unmarshal(body, &azFuture); err != nil {
+		return err
+	}
+	future.FutureAPI = &azFuture
+	future.Result = future.result
+	return nil
+}
+
+// result is the default implementation for DiskRestorePointRevokeAccessFuture.Result.
+func (future *DiskRestorePointRevokeAccessFuture) result(client DiskRestorePointClient) (ar autorest.Response, err error) {
+	var done bool
+	done, err = future.DoneWithContext(context.Background(), client)
+	if err != nil {
+		err = autorest.NewErrorWithError(err, "compute.DiskRestorePointRevokeAccessFuture", "Result", future.Response(), "Polling failure")
+		return
+	}
+	if !done {
+		ar.Response = future.Response()
+		err = azure.NewAsyncOpIncompleteError("compute.DiskRestorePointRevokeAccessFuture")
+		return
+	}
+	ar.Response = future.Response()
+	return
 }
 
 // DisksCreateOrUpdateFuture an abstraction for monitoring and retrieving the results of a long-running
@@ -8153,6 +8233,8 @@ type ImageReference struct {
 	Version *string `json:"version,omitempty"`
 	// ExactVersion - READ-ONLY; Specifies in decimal numbers, the version of platform image or marketplace image used to create the virtual machine. This readonly field differs from 'version', only if the value specified in 'version' field is 'latest'.
 	ExactVersion *string `json:"exactVersion,omitempty"`
+	// SharedGalleryImageID - Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.
+	SharedGalleryImageID *string `json:"sharedGalleryImageId,omitempty"`
 	// ID - Resource Id
 	ID *string `json:"id,omitempty"`
 }
@@ -8171,6 +8253,9 @@ func (ir ImageReference) MarshalJSON() ([]byte, error) {
 	}
 	if ir.Version != nil {
 		objectMap["version"] = ir.Version
+	}
+	if ir.SharedGalleryImageID != nil {
+		objectMap["sharedGalleryImageId"] = ir.SharedGalleryImageID
 	}
 	if ir.ID != nil {
 		objectMap["id"] = ir.ID
@@ -8879,7 +8964,7 @@ type ManagedArtifact struct {
 
 // ManagedDiskParameters the parameters of a managed disk.
 type ManagedDiskParameters struct {
-	// StorageAccountType - Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. Possible values include: 'StorageAccountTypesStandardLRS', 'StorageAccountTypesPremiumLRS', 'StorageAccountTypesStandardSSDLRS', 'StorageAccountTypesUltraSSDLRS', 'StorageAccountTypesPremiumZRS', 'StorageAccountTypesStandardSSDZRS'
+	// StorageAccountType - Specifies the storage account type for the managed disk. Managed OS disk storage account type can only be set when you create the scale set. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. Possible values include: 'StorageAccountTypesStandardLRS', 'StorageAccountTypesPremiumLRS', 'StorageAccountTypesStandardSSDLRS', 'StorageAccountTypesUltraSSDLRS', 'StorageAccountTypesPremiumZRS', 'StorageAccountTypesStandardSSDZRS'
 	StorageAccountType StorageAccountTypes `json:"storageAccountType,omitempty"`
 	// DiskEncryptionSet - Specifies the customer managed disk encryption set resource id for the managed disk.
 	DiskEncryptionSet *DiskEncryptionSetParameters `json:"diskEncryptionSet,omitempty"`
@@ -10393,10 +10478,10 @@ func (pr ProxyResource) MarshalJSON() ([]byte, error) {
 
 // PublicIPAddressSku describes the public IP Sku
 type PublicIPAddressSku struct {
-	// PublicIPAddressSkuName - Specify public IP sku name. Possible values include: 'PublicIPAddressSkuNameBasic', 'PublicIPAddressSkuNameStandard'
-	PublicIPAddressSkuName PublicIPAddressSkuName `json:"publicIPAddressSkuName,omitempty"`
-	// PublicIPAddressSkuTier - Specify public IP sku tier. Possible values include: 'PublicIPAddressSkuTierRegional', 'PublicIPAddressSkuTierGlobal'
-	PublicIPAddressSkuTier PublicIPAddressSkuTier `json:"publicIPAddressSkuTier,omitempty"`
+	// Name - Specify public IP sku name. Possible values include: 'PublicIPAddressSkuNameBasic', 'PublicIPAddressSkuNameStandard'
+	Name PublicIPAddressSkuName `json:"name,omitempty"`
+	// Tier - Specify public IP sku tier. Possible values include: 'PublicIPAddressSkuTierRegional', 'PublicIPAddressSkuTierGlobal'
+	Tier PublicIPAddressSkuTier `json:"tier,omitempty"`
 }
 
 // PurchasePlan used for establishing the purchase context of any 3rd Party artifact through MarketPlace.
@@ -11016,17 +11101,8 @@ func NewResourceURIListPage(cur ResourceURIList, getNextPage func(context.Contex
 
 // RestorePoint restore Point details.
 type RestorePoint struct {
-	autorest.Response `json:"-"`
-	// SourceMetadata - READ-ONLY; Gets the details of the VM captured at the time of the restore point creation.
-	SourceMetadata *RestorePointSourceMetadata `json:"sourceMetadata,omitempty"`
-	// ProvisioningState - READ-ONLY; Gets the provisioning state of the restore point.
-	ProvisioningState *string `json:"provisioningState,omitempty"`
-	// ConsistencyMode - READ-ONLY; Gets the consistency mode for the restore point. Please refer to https://aka.ms/RestorePoints for more details. Possible values include: 'ConsistencyModeTypesCrashConsistent', 'ConsistencyModeTypesFileSystemConsistent', 'ConsistencyModeTypesApplicationConsistent'
-	ConsistencyMode ConsistencyModeTypes `json:"consistencyMode,omitempty"`
-	// ProvisioningDetails - READ-ONLY; Gets the provisioning details set by the server during Create restore point operation.
-	ProvisioningDetails *RestorePointProvisioningDetails `json:"provisioningDetails,omitempty"`
-	// ExcludeDisks - List of disk resource ids that the customer wishes to exclude from the restore point. If no disks are specified, all disks will be included.
-	ExcludeDisks *[]APIEntityReference `json:"excludeDisks,omitempty"`
+	autorest.Response       `json:"-"`
+	*RestorePointProperties `json:"properties,omitempty"`
 	// ID - READ-ONLY; Resource Id
 	ID *string `json:"id,omitempty"`
 	// Name - READ-ONLY; Resource name
@@ -11038,10 +11114,61 @@ type RestorePoint struct {
 // MarshalJSON is the custom marshaler for RestorePoint.
 func (rp RestorePoint) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
-	if rp.ExcludeDisks != nil {
-		objectMap["excludeDisks"] = rp.ExcludeDisks
+	if rp.RestorePointProperties != nil {
+		objectMap["properties"] = rp.RestorePointProperties
 	}
 	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for RestorePoint struct.
+func (rp *RestorePoint) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "properties":
+			if v != nil {
+				var restorePointProperties RestorePointProperties
+				err = json.Unmarshal(*v, &restorePointProperties)
+				if err != nil {
+					return err
+				}
+				rp.RestorePointProperties = &restorePointProperties
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				rp.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				rp.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				rp.Type = &typeVar
+			}
+		}
+	}
+
+	return nil
 }
 
 // RestorePointCollection create or update Restore Point collection parameters.
@@ -11431,6 +11558,29 @@ func (rpcu *RestorePointCollectionUpdate) UnmarshalJSON(body []byte) error {
 	return nil
 }
 
+// RestorePointProperties the restore point properties.
+type RestorePointProperties struct {
+	// ExcludeDisks - List of disk resource ids that the customer wishes to exclude from the restore point. If no disks are specified, all disks will be included.
+	ExcludeDisks *[]APIEntityReference `json:"excludeDisks,omitempty"`
+	// SourceMetadata - READ-ONLY; Gets the details of the VM captured at the time of the restore point creation.
+	SourceMetadata *RestorePointSourceMetadata `json:"sourceMetadata,omitempty"`
+	// ProvisioningState - READ-ONLY; Gets the provisioning state of the restore point.
+	ProvisioningState *string `json:"provisioningState,omitempty"`
+	// ConsistencyMode - READ-ONLY; Gets the consistency mode for the restore point. Please refer to https://aka.ms/RestorePoints for more details. Possible values include: 'ConsistencyModeTypesCrashConsistent', 'ConsistencyModeTypesFileSystemConsistent', 'ConsistencyModeTypesApplicationConsistent'
+	ConsistencyMode ConsistencyModeTypes `json:"consistencyMode,omitempty"`
+	// ProvisioningDetails - READ-ONLY; Gets the provisioning details set by the server during Create restore point operation.
+	ProvisioningDetails *RestorePointProvisioningDetails `json:"provisioningDetails,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for RestorePointProperties.
+func (rpp RestorePointProperties) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if rpp.ExcludeDisks != nil {
+		objectMap["excludeDisks"] = rpp.ExcludeDisks
+	}
+	return json.Marshal(objectMap)
+}
+
 // RestorePointProvisioningDetails restore Point Provisioning details.
 type RestorePointProvisioningDetails struct {
 	// CreationTime - Gets the creation time of the restore point.
@@ -11541,6 +11691,8 @@ type RestorePointSourceMetadata struct {
 	VMID *string `json:"vmId,omitempty"`
 	// SecurityProfile - Gets the security profile.
 	SecurityProfile *SecurityProfile `json:"securityProfile,omitempty"`
+	// Location - Location of the VM from which the restore point was created.
+	Location *string `json:"location,omitempty"`
 }
 
 // RestorePointSourceVMDataDisk describes a data disk.
