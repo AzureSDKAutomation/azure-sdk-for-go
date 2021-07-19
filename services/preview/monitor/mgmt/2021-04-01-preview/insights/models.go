@@ -1001,6 +1001,8 @@ type AutoscaleSetting struct {
 	Name *string `json:"name,omitempty"`
 	// TargetResourceURI - the resource identifier of the resource that the autoscale setting should be added to.
 	TargetResourceURI *string `json:"targetResourceUri,omitempty"`
+	// TargetResourceLocation - the location of the resource that the autoscale setting should be added to.
+	TargetResourceLocation *string `json:"targetResourceLocation,omitempty"`
 }
 
 // AutoscaleSettingResource the autoscale setting resource.
@@ -5944,9 +5946,11 @@ type MetricTrigger struct {
 	MetricNamespace *string `json:"metricNamespace,omitempty"`
 	// MetricResourceURI - the resource identifier of the resource the rule monitors.
 	MetricResourceURI *string `json:"metricResourceUri,omitempty"`
+	// MetricResourceLocation - the location of the resource the rule monitors.
+	MetricResourceLocation *string `json:"metricResourceLocation,omitempty"`
 	// TimeGrain - the granularity of metrics the rule monitors. Must be one of the predefined values returned from metric definitions for the metric. Must be between 12 hours and 1 minute.
 	TimeGrain *string `json:"timeGrain,omitempty"`
-	// Statistic - the metric statistic type. How the metrics from multiple instances are combined. Possible values include: 'MetricStatisticTypeAverage', 'MetricStatisticTypeMin', 'MetricStatisticTypeMax', 'MetricStatisticTypeSum'
+	// Statistic - the metric statistic type. How the metrics from multiple instances are combined. Possible values include: 'MetricStatisticTypeAverage', 'MetricStatisticTypeMin', 'MetricStatisticTypeMax', 'MetricStatisticTypeSum', 'MetricStatisticTypeCount'
 	Statistic MetricStatisticType `json:"statistic,omitempty"`
 	// TimeWindow - the range of time in which instance data is collected. This value must be greater than the delay in metric collection, which can vary from resource-to-resource. Must be between 12 hours and 5 minutes.
 	TimeWindow *string `json:"timeWindow,omitempty"`
@@ -7737,7 +7741,7 @@ func (rwa RuleWebhookAction) AsBasicRuleAction() (BasicRuleAction, bool) {
 type ScaleAction struct {
 	// Direction - the scale direction. Whether the scaling action increases or decreases the number of instances. Possible values include: 'ScaleDirectionNone', 'ScaleDirectionIncrease', 'ScaleDirectionDecrease'
 	Direction ScaleDirection `json:"direction,omitempty"`
-	// Type - the type of action that should occur when the scale rule fires. Possible values include: 'ScaleTypeChangeCount', 'ScaleTypePercentChangeCount', 'ScaleTypeExactCount'
+	// Type - the type of action that should occur when the scale rule fires. Possible values include: 'ScaleTypeChangeCount', 'ScaleTypePercentChangeCount', 'ScaleTypeExactCount', 'ScaleTypeServiceAllowedNextValue'
 	Type ScaleType `json:"type,omitempty"`
 	// Value - the number of instances that are involved in the scaling action. This value must be 1 or greater. The default value is 1.
 	Value *string `json:"value,omitempty"`
