@@ -108,7 +108,8 @@ func (client TrainClient) GetStatusResponder(resp *http.Response) (result ListMo
 // Parameters:
 // appID - the application ID.
 // versionID - the version ID.
-func (client TrainClient) TrainVersion(ctx context.Context, appID uuid.UUID, versionID string) (result EnqueueTrainingResponse, err error) {
+// mode - an enum value specifying mode of training.
+func (client TrainClient) TrainVersion(ctx context.Context, appID uuid.UUID, versionID string, mode string) (result EnqueueTrainingResponse, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/TrainClient.TrainVersion")
 		defer func() {
@@ -119,7 +120,7 @@ func (client TrainClient) TrainVersion(ctx context.Context, appID uuid.UUID, ver
 			tracing.EndSpan(ctx, sc, err)
 		}()
 	}
-	req, err := client.TrainVersionPreparer(ctx, appID, versionID)
+	req, err := client.TrainVersionPreparer(ctx, appID, versionID, mode)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "authoring.TrainClient", "TrainVersion", nil, "Failure preparing request")
 		return
@@ -142,7 +143,7 @@ func (client TrainClient) TrainVersion(ctx context.Context, appID uuid.UUID, ver
 }
 
 // TrainVersionPreparer prepares the TrainVersion request.
-func (client TrainClient) TrainVersionPreparer(ctx context.Context, appID uuid.UUID, versionID string) (*http.Request, error) {
+func (client TrainClient) TrainVersionPreparer(ctx context.Context, appID uuid.UUID, versionID string, mode string) (*http.Request, error) {
 	urlParameters := map[string]interface{}{
 		"Endpoint": client.Endpoint,
 	}
@@ -152,10 +153,16 @@ func (client TrainClient) TrainVersionPreparer(ctx context.Context, appID uuid.U
 		"versionId": autorest.Encode("path", versionID),
 	}
 
+	queryParameters := map[string]interface{}{}
+	if len(mode) > 0 {
+		queryParameters["mode"] = autorest.Encode("query", mode)
+	}
+
 	preparer := autorest.CreatePreparer(
 		autorest.AsPost(),
 		autorest.WithCustomBaseURL("{Endpoint}/luis/authoring/v3.0-preview", urlParameters),
-		autorest.WithPathParameters("/apps/{appId}/versions/{versionId}/train", pathParameters))
+		autorest.WithPathParameters("/apps/{appId}/versions/{versionId}/train", pathParameters),
+		autorest.WithQueryParameters(queryParameters))
 	return preparer.Prepare((&http.Request{}).WithContext(ctx))
 }
 
