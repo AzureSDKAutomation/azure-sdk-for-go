@@ -1,5 +1,5 @@
 {
-  "commit": "3c764635e7d442b3e74caf593029fcd440b3ef82",
+  "commit": "affc19e0aa7ecf6652d3b41e2da5225872fd6da2",
   "readme": "/_/azure-rest-api-specs/specification/hanaonazure/resource-manager/readme.md",
   "tag": "package-2017-11",
   "use": "@microsoft.azure/autorest.go@2.1.183",

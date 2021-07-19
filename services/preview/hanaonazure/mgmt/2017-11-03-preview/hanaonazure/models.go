@@ -19,7 +19,7 @@ import (
 // The package's fully qualified name.
 const fqdn = "github.com/Azure/azure-sdk-for-go/services/preview/hanaonazure/mgmt/2017-11-03-preview/hanaonazure"
 
-// Disk specifies the disk information fo the HANA instance
+// Disk specifies the disk information for the HANA instance
 type Disk struct {
 	// Name - The disk name.
 	Name *string `json:"name,omitempty"`
@@ -63,10 +63,22 @@ func (d Display) MarshalJSON() ([]byte, error) {
 
 // ErrorResponse describes the format of Error response.
 type ErrorResponse struct {
-	// Code - Error code
+	// Error - Describes the error object.
+	Error *ErrorResponseError `json:"error,omitempty"`
+}
+
+// ErrorResponseError describes the error object.
+type ErrorResponseError struct {
+	// Code - READ-ONLY; Error code
 	Code *string `json:"code,omitempty"`
-	// Message - Error message indicating why the operation failed.
+	// Message - READ-ONLY; Error message indicating why the operation failed.
 	Message *string `json:"message,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for ErrorResponseError.
+func (er ErrorResponseError) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	return json.Marshal(objectMap)
 }
 
 // HanaInstance HANA instance info on Azure (ARM properties and HANA properties)
@@ -82,7 +94,7 @@ type HanaInstance struct {
 	Type *string `json:"type,omitempty"`
 	// Location - Resource location
 	Location *string `json:"location,omitempty"`
-	// Tags - READ-ONLY; Resource tags
+	// Tags - Resource tags
 	Tags map[string]*string `json:"tags"`
 }
 
@@ -94,6 +106,9 @@ func (hi HanaInstance) MarshalJSON() ([]byte, error) {
 	}
 	if hi.Location != nil {
 		objectMap["location"] = hi.Location
+	}
+	if hi.Tags != nil {
+		objectMap["tags"] = hi.Tags
 	}
 	return json.Marshal(objectMap)
 }
@@ -621,6 +636,8 @@ type Operation struct {
 	Name *string `json:"name,omitempty"`
 	// Display - Displayed HANA operation information
 	Display *Display `json:"display,omitempty"`
+	// IsDataAction - READ-ONLY; Indicates whether the operation applies to data-plane.
+	IsDataAction *bool `json:"isDataAction,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for Operation.
@@ -673,7 +690,7 @@ type Resource struct {
 	Type *string `json:"type,omitempty"`
 	// Location - Resource location
 	Location *string `json:"location,omitempty"`
-	// Tags - READ-ONLY; Resource tags
+	// Tags - Resource tags
 	Tags map[string]*string `json:"tags"`
 }
 
@@ -683,423 +700,42 @@ func (r Resource) MarshalJSON() ([]byte, error) {
 	if r.Location != nil {
 		objectMap["location"] = r.Location
 	}
+	if r.Tags != nil {
+		objectMap["tags"] = r.Tags
+	}
 	return json.Marshal(objectMap)
 }
 
-// SapMonitor SAP monitor info on Azure (ARM properties and SAP monitor properties)
-type SapMonitor struct {
-	autorest.Response `json:"-"`
-	// SapMonitorProperties - SAP monitor properties
-	*SapMonitorProperties `json:"properties,omitempty"`
-	// ID - READ-ONLY; Resource ID
-	ID *string `json:"id,omitempty"`
-	// Name - READ-ONLY; Resource name
-	Name *string `json:"name,omitempty"`
-	// Type - READ-ONLY; Resource type
-	Type *string `json:"type,omitempty"`
-	// Location - Resource location
-	Location *string `json:"location,omitempty"`
-	// Tags - READ-ONLY; Resource tags
-	Tags map[string]*string `json:"tags"`
+// SAPSystemID specifies information related to a SAP system ID
+type SAPSystemID struct {
+	// Gid - Group ID of the HANA database user.
+	Gid *string `json:"gid,omitempty"`
+	// MemoryAllocation - READ-ONLY; Percent of memory to allocate to this SID.
+	MemoryAllocation *string `json:"memoryAllocation,omitempty"`
+	// Sid - SAP system ID as database identifier.
+	Sid *string `json:"sid,omitempty"`
+	// Username - Name of the HANA database user.
+	Username *string `json:"username,omitempty"`
+	// UID - User ID of the HANA database user.
+	UID *string `json:"uid,omitempty"`
 }
 
-// MarshalJSON is the custom marshaler for SapMonitor.
-func (sm SapMonitor) MarshalJSON() ([]byte, error) {
+// MarshalJSON is the custom marshaler for SAPSystemID.
+func (ssi SAPSystemID) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
-	if sm.SapMonitorProperties != nil {
-		objectMap["properties"] = sm.SapMonitorProperties
+	if ssi.Gid != nil {
+		objectMap["gid"] = ssi.Gid
 	}
-	if sm.Location != nil {
-		objectMap["location"] = sm.Location
+	if ssi.Sid != nil {
+		objectMap["sid"] = ssi.Sid
 	}
-	return json.Marshal(objectMap)
-}
-
-// UnmarshalJSON is the custom unmarshaler for SapMonitor struct.
-func (sm *SapMonitor) UnmarshalJSON(body []byte) error {
-	var m map[string]*json.RawMessage
-	err := json.Unmarshal(body, &m)
-	if err != nil {
-		return err
+	if ssi.Username != nil {
+		objectMap["username"] = ssi.Username
 	}
-	for k, v := range m {
-		switch k {
-		case "properties":
-			if v != nil {
-				var sapMonitorProperties SapMonitorProperties
-				err = json.Unmarshal(*v, &sapMonitorProperties)
-				if err != nil {
-					return err
-				}
-				sm.SapMonitorProperties = &sapMonitorProperties
-			}
-		case "id":
-			if v != nil {
-				var ID string
-				err = json.Unmarshal(*v, &ID)
-				if err != nil {
-					return err
-				}
-				sm.ID = &ID
-			}
-		case "name":
-			if v != nil {
-				var name string
-				err = json.Unmarshal(*v, &name)
-				if err != nil {
-					return err
-				}
-				sm.Name = &name
-			}
-		case "type":
-			if v != nil {
-				var typeVar string
-				err = json.Unmarshal(*v, &typeVar)
-				if err != nil {
-					return err
-				}
-				sm.Type = &typeVar
-			}
-		case "location":
-			if v != nil {
-				var location string
-				err = json.Unmarshal(*v, &location)
-				if err != nil {
-					return err
-				}
-				sm.Location = &location
-			}
-		case "tags":
-			if v != nil {
-				var tags map[string]*string
-				err = json.Unmarshal(*v, &tags)
-				if err != nil {
-					return err
-				}
-				sm.Tags = tags
-			}
-		}
-	}
-
-	return nil
-}
-
-// SapMonitorListResult the response from the List SAP monitors operation.
-type SapMonitorListResult struct {
-	autorest.Response `json:"-"`
-	// Value - The list of SAP monitors.
-	Value *[]SapMonitor `json:"value,omitempty"`
-	// NextLink - The URL to get the next set of SAP monitors.
-	NextLink *string `json:"nextLink,omitempty"`
-}
-
-// SapMonitorListResultIterator provides access to a complete listing of SapMonitor values.
-type SapMonitorListResultIterator struct {
-	i    int
-	page SapMonitorListResultPage
-}
-
-// NextWithContext advances to the next value.  If there was an error making
-// the request the iterator does not advance and the error is returned.
-func (iter *SapMonitorListResultIterator) NextWithContext(ctx context.Context) (err error) {
-	if tracing.IsEnabled() {
-		ctx = tracing.StartSpan(ctx, fqdn+"/SapMonitorListResultIterator.NextWithContext")
-		defer func() {
-			sc := -1
-			if iter.Response().Response.Response != nil {
-				sc = iter.Response().Response.Response.StatusCode
-			}
-			tracing.EndSpan(ctx, sc, err)
-		}()
-	}
-	iter.i++
-	if iter.i < len(iter.page.Values()) {
-		return nil
-	}
-	err = iter.page.NextWithContext(ctx)
-	if err != nil {
-		iter.i--
-		return err
-	}
-	iter.i = 0
-	return nil
-}
-
-// Next advances to the next value.  If there was an error making
-// the request the iterator does not advance and the error is returned.
-// Deprecated: Use NextWithContext() instead.
-func (iter *SapMonitorListResultIterator) Next() error {
-	return iter.NextWithContext(context.Background())
-}
-
-// NotDone returns true if the enumeration should be started or is not yet complete.
-func (iter SapMonitorListResultIterator) NotDone() bool {
-	return iter.page.NotDone() && iter.i < len(iter.page.Values())
-}
-
-// Response returns the raw server response from the last page request.
-func (iter SapMonitorListResultIterator) Response() SapMonitorListResult {
-	return iter.page.Response()
-}
-
-// Value returns the current value or a zero-initialized value if the
-// iterator has advanced beyond the end of the collection.
-func (iter SapMonitorListResultIterator) Value() SapMonitor {
-	if !iter.page.NotDone() {
-		return SapMonitor{}
-	}
-	return iter.page.Values()[iter.i]
-}
-
-// Creates a new instance of the SapMonitorListResultIterator type.
-func NewSapMonitorListResultIterator(page SapMonitorListResultPage) SapMonitorListResultIterator {
-	return SapMonitorListResultIterator{page: page}
-}
-
-// IsEmpty returns true if the ListResult contains no values.
-func (smlr SapMonitorListResult) IsEmpty() bool {
-	return smlr.Value == nil || len(*smlr.Value) == 0
-}
-
-// hasNextLink returns true if the NextLink is not empty.
-func (smlr SapMonitorListResult) hasNextLink() bool {
-	return smlr.NextLink != nil && len(*smlr.NextLink) != 0
-}
-
-// sapMonitorListResultPreparer prepares a request to retrieve the next set of results.
-// It returns nil if no more results exist.
-func (smlr SapMonitorListResult) sapMonitorListResultPreparer(ctx context.Context) (*http.Request, error) {
-	if !smlr.hasNextLink() {
-		return nil, nil
-	}
-	return autorest.Prepare((&http.Request{}).WithContext(ctx),
-		autorest.AsJSON(),
-		autorest.AsGet(),
-		autorest.WithBaseURL(to.String(smlr.NextLink)))
-}
-
-// SapMonitorListResultPage contains a page of SapMonitor values.
-type SapMonitorListResultPage struct {
-	fn   func(context.Context, SapMonitorListResult) (SapMonitorListResult, error)
-	smlr SapMonitorListResult
-}
-
-// NextWithContext advances to the next page of values.  If there was an error making
-// the request the page does not advance and the error is returned.
-func (page *SapMonitorListResultPage) NextWithContext(ctx context.Context) (err error) {
-	if tracing.IsEnabled() {
-		ctx = tracing.StartSpan(ctx, fqdn+"/SapMonitorListResultPage.NextWithContext")
-		defer func() {
-			sc := -1
-			if page.Response().Response.Response != nil {
-				sc = page.Response().Response.Response.StatusCode
-			}
-			tracing.EndSpan(ctx, sc, err)
-		}()
-	}
-	for {
-		next, err := page.fn(ctx, page.smlr)
-		if err != nil {
-			return err
-		}
-		page.smlr = next
-		if !next.hasNextLink() || !next.IsEmpty() {
-			break
-		}
-	}
-	return nil
-}
-
-// Next advances to the next page of values.  If there was an error making
-// the request the page does not advance and the error is returned.
-// Deprecated: Use NextWithContext() instead.
-func (page *SapMonitorListResultPage) Next() error {
-	return page.NextWithContext(context.Background())
-}
-
-// NotDone returns true if the page enumeration should be started or is not yet complete.
-func (page SapMonitorListResultPage) NotDone() bool {
-	return !page.smlr.IsEmpty()
-}
-
-// Response returns the raw server response from the last page request.
-func (page SapMonitorListResultPage) Response() SapMonitorListResult {
-	return page.smlr
-}
-
-// Values returns the slice of values for the current page or nil if there are no values.
-func (page SapMonitorListResultPage) Values() []SapMonitor {
-	if page.smlr.IsEmpty() {
-		return nil
-	}
-	return *page.smlr.Value
-}
-
-// Creates a new instance of the SapMonitorListResultPage type.
-func NewSapMonitorListResultPage(cur SapMonitorListResult, getNextPage func(context.Context, SapMonitorListResult) (SapMonitorListResult, error)) SapMonitorListResultPage {
-	return SapMonitorListResultPage{
-		fn:   getNextPage,
-		smlr: cur,
-	}
-}
-
-// SapMonitorProperties describes the properties of a SAP monitor.
-type SapMonitorProperties struct {
-	// HanaSubnet - Specifies the SAP monitor unique ID.
-	HanaSubnet *string `json:"hanaSubnet,omitempty"`
-	// HanaHostname - Hostname of the HANA instance.
-	HanaHostname *string `json:"hanaHostname,omitempty"`
-	// HanaDbName - Database name of the HANA instance.
-	HanaDbName *string `json:"hanaDbName,omitempty"`
-	// HanaDbSQLPort - Database port of the HANA instance.
-	HanaDbSQLPort *int32 `json:"hanaDbSqlPort,omitempty"`
-	// HanaDbUsername - Database username of the HANA instance.
-	HanaDbUsername *string `json:"hanaDbUsername,omitempty"`
-	// HanaDbPassword - Database password of the HANA instance.
-	HanaDbPassword *string `json:"hanaDbPassword,omitempty"`
-	// HanaDbPasswordKeyVaultURL - KeyVault URL link to the password for the HANA database.
-	HanaDbPasswordKeyVaultURL *string `json:"hanaDbPasswordKeyVaultUrl,omitempty"`
-	// HanaDbCredentialsMsiID - MSI ID passed by customer which has access to customer's KeyVault and to be assigned to the Collector VM.
-	HanaDbCredentialsMsiID *string `json:"hanaDbCredentialsMsiId,omitempty"`
-	// KeyVaultID - Key Vault ID containing customer's HANA credentials.
-	KeyVaultID *string `json:"keyVaultId,omitempty"`
-	// ProvisioningState - READ-ONLY; State of provisioning of the HanaInstance. Possible values include: 'Accepted', 'Creating', 'Updating', 'Failed', 'Succeeded', 'Deleting', 'Migrating'
-	ProvisioningState HanaProvisioningStatesEnum `json:"provisioningState,omitempty"`
-	// ManagedResourceGroupName - READ-ONLY; The name of the resource group the SAP Monitor resources get deployed into.
-	ManagedResourceGroupName *string `json:"managedResourceGroupName,omitempty"`
-	// LogAnalyticsWorkspaceArmID - The ARM ID of the Log Analytics Workspace that is used for monitoring
-	LogAnalyticsWorkspaceArmID *string `json:"logAnalyticsWorkspaceArmId,omitempty"`
-	// EnableCustomerAnalytics - The value indicating whether to send analytics to Microsoft
-	EnableCustomerAnalytics *bool `json:"enableCustomerAnalytics,omitempty"`
-	// LogAnalyticsWorkspaceID - The workspace ID of the log analytics workspace to be used for monitoring
-	LogAnalyticsWorkspaceID *string `json:"logAnalyticsWorkspaceId,omitempty"`
-	// LogAnalyticsWorkspaceSharedKey - The shared key of the log analytics workspace that is used for monitoring
-	LogAnalyticsWorkspaceSharedKey *string `json:"logAnalyticsWorkspaceSharedKey,omitempty"`
-}
-
-// MarshalJSON is the custom marshaler for SapMonitorProperties.
-func (smp SapMonitorProperties) MarshalJSON() ([]byte, error) {
-	objectMap := make(map[string]interface{})
-	if smp.HanaSubnet != nil {
-		objectMap["hanaSubnet"] = smp.HanaSubnet
-	}
-	if smp.HanaHostname != nil {
-		objectMap["hanaHostname"] = smp.HanaHostname
-	}
-	if smp.HanaDbName != nil {
-		objectMap["hanaDbName"] = smp.HanaDbName
-	}
-	if smp.HanaDbSQLPort != nil {
-		objectMap["hanaDbSqlPort"] = smp.HanaDbSQLPort
-	}
-	if smp.HanaDbUsername != nil {
-		objectMap["hanaDbUsername"] = smp.HanaDbUsername
-	}
-	if smp.HanaDbPassword != nil {
-		objectMap["hanaDbPassword"] = smp.HanaDbPassword
-	}
-	if smp.HanaDbPasswordKeyVaultURL != nil {
-		objectMap["hanaDbPasswordKeyVaultUrl"] = smp.HanaDbPasswordKeyVaultURL
-	}
-	if smp.HanaDbCredentialsMsiID != nil {
-		objectMap["hanaDbCredentialsMsiId"] = smp.HanaDbCredentialsMsiID
-	}
-	if smp.KeyVaultID != nil {
-		objectMap["keyVaultId"] = smp.KeyVaultID
-	}
-	if smp.LogAnalyticsWorkspaceArmID != nil {
-		objectMap["logAnalyticsWorkspaceArmId"] = smp.LogAnalyticsWorkspaceArmID
-	}
-	if smp.EnableCustomerAnalytics != nil {
-		objectMap["enableCustomerAnalytics"] = smp.EnableCustomerAnalytics
-	}
-	if smp.LogAnalyticsWorkspaceID != nil {
-		objectMap["logAnalyticsWorkspaceId"] = smp.LogAnalyticsWorkspaceID
-	}
-	if smp.LogAnalyticsWorkspaceSharedKey != nil {
-		objectMap["logAnalyticsWorkspaceSharedKey"] = smp.LogAnalyticsWorkspaceSharedKey
+	if ssi.UID != nil {
+		objectMap["uid"] = ssi.UID
 	}
 	return json.Marshal(objectMap)
-}
-
-// SapMonitorsCreateFuture an abstraction for monitoring and retrieving the results of a long-running
-// operation.
-type SapMonitorsCreateFuture struct {
-	azure.FutureAPI
-	// Result returns the result of the asynchronous operation.
-	// If the operation has not completed it will return an error.
-	Result func(SapMonitorsClient) (SapMonitor, error)
-}
-
-// UnmarshalJSON is the custom unmarshaller for CreateFuture.
-func (future *SapMonitorsCreateFuture) UnmarshalJSON(body []byte) error {
-	var azFuture azure.Future
-	if err := json.Unmarshal(body, &azFuture); err != nil {
-		return err
-	}
-	future.FutureAPI = &azFuture
-	future.Result = future.result
-	return nil
-}
-
-// result is the default implementation for SapMonitorsCreateFuture.Result.
-func (future *SapMonitorsCreateFuture) result(client SapMonitorsClient) (sm SapMonitor, err error) {
-	var done bool
-	done, err = future.DoneWithContext(context.Background(), client)
-	if err != nil {
-		err = autorest.NewErrorWithError(err, "hanaonazure.SapMonitorsCreateFuture", "Result", future.Response(), "Polling failure")
-		return
-	}
-	if !done {
-		sm.Response.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("hanaonazure.SapMonitorsCreateFuture")
-		return
-	}
-	sender := autorest.DecorateSender(client, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
-	if sm.Response.Response, err = future.GetResult(sender); err == nil && sm.Response.Response.StatusCode != http.StatusNoContent {
-		sm, err = client.CreateResponder(sm.Response.Response)
-		if err != nil {
-			err = autorest.NewErrorWithError(err, "hanaonazure.SapMonitorsCreateFuture", "Result", sm.Response.Response, "Failure responding to request")
-		}
-	}
-	return
-}
-
-// SapMonitorsDeleteFuture an abstraction for monitoring and retrieving the results of a long-running
-// operation.
-type SapMonitorsDeleteFuture struct {
-	azure.FutureAPI
-	// Result returns the result of the asynchronous operation.
-	// If the operation has not completed it will return an error.
-	Result func(SapMonitorsClient) (autorest.Response, error)
-}
-
-// UnmarshalJSON is the custom unmarshaller for CreateFuture.
-func (future *SapMonitorsDeleteFuture) UnmarshalJSON(body []byte) error {
-	var azFuture azure.Future
-	if err := json.Unmarshal(body, &azFuture); err != nil {
-		return err
-	}
-	future.FutureAPI = &azFuture
-	future.Result = future.result
-	return nil
-}
-
-// result is the default implementation for SapMonitorsDeleteFuture.Result.
-func (future *SapMonitorsDeleteFuture) result(client SapMonitorsClient) (ar autorest.Response, err error) {
-	var done bool
-	done, err = future.DoneWithContext(context.Background(), client)
-	if err != nil {
-		err = autorest.NewErrorWithError(err, "hanaonazure.SapMonitorsDeleteFuture", "Result", future.Response(), "Polling failure")
-		return
-	}
-	if !done {
-		ar.Response = future.Response()
-		err = azure.NewAsyncOpIncompleteError("hanaonazure.SapMonitorsDeleteFuture")
-		return
-	}
-	ar.Response = future.Response()
-	return
 }
 
 // StorageProfile specifies the storage settings for the HANA instance disks.
@@ -1108,6 +744,8 @@ type StorageProfile struct {
 	NfsIPAddress *string `json:"nfsIpAddress,omitempty"`
 	// OsDisks - Specifies information about the operating system disk used by the hana instance.
 	OsDisks *[]Disk `json:"osDisks,omitempty"`
+	// HanaSids - Specifies information related to SAP system IDs for the hana instance.
+	HanaSids *[]SAPSystemID `json:"hanaSids,omitempty"`
 }
 
 // MarshalJSON is the custom marshaler for StorageProfile.
@@ -1115,6 +753,9 @@ func (sp StorageProfile) MarshalJSON() ([]byte, error) {
 	objectMap := make(map[string]interface{})
 	if sp.OsDisks != nil {
 		objectMap["osDisks"] = sp.OsDisks
+	}
+	if sp.HanaSids != nil {
+		objectMap["hanaSids"] = sp.HanaSids
 	}
 	return json.Marshal(objectMap)
 }
