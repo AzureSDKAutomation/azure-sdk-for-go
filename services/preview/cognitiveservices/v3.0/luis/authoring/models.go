@@ -706,7 +706,7 @@ type LabelExampleResponse struct {
 	// UtteranceText - The example utterance.
 	UtteranceText *string `json:"UtteranceText,omitempty"`
 	// ExampleID - The newly created sample ID.
-	ExampleID *int32 `json:"ExampleId,omitempty"`
+	ExampleID *int64 `json:"ExampleId,omitempty"`
 }
 
 // LabelTextObject an object containing the example utterance's text.

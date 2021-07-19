@@ -202,7 +202,7 @@ var _ VersionsClientAPI = (*authoring.VersionsClient)(nil)
 // TrainClientAPI contains the set of methods on the TrainClient type.
 type TrainClientAPI interface {
 	GetStatus(ctx context.Context, appID uuid.UUID, versionID string) (result authoring.ListModelTrainingInfo, err error)
-	TrainVersion(ctx context.Context, appID uuid.UUID, versionID string) (result authoring.EnqueueTrainingResponse, err error)
+	TrainVersion(ctx context.Context, appID uuid.UUID, versionID string, mode string) (result authoring.EnqueueTrainingResponse, err error)
 }
 
 var _ TrainClientAPI = (*authoring.TrainClient)(nil)
