@@ -35,13 +35,13 @@ var _ ClientAPI = (*features.Client)(nil)
 
 // SubscriptionFeatureRegistrationsClientAPI contains the set of methods on the SubscriptionFeatureRegistrationsClient type.
 type SubscriptionFeatureRegistrationsClientAPI interface {
-	CreateOrUpdate(ctx context.Context, APIVersion string, featureName string, subscriptionFeatureRegistrationType *features.SubscriptionFeatureRegistration) (result features.SubscriptionFeatureRegistration, err error)
-	Delete(ctx context.Context, APIVersion string, featureName string) (result autorest.Response, err error)
-	Get(ctx context.Context, APIVersion string, featureName string) (result features.SubscriptionFeatureRegistration, err error)
+	CreateOrUpdate(ctx context.Context, APIVersion string, providerNamespace string, featureName string, subscriptionFeatureRegistrationType *features.SubscriptionFeatureRegistration) (result features.SubscriptionFeatureRegistration, err error)
+	Delete(ctx context.Context, APIVersion string, providerNamespace string, featureName string) (result autorest.Response, err error)
+	Get(ctx context.Context, APIVersion string, providerNamespace string, featureName string) (result features.SubscriptionFeatureRegistration, err error)
 	ListAllBySubscription(ctx context.Context, APIVersion string) (result features.SubscriptionFeatureRegistrationListPage, err error)
 	ListAllBySubscriptionComplete(ctx context.Context, APIVersion string) (result features.SubscriptionFeatureRegistrationListIterator, err error)
-	ListBySubscription(ctx context.Context, APIVersion string) (result features.SubscriptionFeatureRegistrationListPage, err error)
-	ListBySubscriptionComplete(ctx context.Context, APIVersion string) (result features.SubscriptionFeatureRegistrationListIterator, err error)
+	ListBySubscription(ctx context.Context, APIVersion string, providerNamespace string) (result features.SubscriptionFeatureRegistrationListPage, err error)
+	ListBySubscriptionComplete(ctx context.Context, APIVersion string, providerNamespace string) (result features.SubscriptionFeatureRegistrationListIterator, err error)
 }
 
 var _ SubscriptionFeatureRegistrationsClientAPI = (*features.SubscriptionFeatureRegistrationsClient)(nil)
