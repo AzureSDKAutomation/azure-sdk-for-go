@@ -96,11 +96,12 @@ func (client SubscriptionsClient) CreateOrUpdatePreparer(ctx context.Context, re
 		"topicName":         autorest.Encode("path", topicName),
 	}
 
-	const APIVersion = "2018-01-01-preview"
+	const APIVersion = "2021-06-01-preview"
 	queryParameters := map[string]interface{}{
 		"api-version": APIVersion,
 	}
 
+	parameters.SystemData = nil
 	preparer := autorest.CreatePreparer(
 		autorest.AsContentType("application/json; charset=utf-8"),
 		autorest.AsPut(),
@@ -193,7 +194,7 @@ func (client SubscriptionsClient) DeletePreparer(ctx context.Context, resourceGr
 		"topicName":         autorest.Encode("path", topicName),
 	}
 
-	const APIVersion = "2018-01-01-preview"
+	const APIVersion = "2021-06-01-preview"
 	queryParameters := map[string]interface{}{
 		"api-version": APIVersion,
 	}
@@ -287,7 +288,7 @@ func (client SubscriptionsClient) GetPreparer(ctx context.Context, resourceGroup
 		"topicName":         autorest.Encode("path", topicName),
 	}
 
-	const APIVersion = "2018-01-01-preview"
+	const APIVersion = "2021-06-01-preview"
 	queryParameters := map[string]interface{}{
 		"api-version": APIVersion,
 	}
@@ -396,7 +397,7 @@ func (client SubscriptionsClient) ListByTopicPreparer(ctx context.Context, resou
 		"topicName":         autorest.Encode("path", topicName),
 	}
 
-	const APIVersion = "2018-01-01-preview"
+	const APIVersion = "2021-06-01-preview"
 	queryParameters := map[string]interface{}{
 		"api-version": APIVersion,
 	}
