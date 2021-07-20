@@ -1,4 +1,4 @@
-// Package servicebus implements the Azure ARM Servicebus service API version 2018-01-01-preview.
+// Package servicebus implements the Azure ARM Servicebus service API version 2021-06-01-preview.
 //
 //
 package servicebus
