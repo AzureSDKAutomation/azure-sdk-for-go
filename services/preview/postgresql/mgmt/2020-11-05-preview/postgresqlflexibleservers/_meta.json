@@ -1,5 +1,5 @@
 {
-  "commit": "3c764635e7d442b3e74caf593029fcd440b3ef82",
+  "commit": "edf5c5409bee04b58c7b76b62c92d623c92ffb1b",
   "readme": "/_/azure-rest-api-specs/specification/postgresql/resource-manager/readme.md",
   "tag": "package-2020-11-05-preview",
   "use": "@microsoft.azure/autorest.go@2.1.183",
