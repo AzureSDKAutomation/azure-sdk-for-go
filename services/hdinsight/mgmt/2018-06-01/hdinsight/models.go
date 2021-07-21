@@ -913,7 +913,7 @@ type ClusterIdentity struct {
 	// Type - The type of identity used for the cluster. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. Possible values include: 'ResourceIdentityTypeSystemAssigned', 'ResourceIdentityTypeUserAssigned', 'ResourceIdentityTypeSystemAssignedUserAssigned', 'ResourceIdentityTypeNone'
 	Type ResourceIdentityType `json:"type,omitempty"`
 	// UserAssignedIdentities - The list of user identities associated with the cluster. The user identity dictionary key references will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}'.
-	UserAssignedIdentities map[string]*ClusterIdentityUserAssignedIdentitiesValue `json:"userAssignedIdentities"`
+	UserAssignedIdentities map[string]*UserAssignedIdentity `json:"userAssignedIdentities"`
 }
 
 // MarshalJSON is the custom marshaler for ClusterIdentity.
@@ -924,25 +924,6 @@ func (ci ClusterIdentity) MarshalJSON() ([]byte, error) {
 	}
 	if ci.UserAssignedIdentities != nil {
 		objectMap["userAssignedIdentities"] = ci.UserAssignedIdentities
-	}
-	return json.Marshal(objectMap)
-}
-
-// ClusterIdentityUserAssignedIdentitiesValue ...
-type ClusterIdentityUserAssignedIdentitiesValue struct {
-	// PrincipalID - READ-ONLY; The principal id of user assigned identity.
-	PrincipalID *string `json:"principalId,omitempty"`
-	// ClientID - READ-ONLY; The client id of user assigned identity.
-	ClientID *string `json:"clientId,omitempty"`
-	// TenantID - The tenant id of user assigned identity.
-	TenantID *string `json:"tenantId,omitempty"`
-}
-
-// MarshalJSON is the custom marshaler for ClusterIdentityUserAssignedIdentitiesValue.
-func (ciAiv ClusterIdentityUserAssignedIdentitiesValue) MarshalJSON() ([]byte, error) {
-	objectMap := make(map[string]interface{})
-	if ciAiv.TenantID != nil {
-		objectMap["tenantId"] = ciAiv.TenantID
 	}
 	return json.Marshal(objectMap)
 }
@@ -2909,6 +2890,25 @@ type UsagesListResult struct {
 	autorest.Response `json:"-"`
 	// Value - The list of usages.
 	Value *[]Usage `json:"value,omitempty"`
+}
+
+// UserAssignedIdentity the User Assigned Identity
+type UserAssignedIdentity struct {
+	// PrincipalID - READ-ONLY; The principal id of user assigned identity.
+	PrincipalID *string `json:"principalId,omitempty"`
+	// ClientID - READ-ONLY; The client id of user assigned identity.
+	ClientID *string `json:"clientId,omitempty"`
+	// TenantID - The tenant id of user assigned identity.
+	TenantID *string `json:"tenantId,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for UserAssignedIdentity.
+func (uai UserAssignedIdentity) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if uai.TenantID != nil {
+		objectMap["tenantId"] = uai.TenantID
+	}
+	return json.Marshal(objectMap)
 }
 
 // ValidationErrorInfo the validation error information.
