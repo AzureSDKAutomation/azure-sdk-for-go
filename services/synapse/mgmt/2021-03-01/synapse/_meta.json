@@ -1,5 +1,5 @@
 {
-  "commit": "e0f8b9ab0f5fe5e71b7429ebfea8a33c19ec9d8d",
+  "commit": "689edbe551d6ba8c6db4940997f9d9c74fba1e9c",
   "readme": "/_/azure-rest-api-specs/specification/synapse/resource-manager/readme.md",
   "tag": "package-2021-03",
   "use": "@microsoft.azure/autorest.go@2.1.183",
