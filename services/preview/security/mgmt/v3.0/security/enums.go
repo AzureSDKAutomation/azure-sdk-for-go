@@ -976,6 +976,38 @@ func PossibleMsiValues() []Msi {
 	return []Msi{MsiAudit, MsiEnforce, MsiNone}
 }
 
+// MultiCloudName enumerates the values for multi cloud name.
+type MultiCloudName string
+
+const (
+	// AWS ...
+	AWS MultiCloudName = "AWS"
+	// Azure ...
+	Azure MultiCloudName = "Azure"
+	// GCP ...
+	GCP MultiCloudName = "GCP"
+)
+
+// PossibleMultiCloudNameValues returns an array of possible values for the MultiCloudName const type.
+func PossibleMultiCloudNameValues() []MultiCloudName {
+	return []MultiCloudName{AWS, Azure, GCP}
+}
+
+// OfferingType enumerates the values for offering type.
+type OfferingType string
+
+const (
+	// OfferingTypeCSPMMonitorAWS ...
+	OfferingTypeCSPMMonitorAWS OfferingType = "CSPMMonitorAWS"
+	// OfferingTypeMultiCloudOffering ...
+	OfferingTypeMultiCloudOffering OfferingType = "MultiCloudOffering"
+)
+
+// PossibleOfferingTypeValues returns an array of possible values for the OfferingType const type.
+func PossibleOfferingTypeValues() []OfferingType {
+	return []OfferingType{OfferingTypeCSPMMonitorAWS, OfferingTypeMultiCloudOffering}
+}
+
 // OnboardingKind enumerates the values for onboarding kind.
 type OnboardingKind string
 

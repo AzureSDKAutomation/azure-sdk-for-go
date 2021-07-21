@@ -6695,6 +6695,186 @@ func (ctina ConnectionToIPNotAllowed) AsBasicCustomAlertRule() (BasicCustomAlert
 	return &ctina, true
 }
 
+// Connector the security connector resource.
+type Connector struct {
+	autorest.Response `json:"-"`
+	// ConnectorProperties - Security connector data
+	*ConnectorProperties `json:"properties,omitempty"`
+	// ID - READ-ONLY; Resource Id
+	ID *string `json:"id,omitempty"`
+	// Name - READ-ONLY; Resource name
+	Name *string `json:"name,omitempty"`
+	// Type - READ-ONLY; Resource type
+	Type *string `json:"type,omitempty"`
+	// Location - Location where the resource is stored
+	Location *string `json:"location,omitempty"`
+	// Kind - Kind of the resource
+	Kind *string `json:"kind,omitempty"`
+	// Etag - Entity tag is used for comparing two or more entities from the same requested resource.
+	Etag *string `json:"etag,omitempty"`
+	// Tags - A list of key value pairs that describe the resource.
+	Tags map[string]*string `json:"tags"`
+}
+
+// MarshalJSON is the custom marshaler for Connector.
+func (c Connector) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if c.ConnectorProperties != nil {
+		objectMap["properties"] = c.ConnectorProperties
+	}
+	if c.Location != nil {
+		objectMap["location"] = c.Location
+	}
+	if c.Kind != nil {
+		objectMap["kind"] = c.Kind
+	}
+	if c.Etag != nil {
+		objectMap["etag"] = c.Etag
+	}
+	if c.Tags != nil {
+		objectMap["tags"] = c.Tags
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for Connector struct.
+func (c *Connector) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "properties":
+			if v != nil {
+				var connectorProperties ConnectorProperties
+				err = json.Unmarshal(*v, &connectorProperties)
+				if err != nil {
+					return err
+				}
+				c.ConnectorProperties = &connectorProperties
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				c.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				c.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				c.Type = &typeVar
+			}
+		case "location":
+			if v != nil {
+				var location string
+				err = json.Unmarshal(*v, &location)
+				if err != nil {
+					return err
+				}
+				c.Location = &location
+			}
+		case "kind":
+			if v != nil {
+				var kind string
+				err = json.Unmarshal(*v, &kind)
+				if err != nil {
+					return err
+				}
+				c.Kind = &kind
+			}
+		case "etag":
+			if v != nil {
+				var etag string
+				err = json.Unmarshal(*v, &etag)
+				if err != nil {
+					return err
+				}
+				c.Etag = &etag
+			}
+		case "tags":
+			if v != nil {
+				var tags map[string]*string
+				err = json.Unmarshal(*v, &tags)
+				if err != nil {
+					return err
+				}
+				c.Tags = tags
+			}
+		}
+	}
+
+	return nil
+}
+
+// ConnectorProperties a set of properties that defines the security connector configuration.
+type ConnectorProperties struct {
+	// HierarchyID - The multi cloud resource identifier (account id in case of AWS connector).
+	HierarchyID *string `json:"hierarchyId,omitempty"`
+	// MultiCloudName - The multi cloud resource's cloud name. Possible values include: 'Azure', 'AWS', 'GCP'
+	MultiCloudName MultiCloudName `json:"multiCloudName,omitempty"`
+	// Offerings - A collection of offerings for the security connector.
+	Offerings *[]BasicMultiCloudOffering `json:"offerings,omitempty"`
+}
+
+// UnmarshalJSON is the custom unmarshaler for ConnectorProperties struct.
+func (cp *ConnectorProperties) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "hierarchyId":
+			if v != nil {
+				var hierarchyID string
+				err = json.Unmarshal(*v, &hierarchyID)
+				if err != nil {
+					return err
+				}
+				cp.HierarchyID = &hierarchyID
+			}
+		case "multiCloudName":
+			if v != nil {
+				var multiCloudName MultiCloudName
+				err = json.Unmarshal(*v, &multiCloudName)
+				if err != nil {
+					return err
+				}
+				cp.MultiCloudName = multiCloudName
+			}
+		case "offerings":
+			if v != nil {
+				offerings, err := unmarshalBasicMultiCloudOfferingArray(*v)
+				if err != nil {
+					return err
+				}
+				cp.Offerings = &offerings
+			}
+		}
+	}
+
+	return nil
+}
+
 // ConnectorSetting the connector setting
 type ConnectorSetting struct {
 	autorest.Response `json:"-"`
@@ -6974,6 +7154,174 @@ func (csp *ConnectorSettingProperties) UnmarshalJSON(body []byte) error {
 	}
 
 	return nil
+}
+
+// ConnectorsList list of security connectors response.
+type ConnectorsList struct {
+	autorest.Response `json:"-"`
+	// Value - The list of security connectors under the given scope.
+	Value *[]Connector `json:"value,omitempty"`
+	// NextLink - READ-ONLY; The URI to fetch the next page.
+	NextLink *string `json:"nextLink,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for ConnectorsList.
+func (cl ConnectorsList) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if cl.Value != nil {
+		objectMap["value"] = cl.Value
+	}
+	return json.Marshal(objectMap)
+}
+
+// ConnectorsListIterator provides access to a complete listing of Connector values.
+type ConnectorsListIterator struct {
+	i    int
+	page ConnectorsListPage
+}
+
+// NextWithContext advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+func (iter *ConnectorsListIterator) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/ConnectorsListIterator.NextWithContext")
+		defer func() {
+			sc := -1
+			if iter.Response().Response.Response != nil {
+				sc = iter.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	iter.i++
+	if iter.i < len(iter.page.Values()) {
+		return nil
+	}
+	err = iter.page.NextWithContext(ctx)
+	if err != nil {
+		iter.i--
+		return err
+	}
+	iter.i = 0
+	return nil
+}
+
+// Next advances to the next value.  If there was an error making
+// the request the iterator does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (iter *ConnectorsListIterator) Next() error {
+	return iter.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the enumeration should be started or is not yet complete.
+func (iter ConnectorsListIterator) NotDone() bool {
+	return iter.page.NotDone() && iter.i < len(iter.page.Values())
+}
+
+// Response returns the raw server response from the last page request.
+func (iter ConnectorsListIterator) Response() ConnectorsList {
+	return iter.page.Response()
+}
+
+// Value returns the current value or a zero-initialized value if the
+// iterator has advanced beyond the end of the collection.
+func (iter ConnectorsListIterator) Value() Connector {
+	if !iter.page.NotDone() {
+		return Connector{}
+	}
+	return iter.page.Values()[iter.i]
+}
+
+// Creates a new instance of the ConnectorsListIterator type.
+func NewConnectorsListIterator(page ConnectorsListPage) ConnectorsListIterator {
+	return ConnectorsListIterator{page: page}
+}
+
+// IsEmpty returns true if the ListResult contains no values.
+func (cl ConnectorsList) IsEmpty() bool {
+	return cl.Value == nil || len(*cl.Value) == 0
+}
+
+// hasNextLink returns true if the NextLink is not empty.
+func (cl ConnectorsList) hasNextLink() bool {
+	return cl.NextLink != nil && len(*cl.NextLink) != 0
+}
+
+// connectorsListPreparer prepares a request to retrieve the next set of results.
+// It returns nil if no more results exist.
+func (cl ConnectorsList) connectorsListPreparer(ctx context.Context) (*http.Request, error) {
+	if !cl.hasNextLink() {
+		return nil, nil
+	}
+	return autorest.Prepare((&http.Request{}).WithContext(ctx),
+		autorest.AsJSON(),
+		autorest.AsGet(),
+		autorest.WithBaseURL(to.String(cl.NextLink)))
+}
+
+// ConnectorsListPage contains a page of Connector values.
+type ConnectorsListPage struct {
+	fn func(context.Context, ConnectorsList) (ConnectorsList, error)
+	cl ConnectorsList
+}
+
+// NextWithContext advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+func (page *ConnectorsListPage) NextWithContext(ctx context.Context) (err error) {
+	if tracing.IsEnabled() {
+		ctx = tracing.StartSpan(ctx, fqdn+"/ConnectorsListPage.NextWithContext")
+		defer func() {
+			sc := -1
+			if page.Response().Response.Response != nil {
+				sc = page.Response().Response.Response.StatusCode
+			}
+			tracing.EndSpan(ctx, sc, err)
+		}()
+	}
+	for {
+		next, err := page.fn(ctx, page.cl)
+		if err != nil {
+			return err
+		}
+		page.cl = next
+		if !next.hasNextLink() || !next.IsEmpty() {
+			break
+		}
+	}
+	return nil
+}
+
+// Next advances to the next page of values.  If there was an error making
+// the request the page does not advance and the error is returned.
+// Deprecated: Use NextWithContext() instead.
+func (page *ConnectorsListPage) Next() error {
+	return page.NextWithContext(context.Background())
+}
+
+// NotDone returns true if the page enumeration should be started or is not yet complete.
+func (page ConnectorsListPage) NotDone() bool {
+	return !page.cl.IsEmpty()
+}
+
+// Response returns the raw server response from the last page request.
+func (page ConnectorsListPage) Response() ConnectorsList {
+	return page.cl
+}
+
+// Values returns the slice of values for the current page or nil if there are no values.
+func (page ConnectorsListPage) Values() []Connector {
+	if page.cl.IsEmpty() {
+		return nil
+	}
+	return *page.cl.Value
+}
+
+// Creates a new instance of the ConnectorsListPage type.
+func NewConnectorsListPage(cur ConnectorsList, getNextPage func(context.Context, ConnectorsList) (ConnectorsList, error)) ConnectorsListPage {
+	return ConnectorsListPage{
+		fn: getNextPage,
+		cl: cur,
+	}
 }
 
 // Contact contact details for security issues
@@ -7282,6 +7630,61 @@ func (crvp ContainerRegistryVulnerabilityProperties) AsAdditionalData() (*Additi
 // AsBasicAdditionalData is the BasicAdditionalData implementation for ContainerRegistryVulnerabilityProperties.
 func (crvp ContainerRegistryVulnerabilityProperties) AsBasicAdditionalData() (BasicAdditionalData, bool) {
 	return &crvp, true
+}
+
+// CSPMMonitorAWSOffering the CSPM monitoring for AWS offering configurations
+type CSPMMonitorAWSOffering struct {
+	// NativeCloudConnection - The native cloud connection configuration
+	NativeCloudConnection *CSPMMonitorAWSOfferingNativeCloudConnection `json:"nativeCloudConnection,omitempty"`
+	// Description - READ-ONLY; The offering description.
+	Description *string `json:"description,omitempty"`
+	// OfferingType - Possible values include: 'OfferingTypeMultiCloudOffering', 'OfferingTypeCSPMMonitorAWS'
+	OfferingType OfferingType `json:"offeringType,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for CSPMMonitorAWSOffering.
+func (cmao CSPMMonitorAWSOffering) MarshalJSON() ([]byte, error) {
+	cmao.OfferingType = OfferingTypeCSPMMonitorAWS
+	objectMap := make(map[string]interface{})
+	if cmao.NativeCloudConnection != nil {
+		objectMap["nativeCloudConnection"] = cmao.NativeCloudConnection
+	}
+	if cmao.OfferingType != "" {
+		objectMap["offeringType"] = cmao.OfferingType
+	}
+	return json.Marshal(objectMap)
+}
+
+// AsCSPMMonitorAWSOffering is the BasicMultiCloudOffering implementation for CSPMMonitorAWSOffering.
+func (cmao CSPMMonitorAWSOffering) AsCSPMMonitorAWSOffering() (*CSPMMonitorAWSOffering, bool) {
+	return &cmao, true
+}
+
+// AsMultiCloudOffering is the BasicMultiCloudOffering implementation for CSPMMonitorAWSOffering.
+func (cmao CSPMMonitorAWSOffering) AsMultiCloudOffering() (*MultiCloudOffering, bool) {
+	return nil, false
+}
+
+// AsBasicMultiCloudOffering is the BasicMultiCloudOffering implementation for CSPMMonitorAWSOffering.
+func (cmao CSPMMonitorAWSOffering) AsBasicMultiCloudOffering() (BasicMultiCloudOffering, bool) {
+	return &cmao, true
+}
+
+// CSPMMonitorAWSOfferingNativeCloudConnection the native cloud connection configuration
+type CSPMMonitorAWSOfferingNativeCloudConnection struct {
+	// CloudRoleArn - The cloud role ARN in AWS for this feature
+	CloudRoleArn *string `json:"cloudRoleArn,omitempty"`
+	// Policies - READ-ONLY; The list of the required policies of the multi cloud roles for the offering. [READ ONLY]
+	Policies *[]string `json:"policies,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for CSPMMonitorAWSOfferingNativeCloudConnection.
+func (cmaoCc CSPMMonitorAWSOfferingNativeCloudConnection) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if cmaoCc.CloudRoleArn != nil {
+		objectMap["cloudRoleArn"] = cmaoCc.CloudRoleArn
+	}
+	return json.Marshal(objectMap)
 }
 
 // BasicCustomAlertRule a custom alert rule.
@@ -14841,6 +15244,82 @@ func (mdmniar MqttD2CMessagesNotInAllowedRange) AsCustomAlertRule() (*CustomAler
 // AsBasicCustomAlertRule is the BasicCustomAlertRule implementation for MqttD2CMessagesNotInAllowedRange.
 func (mdmniar MqttD2CMessagesNotInAllowedRange) AsBasicCustomAlertRule() (BasicCustomAlertRule, bool) {
 	return &mdmniar, true
+}
+
+// BasicMultiCloudOffering the security offering details
+type BasicMultiCloudOffering interface {
+	AsCSPMMonitorAWSOffering() (*CSPMMonitorAWSOffering, bool)
+	AsMultiCloudOffering() (*MultiCloudOffering, bool)
+}
+
+// MultiCloudOffering the security offering details
+type MultiCloudOffering struct {
+	// Description - READ-ONLY; The offering description.
+	Description *string `json:"description,omitempty"`
+	// OfferingType - Possible values include: 'OfferingTypeMultiCloudOffering', 'OfferingTypeCSPMMonitorAWS'
+	OfferingType OfferingType `json:"offeringType,omitempty"`
+}
+
+func unmarshalBasicMultiCloudOffering(body []byte) (BasicMultiCloudOffering, error) {
+	var m map[string]interface{}
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return nil, err
+	}
+
+	switch m["offeringType"] {
+	case string(OfferingTypeCSPMMonitorAWS):
+		var cmao CSPMMonitorAWSOffering
+		err := json.Unmarshal(body, &cmao)
+		return cmao, err
+	default:
+		var mco MultiCloudOffering
+		err := json.Unmarshal(body, &mco)
+		return mco, err
+	}
+}
+func unmarshalBasicMultiCloudOfferingArray(body []byte) ([]BasicMultiCloudOffering, error) {
+	var rawMessages []*json.RawMessage
+	err := json.Unmarshal(body, &rawMessages)
+	if err != nil {
+		return nil, err
+	}
+
+	mcoArray := make([]BasicMultiCloudOffering, len(rawMessages))
+
+	for index, rawMessage := range rawMessages {
+		mco, err := unmarshalBasicMultiCloudOffering(*rawMessage)
+		if err != nil {
+			return nil, err
+		}
+		mcoArray[index] = mco
+	}
+	return mcoArray, nil
+}
+
+// MarshalJSON is the custom marshaler for MultiCloudOffering.
+func (mco MultiCloudOffering) MarshalJSON() ([]byte, error) {
+	mco.OfferingType = OfferingTypeMultiCloudOffering
+	objectMap := make(map[string]interface{})
+	if mco.OfferingType != "" {
+		objectMap["offeringType"] = mco.OfferingType
+	}
+	return json.Marshal(objectMap)
+}
+
+// AsCSPMMonitorAWSOffering is the BasicMultiCloudOffering implementation for MultiCloudOffering.
+func (mco MultiCloudOffering) AsCSPMMonitorAWSOffering() (*CSPMMonitorAWSOffering, bool) {
+	return nil, false
+}
+
+// AsMultiCloudOffering is the BasicMultiCloudOffering implementation for MultiCloudOffering.
+func (mco MultiCloudOffering) AsMultiCloudOffering() (*MultiCloudOffering, bool) {
+	return &mco, true
+}
+
+// AsBasicMultiCloudOffering is the BasicMultiCloudOffering implementation for MultiCloudOffering.
+func (mco MultiCloudOffering) AsBasicMultiCloudOffering() (BasicMultiCloudOffering, bool) {
+	return &mco, true
 }
 
 // NetworkInterface network interface

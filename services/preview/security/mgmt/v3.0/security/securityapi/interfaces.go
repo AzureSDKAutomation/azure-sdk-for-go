@@ -12,6 +12,19 @@ import (
 	"github.com/Azure/go-autorest/autorest"
 )
 
+// ConnectorsClientAPI contains the set of methods on the ConnectorsClient type.
+type ConnectorsClientAPI interface {
+	CreateOrUpdate(ctx context.Context, resourceGroupName string, securityConnectorName string, securityConnector security.Connector) (result security.Connector, err error)
+	Delete(ctx context.Context, resourceGroupName string, securityConnectorName string) (result autorest.Response, err error)
+	Get(ctx context.Context, resourceGroupName string, securityConnectorName string) (result security.Connector, err error)
+	List(ctx context.Context) (result security.ConnectorsListPage, err error)
+	ListComplete(ctx context.Context) (result security.ConnectorsListIterator, err error)
+	ListByResourceGroup(ctx context.Context, resourceGroupName string) (result security.ConnectorsListPage, err error)
+	ListByResourceGroupComplete(ctx context.Context, resourceGroupName string) (result security.ConnectorsListIterator, err error)
+}
+
+var _ ConnectorsClientAPI = (*security.ConnectorsClient)(nil)
+
 // ComplianceResultsClientAPI contains the set of methods on the ComplianceResultsClient type.
 type ComplianceResultsClientAPI interface {
 	Get(ctx context.Context, resourceID string, complianceResultName string) (result security.ComplianceResult, err error)
@@ -402,8 +415,8 @@ type SolutionsClientAPI interface {
 
 var _ SolutionsClientAPI = (*security.SolutionsClient)(nil)
 
-// ConnectorsClientAPI contains the set of methods on the ConnectorsClient type.
-type ConnectorsClientAPI interface {
+// ConnectorsGroupClientAPI contains the set of methods on the ConnectorsGroupClient type.
+type ConnectorsGroupClientAPI interface {
 	CreateOrUpdate(ctx context.Context, connectorName string, connectorSetting security.ConnectorSetting) (result security.ConnectorSetting, err error)
 	Delete(ctx context.Context, connectorName string) (result autorest.Response, err error)
 	Get(ctx context.Context, connectorName string) (result security.ConnectorSetting, err error)
@@ -411,7 +424,7 @@ type ConnectorsClientAPI interface {
 	ListComplete(ctx context.Context) (result security.ConnectorSettingListIterator, err error)
 }
 
-var _ ConnectorsClientAPI = (*security.ConnectorsClient)(nil)
+var _ ConnectorsGroupClientAPI = (*security.ConnectorsGroupClient)(nil)
 
 // SQLVulnerabilityAssessmentScansClientAPI contains the set of methods on the SQLVulnerabilityAssessmentScansClient type.
 type SQLVulnerabilityAssessmentScansClientAPI interface {
