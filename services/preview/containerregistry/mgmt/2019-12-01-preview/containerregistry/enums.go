@@ -187,6 +187,21 @@ func PossibleLastModifiedByTypeValues() []LastModifiedByType {
 	return []LastModifiedByType{LastModifiedByTypeApplication, LastModifiedByTypeKey, LastModifiedByTypeManagedIdentity, LastModifiedByTypeUser}
 }
 
+// NetworkRuleBypassOptions enumerates the values for network rule bypass options.
+type NetworkRuleBypassOptions string
+
+const (
+	// NetworkRuleBypassOptionsAzureServices ...
+	NetworkRuleBypassOptionsAzureServices NetworkRuleBypassOptions = "AzureServices"
+	// NetworkRuleBypassOptionsNone ...
+	NetworkRuleBypassOptionsNone NetworkRuleBypassOptions = "None"
+)
+
+// PossibleNetworkRuleBypassOptionsValues returns an array of possible values for the NetworkRuleBypassOptions const type.
+func PossibleNetworkRuleBypassOptionsValues() []NetworkRuleBypassOptions {
+	return []NetworkRuleBypassOptions{NetworkRuleBypassOptionsAzureServices, NetworkRuleBypassOptionsNone}
+}
+
 // OS enumerates the values for os.
 type OS string
 
