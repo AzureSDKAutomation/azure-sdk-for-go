@@ -1,7 +1,7 @@
-// Package maps implements the Azure ARM Maps service API version 2017-01-01-preview.
+// Package containerregistry implements the Azure ARM Containerregistry service API version .
 //
-// Resource Provider
-package maps
+//
+package containerregistry
 
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	// DefaultBaseURI is the default URI used for the service Maps
+	// DefaultBaseURI is the default URI used for the service Containerregistry
 	DefaultBaseURI = "https://management.azure.com"
 )
 
-// BaseClient is the base client for Maps.
+// BaseClient is the base client for Containerregistry.
 type BaseClient struct {
 	autorest.Client
 	BaseURI        string
