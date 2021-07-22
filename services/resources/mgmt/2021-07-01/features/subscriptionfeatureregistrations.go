@@ -22,23 +22,24 @@ type SubscriptionFeatureRegistrationsClient struct {
 }
 
 // NewSubscriptionFeatureRegistrationsClient creates an instance of the SubscriptionFeatureRegistrationsClient client.
-func NewSubscriptionFeatureRegistrationsClient(subscriptionID string, providerNamespace string) SubscriptionFeatureRegistrationsClient {
-	return NewSubscriptionFeatureRegistrationsClientWithBaseURI(DefaultBaseURI, subscriptionID, providerNamespace)
+func NewSubscriptionFeatureRegistrationsClient(subscriptionID string) SubscriptionFeatureRegistrationsClient {
+	return NewSubscriptionFeatureRegistrationsClientWithBaseURI(DefaultBaseURI, subscriptionID)
 }
 
 // NewSubscriptionFeatureRegistrationsClientWithBaseURI creates an instance of the
 // SubscriptionFeatureRegistrationsClient client using a custom endpoint.  Use this when interacting with an Azure
 // cloud that uses a non-standard base URI (sovereign clouds, Azure stack).
-func NewSubscriptionFeatureRegistrationsClientWithBaseURI(baseURI string, subscriptionID string, providerNamespace string) SubscriptionFeatureRegistrationsClient {
-	return SubscriptionFeatureRegistrationsClient{NewWithBaseURI(baseURI, subscriptionID, providerNamespace)}
+func NewSubscriptionFeatureRegistrationsClientWithBaseURI(baseURI string, subscriptionID string) SubscriptionFeatureRegistrationsClient {
+	return SubscriptionFeatureRegistrationsClient{NewWithBaseURI(baseURI, subscriptionID)}
 }
 
 // CreateOrUpdate create or update a feature registration.
 // Parameters:
 // APIVersion - the API version to use for this operation.
+// providerNamespace - the provider namespace.
 // featureName - the feature name.
 // subscriptionFeatureRegistrationType - subscription Feature Registration Type details.
-func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdate(ctx context.Context, APIVersion string, featureName string, subscriptionFeatureRegistrationType *SubscriptionFeatureRegistration) (result SubscriptionFeatureRegistration, err error) {
+func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdate(ctx context.Context, APIVersion string, providerNamespace string, featureName string, subscriptionFeatureRegistrationType *SubscriptionFeatureRegistration) (result SubscriptionFeatureRegistration, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/SubscriptionFeatureRegistrationsClient.CreateOrUpdate")
 		defer func() {
@@ -62,7 +63,7 @@ func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdate(ctx context.
 		return result, validation.NewError("features.SubscriptionFeatureRegistrationsClient", "CreateOrUpdate", err.Error())
 	}
 
-	req, err := client.CreateOrUpdatePreparer(ctx, APIVersion, featureName, subscriptionFeatureRegistrationType)
+	req, err := client.CreateOrUpdatePreparer(ctx, APIVersion, providerNamespace, featureName, subscriptionFeatureRegistrationType)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "features.SubscriptionFeatureRegistrationsClient", "CreateOrUpdate", nil, "Failure preparing request")
 		return
@@ -85,10 +86,10 @@ func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdate(ctx context.
 }
 
 // CreateOrUpdatePreparer prepares the CreateOrUpdate request.
-func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdatePreparer(ctx context.Context, APIVersion string, featureName string, subscriptionFeatureRegistrationType *SubscriptionFeatureRegistration) (*http.Request, error) {
+func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdatePreparer(ctx context.Context, APIVersion string, providerNamespace string, featureName string, subscriptionFeatureRegistrationType *SubscriptionFeatureRegistration) (*http.Request, error) {
 	pathParameters := map[string]interface{}{
 		"featureName":       autorest.Encode("path", featureName),
-		"providerNamespace": autorest.Encode("path", client.ProviderNamespace),
+		"providerNamespace": autorest.Encode("path", providerNamespace),
 		"subscriptionId":    autorest.Encode("path", client.SubscriptionID),
 	}
 
@@ -130,8 +131,9 @@ func (client SubscriptionFeatureRegistrationsClient) CreateOrUpdateResponder(res
 // Delete deletes a feature registration
 // Parameters:
 // APIVersion - the API version to use for this operation.
+// providerNamespace - the provider namespace.
 // featureName - the feature name.
-func (client SubscriptionFeatureRegistrationsClient) Delete(ctx context.Context, APIVersion string, featureName string) (result autorest.Response, err error) {
+func (client SubscriptionFeatureRegistrationsClient) Delete(ctx context.Context, APIVersion string, providerNamespace string, featureName string) (result autorest.Response, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/SubscriptionFeatureRegistrationsClient.Delete")
 		defer func() {
@@ -142,7 +144,7 @@ func (client SubscriptionFeatureRegistrationsClient) Delete(ctx context.Context,
 			tracing.EndSpan(ctx, sc, err)
 		}()
 	}
-	req, err := client.DeletePreparer(ctx, APIVersion, featureName)
+	req, err := client.DeletePreparer(ctx, APIVersion, providerNamespace, featureName)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "features.SubscriptionFeatureRegistrationsClient", "Delete", nil, "Failure preparing request")
 		return
@@ -165,10 +167,10 @@ func (client SubscriptionFeatureRegistrationsClient) Delete(ctx context.Context,
 }
 
 // DeletePreparer prepares the Delete request.
-func (client SubscriptionFeatureRegistrationsClient) DeletePreparer(ctx context.Context, APIVersion string, featureName string) (*http.Request, error) {
+func (client SubscriptionFeatureRegistrationsClient) DeletePreparer(ctx context.Context, APIVersion string, providerNamespace string, featureName string) (*http.Request, error) {
 	pathParameters := map[string]interface{}{
 		"featureName":       autorest.Encode("path", featureName),
-		"providerNamespace": autorest.Encode("path", client.ProviderNamespace),
+		"providerNamespace": autorest.Encode("path", providerNamespace),
 		"subscriptionId":    autorest.Encode("path", client.SubscriptionID),
 	}
 
@@ -204,8 +206,9 @@ func (client SubscriptionFeatureRegistrationsClient) DeleteResponder(resp *http.
 // Get returns a feature registration
 // Parameters:
 // APIVersion - the API version to use for this operation.
+// providerNamespace - the provider namespace.
 // featureName - the feature name.
-func (client SubscriptionFeatureRegistrationsClient) Get(ctx context.Context, APIVersion string, featureName string) (result SubscriptionFeatureRegistration, err error) {
+func (client SubscriptionFeatureRegistrationsClient) Get(ctx context.Context, APIVersion string, providerNamespace string, featureName string) (result SubscriptionFeatureRegistration, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/SubscriptionFeatureRegistrationsClient.Get")
 		defer func() {
@@ -216,7 +219,7 @@ func (client SubscriptionFeatureRegistrationsClient) Get(ctx context.Context, AP
 			tracing.EndSpan(ctx, sc, err)
 		}()
 	}
-	req, err := client.GetPreparer(ctx, APIVersion, featureName)
+	req, err := client.GetPreparer(ctx, APIVersion, providerNamespace, featureName)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "features.SubscriptionFeatureRegistrationsClient", "Get", nil, "Failure preparing request")
 		return
@@ -239,10 +242,10 @@ func (client SubscriptionFeatureRegistrationsClient) Get(ctx context.Context, AP
 }
 
 // GetPreparer prepares the Get request.
-func (client SubscriptionFeatureRegistrationsClient) GetPreparer(ctx context.Context, APIVersion string, featureName string) (*http.Request, error) {
+func (client SubscriptionFeatureRegistrationsClient) GetPreparer(ctx context.Context, APIVersion string, providerNamespace string, featureName string) (*http.Request, error) {
 	pathParameters := map[string]interface{}{
 		"featureName":       autorest.Encode("path", featureName),
-		"providerNamespace": autorest.Encode("path", client.ProviderNamespace),
+		"providerNamespace": autorest.Encode("path", providerNamespace),
 		"subscriptionId":    autorest.Encode("path", client.SubscriptionID),
 	}
 
@@ -393,7 +396,8 @@ func (client SubscriptionFeatureRegistrationsClient) ListAllBySubscriptionComple
 // ListBySubscription returns subscription feature registrations for given subscription and provider namespace.
 // Parameters:
 // APIVersion - the API version to use for this operation.
-func (client SubscriptionFeatureRegistrationsClient) ListBySubscription(ctx context.Context, APIVersion string) (result SubscriptionFeatureRegistrationListPage, err error) {
+// providerNamespace - the provider namespace.
+func (client SubscriptionFeatureRegistrationsClient) ListBySubscription(ctx context.Context, APIVersion string, providerNamespace string) (result SubscriptionFeatureRegistrationListPage, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/SubscriptionFeatureRegistrationsClient.ListBySubscription")
 		defer func() {
@@ -405,7 +409,7 @@ func (client SubscriptionFeatureRegistrationsClient) ListBySubscription(ctx cont
 		}()
 	}
 	result.fn = client.listBySubscriptionNextResults
-	req, err := client.ListBySubscriptionPreparer(ctx, APIVersion)
+	req, err := client.ListBySubscriptionPreparer(ctx, APIVersion, providerNamespace)
 	if err != nil {
 		err = autorest.NewErrorWithError(err, "features.SubscriptionFeatureRegistrationsClient", "ListBySubscription", nil, "Failure preparing request")
 		return
@@ -432,9 +436,9 @@ func (client SubscriptionFeatureRegistrationsClient) ListBySubscription(ctx cont
 }
 
 // ListBySubscriptionPreparer prepares the ListBySubscription request.
-func (client SubscriptionFeatureRegistrationsClient) ListBySubscriptionPreparer(ctx context.Context, APIVersion string) (*http.Request, error) {
+func (client SubscriptionFeatureRegistrationsClient) ListBySubscriptionPreparer(ctx context.Context, APIVersion string, providerNamespace string) (*http.Request, error) {
 	pathParameters := map[string]interface{}{
-		"providerNamespace": autorest.Encode("path", client.ProviderNamespace),
+		"providerNamespace": autorest.Encode("path", providerNamespace),
 		"subscriptionId":    autorest.Encode("path", client.SubscriptionID),
 	}
 
@@ -490,7 +494,7 @@ func (client SubscriptionFeatureRegistrationsClient) listBySubscriptionNextResul
 }
 
 // ListBySubscriptionComplete enumerates all values, automatically crossing page boundaries as required.
-func (client SubscriptionFeatureRegistrationsClient) ListBySubscriptionComplete(ctx context.Context, APIVersion string) (result SubscriptionFeatureRegistrationListIterator, err error) {
+func (client SubscriptionFeatureRegistrationsClient) ListBySubscriptionComplete(ctx context.Context, APIVersion string, providerNamespace string) (result SubscriptionFeatureRegistrationListIterator, err error) {
 	if tracing.IsEnabled() {
 		ctx = tracing.StartSpan(ctx, fqdn+"/SubscriptionFeatureRegistrationsClient.ListBySubscription")
 		defer func() {
@@ -501,6 +505,6 @@ func (client SubscriptionFeatureRegistrationsClient) ListBySubscriptionComplete(
 			tracing.EndSpan(ctx, sc, err)
 		}()
 	}
-	result.page, err = client.ListBySubscription(ctx, APIVersion)
+	result.page, err = client.ListBySubscription(ctx, APIVersion, providerNamespace)
 	return
 }
