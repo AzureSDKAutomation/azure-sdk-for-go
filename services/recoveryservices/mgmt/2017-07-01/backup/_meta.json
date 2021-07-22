@@ -1,0 +1,11 @@
+{
+  "commit": "38767867812984d4844b36137294e65c8406670c",
+  "readme": "/_/azure-rest-api-specs/specification/recoveryservicesbackup/resource-manager/readme.md",
+  "tag": "package-2017-07",
+  "use": "@microsoft.azure/autorest.go@2.1.183",
+  "repository_url": "https://github.com/Azure/azure-rest-api-specs.git",
+  "autorest_command": "autorest --use=@microsoft.azure/autorest.go@2.1.183 --tag=package-2017-07 --go-sdk-folder=/_/azure-sdk-for-go --go --verbose --use-onever --version=V2 --go.license-header=MICROSOFT_MIT_NO_VERSION /_/azure-rest-api-specs/specification/recoveryservicesbackup/resource-manager/readme.md",
+  "additional_properties": {
+    "additional_options": "--go --verbose --use-onever --version=V2 --go.license-header=MICROSOFT_MIT_NO_VERSION"
+  }
+}
