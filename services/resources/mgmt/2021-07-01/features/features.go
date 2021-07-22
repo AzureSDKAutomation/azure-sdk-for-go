@@ -20,14 +20,14 @@ type Client struct {
 }
 
 // NewClient creates an instance of the Client client.
-func NewClient(subscriptionID string, providerNamespace string) Client {
-	return NewClientWithBaseURI(DefaultBaseURI, subscriptionID, providerNamespace)
+func NewClient(subscriptionID string) Client {
+	return NewClientWithBaseURI(DefaultBaseURI, subscriptionID)
 }
 
 // NewClientWithBaseURI creates an instance of the Client client using a custom endpoint.  Use this when interacting
 // with an Azure cloud that uses a non-standard base URI (sovereign clouds, Azure stack).
-func NewClientWithBaseURI(baseURI string, subscriptionID string, providerNamespace string) Client {
-	return Client{NewWithBaseURI(baseURI, subscriptionID, providerNamespace)}
+func NewClientWithBaseURI(baseURI string, subscriptionID string) Client {
+	return Client{NewWithBaseURI(baseURI, subscriptionID)}
 }
 
 // Get gets the preview feature with the specified name.
