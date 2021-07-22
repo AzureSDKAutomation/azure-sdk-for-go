@@ -600,3 +600,11 @@ type SoftwareInventoriesClientAPI interface {
 }
 
 var _ SoftwareInventoriesClientAPI = (*security.SoftwareInventoriesClient)(nil)
+
+// AntiMalwareClientAPI contains the set of methods on the AntiMalwareClient type.
+type AntiMalwareClientAPI interface {
+	Create(ctx context.Context, resourceID string, antiMalwareSetting security.AntiMalwareSetting) (result security.AntiMalwareSetting, err error)
+	Get(ctx context.Context, resourceID string) (result security.AntiMalwareSetting, err error)
+}
+
+var _ AntiMalwareClientAPI = (*security.AntiMalwareClient)(nil)
