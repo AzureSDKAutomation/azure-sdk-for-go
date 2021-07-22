@@ -699,8 +699,6 @@ func PossibleIntegrationRuntimeEditionValues() []IntegrationRuntimeEdition {
 type IntegrationRuntimeEntityReferenceType string
 
 const (
-	// IntegrationRuntimeEntityReferenceTypeCredentialReference ...
-	IntegrationRuntimeEntityReferenceTypeCredentialReference IntegrationRuntimeEntityReferenceType = "CredentialReference"
 	// IntegrationRuntimeEntityReferenceTypeIntegrationRuntimeReference ...
 	IntegrationRuntimeEntityReferenceTypeIntegrationRuntimeReference IntegrationRuntimeEntityReferenceType = "IntegrationRuntimeReference"
 	// IntegrationRuntimeEntityReferenceTypeLinkedServiceReference ...
@@ -709,7 +707,7 @@ const (
 
 // PossibleIntegrationRuntimeEntityReferenceTypeValues returns an array of possible values for the IntegrationRuntimeEntityReferenceType const type.
 func PossibleIntegrationRuntimeEntityReferenceTypeValues() []IntegrationRuntimeEntityReferenceType {
-	return []IntegrationRuntimeEntityReferenceType{IntegrationRuntimeEntityReferenceTypeCredentialReference, IntegrationRuntimeEntityReferenceTypeIntegrationRuntimeReference, IntegrationRuntimeEntityReferenceTypeLinkedServiceReference}
+	return []IntegrationRuntimeEntityReferenceType{IntegrationRuntimeEntityReferenceTypeIntegrationRuntimeReference, IntegrationRuntimeEntityReferenceTypeLinkedServiceReference}
 }
 
 // IntegrationRuntimeInternalChannelEncryptionMode enumerates the values for integration runtime internal
@@ -2054,6 +2052,23 @@ const (
 // PossibleTypeBasicCopyTranslatorValues returns an array of possible values for the TypeBasicCopyTranslator const type.
 func PossibleTypeBasicCopyTranslatorValues() []TypeBasicCopyTranslator {
 	return []TypeBasicCopyTranslator{TypeBasicCopyTranslatorTypeCopyTranslator, TypeBasicCopyTranslatorTypeTabularTranslator}
+}
+
+// TypeBasicCredential enumerates the values for type basic credential.
+type TypeBasicCredential string
+
+const (
+	// TypeBasicCredentialTypeCredential ...
+	TypeBasicCredentialTypeCredential TypeBasicCredential = "Credential"
+	// TypeBasicCredentialTypeManagedIdentity ...
+	TypeBasicCredentialTypeManagedIdentity TypeBasicCredential = "ManagedIdentity"
+	// TypeBasicCredentialTypeServicePrincipal ...
+	TypeBasicCredentialTypeServicePrincipal TypeBasicCredential = "ServicePrincipal"
+)
+
+// PossibleTypeBasicCredentialValues returns an array of possible values for the TypeBasicCredential const type.
+func PossibleTypeBasicCredentialValues() []TypeBasicCredential {
+	return []TypeBasicCredential{TypeBasicCredentialTypeCredential, TypeBasicCredentialTypeManagedIdentity, TypeBasicCredentialTypeServicePrincipal}
 }
 
 // TypeBasicCustomSetupBase enumerates the values for type basic custom setup base.
