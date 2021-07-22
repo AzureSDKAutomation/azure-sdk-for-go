@@ -3224,6 +3224,95 @@ func (admniar AmqpD2CMessagesNotInAllowedRange) AsBasicCustomAlertRule() (BasicC
 	return &admniar, true
 }
 
+// AntiMalwareProperties the Advanced Threat Protection settings.
+type AntiMalwareProperties struct {
+	// IsEnabled - Indicates whether Advanced Threat Protection is enabled.
+	IsEnabled *bool `json:"isEnabled,omitempty"`
+}
+
+// AntiMalwareSetting the Anti Malware resource.
+type AntiMalwareSetting struct {
+	autorest.Response `json:"-"`
+	// SystemData - READ-ONLY
+	SystemData             *SystemData `json:"systemData,omitempty"`
+	*AntiMalwareProperties `json:"properties,omitempty"`
+	// ID - READ-ONLY; Resource Id
+	ID *string `json:"id,omitempty"`
+	// Name - READ-ONLY; Resource name
+	Name *string `json:"name,omitempty"`
+	// Type - READ-ONLY; Resource type
+	Type *string `json:"type,omitempty"`
+}
+
+// MarshalJSON is the custom marshaler for AntiMalwareSetting.
+func (ams AntiMalwareSetting) MarshalJSON() ([]byte, error) {
+	objectMap := make(map[string]interface{})
+	if ams.AntiMalwareProperties != nil {
+		objectMap["properties"] = ams.AntiMalwareProperties
+	}
+	return json.Marshal(objectMap)
+}
+
+// UnmarshalJSON is the custom unmarshaler for AntiMalwareSetting struct.
+func (ams *AntiMalwareSetting) UnmarshalJSON(body []byte) error {
+	var m map[string]*json.RawMessage
+	err := json.Unmarshal(body, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		switch k {
+		case "systemData":
+			if v != nil {
+				var systemData SystemData
+				err = json.Unmarshal(*v, &systemData)
+				if err != nil {
+					return err
+				}
+				ams.SystemData = &systemData
+			}
+		case "properties":
+			if v != nil {
+				var antiMalwareProperties AntiMalwareProperties
+				err = json.Unmarshal(*v, &antiMalwareProperties)
+				if err != nil {
+					return err
+				}
+				ams.AntiMalwareProperties = &antiMalwareProperties
+			}
+		case "id":
+			if v != nil {
+				var ID string
+				err = json.Unmarshal(*v, &ID)
+				if err != nil {
+					return err
+				}
+				ams.ID = &ID
+			}
+		case "name":
+			if v != nil {
+				var name string
+				err = json.Unmarshal(*v, &name)
+				if err != nil {
+					return err
+				}
+				ams.Name = &name
+			}
+		case "type":
+			if v != nil {
+				var typeVar string
+				err = json.Unmarshal(*v, &typeVar)
+				if err != nil {
+					return err
+				}
+				ams.Type = &typeVar
+			}
+		}
+	}
+
+	return nil
+}
+
 // AscLocation the ASC location of the subscription is in the "name" field
 type AscLocation struct {
 	autorest.Response `json:"-"`
