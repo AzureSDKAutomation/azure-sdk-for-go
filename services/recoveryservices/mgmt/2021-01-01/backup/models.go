@@ -14087,6 +14087,8 @@ type IaasVMRestoreRequest struct {
 	DiskEncryptionSetID *string `json:"diskEncryptionSetId,omitempty"`
 	// Zones - Target zone where the VM and its disks should be restored.
 	Zones *[]string `json:"zones,omitempty"`
+	// IdentityInfo - Managed Identity information required to access customer storage account.
+	IdentityInfo *IdentityInfo `json:"identityInfo,omitempty"`
 	// ObjectType - Possible values include: 'ObjectTypeBasicRestoreRequestObjectTypeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureFileShareRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadPointInTimeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaPointInTimeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLPointInTimeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeIaasVMRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaPointInTimeRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLPointInTimeRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeIaasVMRestoreWithRehydrationRequest'
 	ObjectType ObjectTypeBasicRestoreRequest `json:"objectType,omitempty"`
 }
@@ -14185,6 +14187,9 @@ func (ivrr IaasVMRestoreRequest) MarshalJSON() ([]byte, error) {
 	}
 	if ivrr.Zones != nil {
 		objectMap["zones"] = ivrr.Zones
+	}
+	if ivrr.IdentityInfo != nil {
+		objectMap["identityInfo"] = ivrr.IdentityInfo
 	}
 	if ivrr.ObjectType != "" {
 		objectMap["objectType"] = ivrr.ObjectType
@@ -14345,6 +14350,8 @@ type IaasVMRestoreWithRehydrationRequest struct {
 	DiskEncryptionSetID *string `json:"diskEncryptionSetId,omitempty"`
 	// Zones - Target zone where the VM and its disks should be restored.
 	Zones *[]string `json:"zones,omitempty"`
+	// IdentityInfo - Managed Identity information required to access customer storage account.
+	IdentityInfo *IdentityInfo `json:"identityInfo,omitempty"`
 	// ObjectType - Possible values include: 'ObjectTypeBasicRestoreRequestObjectTypeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureFileShareRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadPointInTimeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaPointInTimeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLPointInTimeRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeIaasVMRestoreRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaPointInTimeRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSAPHanaRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLPointInTimeRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeAzureWorkloadSQLRestoreWithRehydrateRequest', 'ObjectTypeBasicRestoreRequestObjectTypeIaasVMRestoreWithRehydrationRequest'
 	ObjectType ObjectTypeBasicRestoreRequest `json:"objectType,omitempty"`
 }
@@ -14409,6 +14416,9 @@ func (ivrwrr IaasVMRestoreWithRehydrationRequest) MarshalJSON() ([]byte, error) 
 	}
 	if ivrwrr.Zones != nil {
 		objectMap["zones"] = ivrwrr.Zones
+	}
+	if ivrwrr.IdentityInfo != nil {
+		objectMap["identityInfo"] = ivrwrr.IdentityInfo
 	}
 	if ivrwrr.ObjectType != "" {
 		objectMap["objectType"] = ivrwrr.ObjectType
@@ -14519,6 +14529,15 @@ func (ivrwrr IaasVMRestoreWithRehydrationRequest) AsRestoreRequest() (*RestoreRe
 // AsBasicRestoreRequest is the BasicRestoreRequest implementation for IaasVMRestoreWithRehydrationRequest.
 func (ivrwrr IaasVMRestoreWithRehydrationRequest) AsBasicRestoreRequest() (BasicRestoreRequest, bool) {
 	return &ivrwrr, true
+}
+
+// IdentityInfo encapsulates Managed Identity related information
+type IdentityInfo struct {
+	// IsSystemAssignedIdentity - To differentiate if the managed identity is system assigned or user assigned
+	IsSystemAssignedIdentity *bool `json:"isSystemAssignedIdentity,omitempty"`
+	// ManagedIdentityResourceID - Managed Identity Resource Id
+	// Optional: Might not be required in the case of system assigned managed identity
+	ManagedIdentityResourceID *string `json:"managedIdentityResourceId,omitempty"`
 }
 
 // BasicILRRequest parameters to Provision ILR API.
